@@ -47,8 +47,8 @@ export const CHARACTER_SKINS: CharacterSkin[] = [
     id: "clean_astronaut",
     name: "Astronot Bersih",
     description: "Baju antariksa anti-radiasi berteknologi penyaring udara super.",
-    pricePoints: 200,
-    unlockedByDefault: false,
+    pricePoints: 0,
+    unlockedByDefault: true,
   },
 ];
 

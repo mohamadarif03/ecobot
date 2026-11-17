@@ -23,17 +23,6 @@ export function PustakaPage() {
 }
 
 
-export function TokoPage() {
-  return (
-    <PlaceholderPage
-      title="Toko Hadiah"
-      subtitle="Tukarkan poin belajarmu dengan aksesori keren"
-      icon={<ShoppingBag className="w-10 h-10 text-rose-500" />}
-      moduleName="Toko Aksesori Ecobot"
-      description="Gunakan poin yang didapat dari memilah sampah untuk membeli topi, kacamata, dan stiker keren untuk karakter dan Ecobot."
-    />
-  );
-}
 
 export function PapanPeringkatPage() {
   return (

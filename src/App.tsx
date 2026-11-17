@@ -11,9 +11,9 @@ import KuisPage from "./pages/KuisPage";
 import KuisPlayerPage from "./pages/KuisPlayerPage";
 import AksiNyataPage from "./pages/AksiNyataPage";
 import PencapaianPage from "./pages/PencapaianPage";
+import TokoPage from "./pages/TokoPage";
 import {
   PustakaPage,
-  TokoPage,
   PapanPeringkatPage,
   PengaturanPage,
   BantuanPage,

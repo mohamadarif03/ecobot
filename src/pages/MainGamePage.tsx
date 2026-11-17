@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Sparkles,
   Gamepad2,
@@ -472,25 +472,58 @@ export default function MainGamePage() {
 
                 {/* Accessory Selector */}
                 <div>
-                  <span className="text-xs font-black text-slate-700 block mb-1">
-                    Aksesori Kepala
-                  </span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black text-slate-700">
+                      Aksesori Kepala
+                    </span>
+                    <Link
+                      to="/toko?tab=karakter"
+                      className="text-[10px] font-bold text-sky-600 hover:underline"
+                    >
+                      Buka Toko &rarr;
+                    </Link>
+                  </div>
                   <div className="grid grid-cols-3 gap-1.5">
                     {CHARACTER_ACCESSORIES.map((acc) => {
                       const isSelected = state.character.accessory === acc.id;
-                      const isLocked = !acc.unlockedByDefault;
+                      const mappedShopId =
+                        acc.id === "leaf_hat"
+                          ? "topi-daun"
+                          : acc.id === "eco_goggles"
+                          ? "kacamata-pelindung"
+                          : null;
+
+                      const isOwned =
+                        acc.id === "none" ||
+                        (mappedShopId
+                          ? !!state.inventory?.owned?.[mappedShopId]
+                          : acc.unlockedByDefault);
+
+                      if (!isOwned && mappedShopId) {
+                        return (
+                          <Link
+                            key={acc.id}
+                            to={`/toko?tab=karakter&item=${mappedShopId}`}
+                            title="Item belum dimiliki. Beli di Toko Ecobot"
+                            className="p-1.5 rounded-xl border border-dashed border-amber-300 bg-amber-50/50 hover:bg-amber-100/70 text-[10px] font-bold text-amber-800 text-center transition flex flex-col items-center justify-center gap-0.5"
+                          >
+                            <span className="truncate w-full">{acc.name}</span>
+                            <span className="text-[9px] text-amber-600 flex items-center gap-0.5">
+                              <Lock className="w-2.5 h-2.5" />
+                              <span>Beli di Toko</span>
+                            </span>
+                          </Link>
+                        );
+                      }
 
                       return (
                         <button
                           key={acc.id}
                           type="button"
-                          disabled={isLocked}
                           onClick={() => setCharacter({ accessory: acc.id })}
-                          className={`p-1.5 rounded-xl border text-[10px] font-bold text-center transition truncate ${
+                          className={`p-1.5 rounded-xl border text-[10px] font-bold text-center transition truncate cursor-pointer ${
                             isSelected
                               ? "bg-sky-500 text-white border-sky-600 shadow-2xs"
-                              : isLocked
-                              ? "bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed opacity-60"
                               : "bg-white text-slate-700 border-slate-200 hover:border-sky-300"
                           }`}
                         >

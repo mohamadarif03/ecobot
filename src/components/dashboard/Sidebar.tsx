@@ -19,6 +19,7 @@ import {
 } from "../../store/playerStore";
 import { calculateLevel } from "../../data/levels";
 import { EcobotMascot } from "../ecobot/EcobotMascot";
+import { ItemArt } from "../../data/toko/art";
 
 interface SidebarProps {
   isCollapsed?: boolean;
@@ -359,8 +360,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false }) => {
       {/* Bottom User Profile Card */}
       <div className="mt-6 bg-[#E6F4FE] border border-sky-200/80 rounded-[18px] p-2.5 flex items-center justify-between">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-9 h-9 rounded-full bg-[#38BDF8] text-slate-950 font-extrabold text-[15px] flex items-center justify-center shrink-0 shadow-2xs">
-            {state.avatar || "🤖"}
+          <div className="relative shrink-0">
+            <div className="w-9 h-9 rounded-full bg-[#38BDF8] text-slate-950 font-extrabold text-[15px] flex items-center justify-center shadow-2xs">
+              {state.avatar || "🤖"}
+            </div>
+            {state.inventory?.equipped?.stiker && (
+              <div
+                className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-white shadow-xs p-0.5 border border-sky-100 flex items-center justify-center"
+                title={`Stiker: ${state.inventory.equipped.stiker}`}
+              >
+                <ItemArt
+                  itemId={state.inventory.equipped.stiker}
+                  className="w-full h-full"
+                />
+              </div>
+            )}
           </div>
           {!isCollapsed && (
             <div className="min-w-0">

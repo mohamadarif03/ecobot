@@ -236,4 +236,28 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
       return calculateLevel(state.xp).level >= 5;
     },
   },
+  {
+    id: "gaya-keren",
+    nama: "Gaya Keren",
+    deskripsi: "Miliki setidaknya 5 item aksesori atau gaya keren di Toko Ecobot.",
+    kategori: "spesial",
+    ikon: "✨",
+    syaratTeks: "Miliki 5 item di Toko Ecobot",
+    available: true,
+    target: 5,
+    pesanEcobot: "Keren sekali gayamu! Belajar giat membuahkan penampilan yang membanggakan.",
+    tautan: "/toko",
+    ambilProgres: (state: PlayerState) => {
+      const bought = Object.values(state.inventory?.owned || {}).filter(
+        (it) => it.source === "beli" || it.source === "badge"
+      ).length;
+      return Math.min(5, bought);
+    },
+    cek: (state: PlayerState) => {
+      const bought = Object.values(state.inventory?.owned || {}).filter(
+        (it) => it.source === "beli" || it.source === "badge"
+      ).length;
+      return bought >= 5;
+    },
+  },
 ];

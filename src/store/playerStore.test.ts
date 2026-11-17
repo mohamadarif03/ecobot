@@ -35,7 +35,13 @@ import {
   getNearBadges,
   getStatsSummary,
   getCertificateStatus,
+  getItemStatus,
+  getShopItems,
+  getEquipped,
+  getAffordableItems,
+  grantBadgeItems,
 } from "./playerStore.ts";
+import { ALL_SHOP_ITEMS } from "../data/toko/items.ts";
 import { BADGE_DEFINITIONS } from "../data/pencapaian/badges.ts";
 import { FACT_CARDS } from "../data/pencapaian/factCards.ts";
 import { CERTIFICATE_DEFINITIONS } from "../data/pencapaian/certificates.ts";
@@ -486,8 +492,8 @@ describe("Aksi Nyata & Eco-Habits System (PRD 6.6)", () => {
 });
 
 describe("Centralized Achievements & Prestasi System", () => {
-  test("BADGE_DEFINITIONS has exactly 12 badges across 4 categories", () => {
-    assert.equal(BADGE_DEFINITIONS.length, 12);
+  test("BADGE_DEFINITIONS has exactly 13 badges across 4 categories (including Gaya Keren)", () => {
+    assert.equal(BADGE_DEFINITIONS.length, 13);
     const categories = new Set(BADGE_DEFINITIONS.map((b) => b.kategori));
     assert.ok(categories.has("game"));
     assert.ok(categories.has("belajar"));
@@ -626,6 +632,138 @@ describe("Centralized Achievements & Prestasi System", () => {
     assert.equal(typeof summary.points, "number");
   });
 });
+
+describe("Toko & Kustomisasi System (PRD 6.9)", () => {
+  test("ALL_SHOP_ITEMS contains all items from Bagian B with correct categories", () => {
+    assert.ok(ALL_SHOP_ITEMS.length >= 25, "Minimal ada 25 item toko");
+
+    const categories = new Set(ALL_SHOP_ITEMS.map((it) => it.kategori));
+    assert.ok(categories.has("karakter"));
+    assert.ok(categories.has("ecobot"));
+    assert.ok(categories.has("stiker"));
+
+    // Check specific required items
+    const requiredIds = [
+      "topi-daun",
+      "topi-jerami",
+      "topi-pelindung",
+      "helm-relawan",
+      "kacamata-bulat",
+      "kacamata-hijau",
+      "kacamata-pelindung",
+      "syal-hijau",
+      "tas-kain",
+      "sarung-tangan",
+      "tas-daur-ulang",
+      "warna-baju-biru",
+      "warna-baju-hijau",
+      "warna-baju-kuning",
+      "warna-baju-pink",
+      "warna-baju-ungu",
+      "warna-baju-toska",
+      "ecobot-topi-kapten",
+      "ecobot-pita-daun",
+      "ecobot-kacamata",
+      "ecobot-syal-biru",
+      "ecobot-mahkota-bunga",
+      "ecobot-warna-biru",
+      "ecobot-warna-mint",
+      "ecobot-warna-kuning",
+      "ecobot-warna-pink",
+      "ecobot-emas",
+      "stiker-daun",
+      "stiker-tunas",
+      "stiker-bintang",
+      "stiker-matahari",
+      "stiker-penyu",
+      "stiker-bumi",
+      "stiker-kupu",
+      "stiker-pelangi",
+      "stiker-api",
+      "stiker-pahlawan",
+    ];
+
+    requiredIds.forEach((id) => {
+      const found = ALL_SHOP_ITEMS.find((it) => it.id === id);
+      assert.ok(found, `Item wajib '${id}' harus ada di data toko`);
+      assert.equal(typeof found.harga, "number");
+      assert.ok(found.deskripsi.length > 5);
+    });
+  });
+
+  test("getItemStatus correctly evaluates all ownership and requirement states", () => {
+    const testState = {
+      ...INITIAL_PLAYER_STATE,
+      points: 40,
+      xp: 0, // Level 1
+      inventory: {
+        owned: {
+          "topi-daun": { at: "2026-01-01", source: "gratis" as const },
+        },
+        equipped: {
+          character: {
+            topi: "topi-daun",
+          },
+          ecobot: {},
+        },
+      },
+    };
+
+    // 1. Equipped item
+    const s1 = getItemStatus("topi-daun", testState);
+    assert.equal(s1.status, "dipakai");
+
+    // 2. Affordable unowned item (topi-jerami = 40 points, player has 40 points)
+    const s2 = getItemStatus("topi-jerami", testState);
+    assert.equal(s2.status, "bisa_dibeli");
+
+    // 3. Expensive unowned item (topi-pelindung = 80 points, player has 40 points)
+    const s3 = getItemStatus("topi-pelindung", testState);
+    assert.equal(s3.status, "poin_kurang");
+    assert.equal(s3.pointsNeeded, 40);
+
+    // 4. Level-locked item (helm-relawan = Level 3, player is Level 1)
+    const s4 = getItemStatus("helm-relawan", testState);
+    assert.equal(s4.status, "terkunci_level");
+    assert.equal(s4.levelRequired, 3);
+
+    // 5. Badge reward item (ecobot-emas = requires badge kota-bersih)
+    const s5 = getItemStatus("ecobot-emas", testState);
+    assert.equal(s5.status, "hadiah_badge");
+  });
+
+  test("grantBadgeItems automatically grants ecobot-emas, stiker-api, and stiker-pahlawan", () => {
+    const withBadgesState = {
+      ...INITIAL_PLAYER_STATE,
+      achievements: {
+        badges: {
+          "kota-bersih": { unlockedAt: "2026-11-17", seen: true },
+          "api-semangat": { unlockedAt: "2026-11-17", seen: true },
+        },
+        cards: {},
+        certificates: {},
+      },
+      inventory: {
+        owned: {},
+        equipped: {
+          character: {},
+          ecobot: {},
+        },
+      },
+    };
+
+    const res = grantBadgeItems(withBadgesState);
+    assert.equal(res.newItems.length, 2);
+    assert.ok(res.nextState.inventory?.owned["ecobot-emas"]);
+    assert.ok(res.nextState.inventory?.owned["stiker-api"]);
+    assert.equal(res.nextState.inventory?.owned["stiker-api"].source, "badge");
+
+    // Idempotent: running again does not grant duplicates
+    const res2 = grantBadgeItems(res.nextState);
+    assert.equal(res2.newItems.length, 0);
+  });
+});
+
 
 
 

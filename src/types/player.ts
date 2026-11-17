@@ -69,6 +69,7 @@ export interface PlayerStats {
   streakTerpanjang?: number;
   comboTertinggi?: number;
   hariAktif?: string[];
+  totalPoinDibelanjakan?: number;
 }
 
 export interface MissionState {
@@ -196,6 +197,44 @@ export interface AchievementsState {
   certificates: Record<string, { issuedAt: string; serial: string }>;
 }
 
+export interface InventoryEquipped {
+  character: {
+    topi?: string;
+    kacamata?: string;
+    aksesori?: string;
+    warnaBaju?: string;
+  };
+  ecobot: {
+    topi?: string;
+    kacamata?: string;
+    aksesori?: string;
+    syal?: string;
+    warna?: string;
+  };
+  stiker?: string;
+}
+
+export interface InventoryOwnedItem {
+  at: string;
+  source: "beli" | "gratis" | "badge";
+}
+
+export interface InventoryState {
+  owned: Record<string, InventoryOwnedItem>;
+  equipped: InventoryEquipped;
+}
+
+export interface TokoPurchaseRecord {
+  itemId: string;
+  price: number;
+  at: string;
+}
+
+export interface TokoState {
+  totalSpent: number;
+  purchases: TokoPurchaseRecord[];
+}
+
 export interface PlayerState {
   nickname: string;
   avatar: string; // avatar identifier
@@ -216,6 +255,8 @@ export interface PlayerState {
   quizProgress: QuizProgress;
   aksiNyata?: AksiNyataState;
   achievements?: AchievementsState;
+  inventory?: InventoryState;
+  toko?: TokoState;
   simulatedDateOffsetDays?: number;
   badges: Badge[];
   activityLog: ActivityItem[];

@@ -51,6 +51,17 @@ import {
   calculateRadarScores,
   generateCertificateSerial,
 } from "../game/achievements/engine.ts";
+import { ALL_SHOP_ITEMS, DEFAULT_OWNED_ITEMS } from "../data/toko/items.ts";
+import type {
+  ShopCategory,
+  ItemStatusInfo,
+  ShopItemDefinition,
+} from "../data/toko/types.ts";
+import type {
+  InventoryState,
+  TokoState,
+  InventoryEquipped,
+} from "../types/player.ts";
 
 const STORAGE_KEY = "ecobot_player_state_v1";
 
@@ -107,6 +118,25 @@ export const DEFAULT_ACHIEVEMENTS: AchievementsState = {
   badges: {},
   cards: {},
   certificates: {},
+};
+
+export const DEFAULT_INVENTORY: InventoryState = {
+  owned: { ...DEFAULT_OWNED_ITEMS },
+  equipped: {
+    character: {
+      topi: "topi-daun",
+      warnaBaju: "warna-baju-biru",
+    },
+    ecobot: {
+      warna: "ecobot-warna-biru",
+    },
+    stiker: undefined,
+  },
+};
+
+export const DEFAULT_TOKO: TokoState = {
+  totalSpent: 0,
+  purchases: [],
 };
 
 /**
@@ -308,6 +338,8 @@ export const INITIAL_PLAYER_STATE: PlayerState = (() => {
     quizProgress: DEFAULT_QUIZ_PROGRESS,
     aksiNyata: DEFAULT_AKSI_NYATA,
     achievements: DEFAULT_ACHIEVEMENTS,
+    inventory: DEFAULT_INVENTORY,
+    toko: DEFAULT_TOKO,
     simulatedDateOffsetDays: 0,
     badges: [],
     activityLog: [],
@@ -477,6 +509,33 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
       },
       certificates: {},
     },
+    inventory: {
+      owned: {
+        ...DEFAULT_OWNED_ITEMS,
+        "topi-jerami": { at: "Hari ini", source: "beli" },
+        "kacamata-bulat": { at: "Kemarin", source: "beli" },
+        "stiker-daun": { at: "Kemarin", source: "beli" },
+      },
+      equipped: {
+        character: {
+          topi: "topi-jerami",
+          kacamata: "kacamata-bulat",
+          warnaBaju: "warna-baju-biru",
+        },
+        ecobot: {
+          warna: "ecobot-warna-biru",
+        },
+        stiker: "stiker-daun",
+      },
+    },
+    toko: {
+      totalSpent: 120,
+      purchases: [
+        { itemId: "topi-jerami", price: 40, at: "Hari ini" },
+        { itemId: "kacamata-bulat", price: 50, at: "Kemarin" },
+        { itemId: "stiker-daun", price: 30, at: "Kemarin" },
+      ],
+    },
     simulatedDateOffsetDays: 0,
     badges: [
       { ...ALL_BADGES[0], unlockedAt: "Hari ini" },
@@ -519,84 +578,131 @@ export function onNewAchievementUnlocked(listener: AchievementToastListener) {
   };
 }
 
+export function grantBadgeItems(state: PlayerState): {
+  nextState: PlayerState;
+  newItems: ShopItemDefinition[];
+} {
+  const inventory = state.inventory || DEFAULT_INVENTORY;
+  const owned = { ...(inventory.owned || {}) };
+  const newlyGranted: ShopItemDefinition[] = [];
+
+  const checkBadgeItem = (badgeId: string, itemId: string) => {
+    const hasBadge =
+      state.achievements?.badges?.[badgeId] ||
+      state.badges?.some((b) => b.id === badgeId);
+    if (hasBadge && !owned[itemId]) {
+      const itemDef = ALL_SHOP_ITEMS.find((it) => it.id === itemId);
+      if (itemDef) {
+        owned[itemId] = { at: getLocalDateKey(), source: "badge" };
+        newlyGranted.push(itemDef);
+      }
+    }
+  };
+
+  checkBadgeItem("kota-bersih", "ecobot-emas");
+  checkBadgeItem("api-semangat", "stiker-api");
+  checkBadgeItem("pahlawan-nyata", "stiker-pahlawan");
+
+  if (newlyGranted.length === 0) {
+    return { nextState: state, newItems: [] };
+  }
+
+  const nextState: PlayerState = {
+    ...state,
+    inventory: {
+      ...inventory,
+      owned,
+    },
+  };
+
+  return { nextState, newItems: newlyGranted };
+}
+
 export function syncAchievements(state: PlayerState): {
   nextState: PlayerState;
   newlyUnlockedBadges: BadgeDefinition[];
   newlyUnlockedCards: FactCardDefinition[];
 } {
   const { newBadges, newCards } = evaluateAchievements(state);
-  if (newBadges.length === 0 && newCards.length === 0) {
-    return { nextState: state, newlyUnlockedBadges: [], newlyUnlockedCards: [] };
-  }
-
   const currentAch = state.achievements || DEFAULT_ACHIEVEMENTS;
-  const updatedBadges = { ...(currentAch.badges || {}) };
-  const updatedCards = { ...(currentAch.cards || {}) };
-  const newActivities: ActivityItem[] = [];
-  const legacyBadges = [...(state.badges || [])];
 
-  const dateStr = new Date().toLocaleDateString("id-ID", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  let nextState: PlayerState = state;
+  let newlyUnlockedBadges = newBadges;
+  let newlyUnlockedCards = newCards;
 
-  newBadges.forEach((b) => {
-    updatedBadges[b.id] = {
-      unlockedAt: dateStr,
-      seen: false,
-    };
+  if (newBadges.length > 0 || newCards.length > 0) {
+    const updatedBadges = { ...(currentAch.badges || {}) };
+    const updatedCards = { ...(currentAch.cards || {}) };
+    const newActivities: ActivityItem[] = [];
+    const legacyBadges = [...(state.badges || [])];
 
-    newActivities.push({
-      id: "act-badge-" + b.id + "-" + Date.now(),
-      title: `Meraih Badge: ${b.nama}`,
-      description: b.deskripsi,
-      timestamp: "Baru saja",
-      type: "badge",
-      xpEarned: 50,
-      pointsEarned: 25,
+    const dateStr = new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
     });
 
-    if (!legacyBadges.some((x) => x.id === b.id)) {
-      legacyBadges.push({
-        id: b.id,
-        name: b.nama,
+    newBadges.forEach((b) => {
+      updatedBadges[b.id] = {
+        unlockedAt: dateStr,
+        seen: false,
+      };
+
+      newActivities.push({
+        id: "act-badge-" + b.id + "-" + Date.now(),
+        title: `Meraih Badge: ${b.nama}`,
         description: b.deskripsi,
-        icon: b.ikon,
-        unlockedAt: "Baru saja",
+        timestamp: "Baru saja",
+        type: "badge",
+        xpEarned: 50,
+        pointsEarned: 25,
       });
-    }
 
-    // Trigger toast notification
-    if (typeof window !== "undefined") {
-      setTimeout(() => {
-        achievementToastListeners.forEach((fn) => fn(b));
-      }, 50);
-    }
-  });
+      if (!legacyBadges.some((x) => x.id === b.id)) {
+        legacyBadges.push({
+          id: b.id,
+          name: b.nama,
+          description: b.deskripsi,
+          icon: b.ikon,
+          unlockedAt: "Baru saja",
+        });
+      }
 
-  newCards.forEach((c) => {
-    updatedCards[c.id] = {
-      unlockedAt: dateStr,
-      seen: false,
+      // Trigger toast notification
+      if (typeof window !== "undefined") {
+        setTimeout(() => {
+          achievementToastListeners.forEach((fn) => fn(b));
+        }, 50);
+      }
+    });
+
+    newCards.forEach((c) => {
+      updatedCards[c.id] = {
+        unlockedAt: dateStr,
+        seen: false,
+      };
+    });
+
+    nextState = {
+      ...state,
+      badges: legacyBadges,
+      activityLog: [...newActivities, ...state.activityLog].slice(0, 25),
+      achievements: {
+        badges: updatedBadges,
+        cards: updatedCards,
+        certificates: currentAch.certificates || {},
+      },
     };
-  });
+  }
 
-  let nextState: PlayerState = {
-    ...state,
-    badges: legacyBadges,
-    activityLog: [...newActivities, ...state.activityLog].slice(0, 25),
-    achievements: {
-      badges: updatedBadges,
-      cards: updatedCards,
-      certificates: currentAch.certificates || {},
-    },
-  };
+  // Grant badge items if qualifying
+  const badgeItemsResult = grantBadgeItems(nextState);
+  nextState = badgeItemsResult.nextState;
 
   return {
     nextState,
-    newlyUnlockedBadges: newBadges,
-    newlyUnlockedCards: newCards,
+    newlyUnlockedBadges,
+    newlyUnlockedCards,
   };
 }
 
@@ -635,6 +741,24 @@ let globalState: PlayerState = (() => {
             quizProgress: parsed.quizProgress || DEFAULT_QUIZ_PROGRESS,
             aksiNyata: parsed.aksiNyata || DEFAULT_AKSI_NYATA,
             achievements: initialAchievements,
+            inventory: {
+              owned: {
+                ...DEFAULT_OWNED_ITEMS,
+                ...(parsed.inventory?.owned || {}),
+              },
+              equipped: {
+                character: {
+                  ...DEFAULT_INVENTORY.equipped.character,
+                  ...(parsed.inventory?.equipped?.character || {}),
+                },
+                ecobot: {
+                  ...DEFAULT_INVENTORY.equipped.ecobot,
+                  ...(parsed.inventory?.equipped?.ecobot || {}),
+                },
+                stiker: parsed.inventory?.equipped?.stiker,
+              },
+            },
+            toko: parsed.toko || DEFAULT_TOKO,
             simulatedDateOffsetDays: parsed.simulatedDateOffsetDays || 0,
             upgrades: { ...DEFAULT_UPGRADES, ...(parsed.upgrades || {}) },
             character: { ...DEFAULT_CHARACTER, ...(parsed.character || {}) },
@@ -2609,6 +2733,224 @@ export function usePlayerStore() {
     return { serial, issuedAt };
   };
 
+  // ==========================================
+  // TOKO & KUSTOMISASI ACTIONS
+  // ==========================================
+  const purchaseItem = (itemId: string) => {
+    const item = ALL_SHOP_ITEMS.find((it) => it.id === itemId);
+    if (!item) {
+      return { success: false, message: "Item tidak ditemukan." };
+    }
+
+    const currentInventory = state.inventory || DEFAULT_INVENTORY;
+    if (currentInventory.owned[itemId]) {
+      return { success: false, message: "Kamu sudah memiliki item ini!" };
+    }
+
+    if (item.syarat.tipe === "badge") {
+      return {
+        success: false,
+        message: "Item ini hanya bisa didapat dari lencana prestasi!",
+      };
+    }
+
+    if (item.syarat.tipe === "level") {
+      const levelReq = (item.syarat.nilai as number) || 1;
+      const playerLevel = calculateLevel(state.xp).level;
+      if (playerLevel < levelReq) {
+        return {
+          success: false,
+          message: `Capai Level ${levelReq} terlebih dahulu untuk membeli item ini!`,
+        };
+      }
+    }
+
+    if (state.points < item.harga) {
+      return {
+        success: false,
+        message: `Poinmu belum cukup. Kurang ${item.harga - state.points} poin lagi!`,
+      };
+    }
+
+    const dateKey = getLocalDateKey();
+    const purchasePrice = item.harga;
+
+    setPlayerState((prev) => {
+      // Idempotent double-check
+      const inv = prev.inventory || DEFAULT_INVENTORY;
+      if (inv.owned[itemId]) return prev;
+      if (prev.points < purchasePrice) return prev;
+
+      const newPoints = Math.max(0, prev.points - purchasePrice);
+      const newOwned = {
+        ...inv.owned,
+        [itemId]: { at: dateKey, source: "beli" as const },
+      };
+
+      const prevToko = prev.toko || DEFAULT_TOKO;
+      const newPurchases = [
+        { itemId, price: purchasePrice, at: dateKey },
+        ...prevToko.purchases,
+      ].slice(0, 50);
+
+      const newActivity: ActivityItem = {
+        id: "act-shop-" + itemId + "-" + Date.now(),
+        title: `Membeli ${item.nama}`,
+        description: `Menukar ${purchasePrice} poin di Toko Ecobot`,
+        timestamp: "Baru saja",
+        type: "action" as const,
+        xpEarned: 0,
+        pointsEarned: 0,
+      };
+
+      let next: PlayerState = {
+        ...prev,
+        points: newPoints,
+        inventory: {
+          ...inv,
+          owned: newOwned,
+        },
+        toko: {
+          totalSpent: prevToko.totalSpent + purchasePrice,
+          purchases: newPurchases,
+        },
+        stats: {
+          ...prev.stats,
+          totalPoinDibelanjakan:
+            (prev.stats.totalPoinDibelanjakan || 0) + purchasePrice,
+        },
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+      };
+
+      next = dispatchRecordEvent(next, "item_dibeli" as any);
+      return next;
+    });
+
+    return { success: true, message: `Berhasil membeli ${item.nama}!`, item };
+  };
+
+  const equipItem = (slot: string, itemId: string) => {
+    const item = ALL_SHOP_ITEMS.find((it) => it.id === itemId);
+    if (!item) return false;
+
+    const currentInventory = state.inventory || DEFAULT_INVENTORY;
+    if (!currentInventory.owned[itemId]) return false;
+
+    setPlayerState((prev) => {
+      const inv = prev.inventory || DEFAULT_INVENTORY;
+      const newEquipped = {
+        character: { ...inv.equipped.character },
+        ecobot: { ...inv.equipped.ecobot },
+        stiker: inv.equipped.stiker,
+      };
+
+      let newCharacter = { ...prev.character };
+
+      if (item.kategori === "karakter") {
+        if (item.sub === "topi") newEquipped.character.topi = itemId;
+        else if (item.sub === "kacamata") newEquipped.character.kacamata = itemId;
+        else if (item.sub === "aksesori") newEquipped.character.aksesori = itemId;
+        else if (item.sub === "warnaBaju") {
+          newEquipped.character.warnaBaju = itemId;
+          if (item.swatchHex) {
+            newCharacter.outfitColor = item.swatchHex;
+          }
+        }
+      } else if (item.kategori === "ecobot") {
+        if (item.sub === "topi") newEquipped.ecobot.topi = itemId;
+        else if (item.sub === "kacamata") newEquipped.ecobot.kacamata = itemId;
+        else if (item.sub === "aksesori") newEquipped.ecobot.aksesori = itemId;
+        else if (item.sub === "syal") newEquipped.ecobot.syal = itemId;
+        else if (item.sub === "warna") newEquipped.ecobot.warna = itemId;
+      } else if (item.kategori === "stiker") {
+        newEquipped.stiker = itemId;
+      }
+
+      let next: PlayerState = {
+        ...prev,
+        character: newCharacter,
+        inventory: {
+          ...inv,
+          equipped: newEquipped,
+        },
+      };
+
+      next = dispatchRecordEvent(next, "item_dipakai" as any);
+      return next;
+    });
+
+    return true;
+  };
+
+  const unequipItem = (
+    slot: string,
+    targetType: "character" | "ecobot" | "stiker" = "character"
+  ) => {
+    setPlayerState((prev) => {
+      const inv = prev.inventory || DEFAULT_INVENTORY;
+      const newEquipped = {
+        character: { ...inv.equipped.character },
+        ecobot: { ...inv.equipped.ecobot },
+        stiker: inv.equipped.stiker,
+      };
+
+      if (targetType === "character") {
+        if (slot === "topi") newEquipped.character.topi = undefined;
+        else if (slot === "kacamata") newEquipped.character.kacamata = undefined;
+        else if (slot === "aksesori") newEquipped.character.aksesori = undefined;
+      } else if (targetType === "ecobot") {
+        if (slot === "topi") newEquipped.ecobot.topi = undefined;
+        else if (slot === "kacamata") newEquipped.ecobot.kacamata = undefined;
+        else if (slot === "aksesori") newEquipped.ecobot.aksesori = undefined;
+        else if (slot === "syal") newEquipped.ecobot.syal = undefined;
+      } else if (targetType === "stiker") {
+        newEquipped.stiker = undefined;
+      }
+
+      return {
+        ...prev,
+        inventory: {
+          ...inv,
+          equipped: newEquipped,
+        },
+      };
+    });
+    return true;
+  };
+
+  const resetAppearance = () => {
+    setPlayerState((prev) => {
+      const inv = prev.inventory || DEFAULT_INVENTORY;
+      return {
+        ...prev,
+        character: {
+          ...prev.character,
+          outfitColor: "#38BDF8",
+          accessory: "none",
+        },
+        inventory: {
+          ...inv,
+          equipped: {
+            character: {
+              topi: undefined,
+              kacamata: undefined,
+              aksesori: undefined,
+              warnaBaju: "warna-baju-biru",
+            },
+            ecobot: {
+              topi: undefined,
+              kacamata: undefined,
+              aksesori: undefined,
+              syal: undefined,
+              warna: "ecobot-warna-biru",
+            },
+            stiker: undefined,
+          },
+        },
+      };
+    });
+  };
+
   return {
     state,
     setNickname,
@@ -2643,6 +2985,16 @@ export function usePlayerStore() {
     updateSettings,
     seedSampleData,
     resetData,
+    // Toko & Inventory Actions & Selectors
+    purchaseItem,
+    equipItem,
+    unequipItem,
+    resetAppearance,
+    getItemStatus: (itemId: string) => getItemStatus(itemId, state),
+    getShopItems: (cat?: string) => getShopItems(cat, state),
+    getEquipped: () => getEquipped(state),
+    getAffordableItems: () => getAffordableItems(state),
+    getNearestAffordable: () => getNearestAffordable(state),
     // Achievement Actions & Selectors
     markBadgeSeen,
     markCardSeen,
@@ -2806,4 +3158,175 @@ export function getCertificateStatus(state: PlayerState) {
       serial: certsState[cert.id]?.serial,
     };
   });
+}
+
+/**
+ * Toko & Inventory Standalone Pure Selectors
+ */
+export function getItemStatus(
+  itemId: string,
+  state: PlayerState
+): ItemStatusInfo {
+  const item = ALL_SHOP_ITEMS.find((it) => it.id === itemId);
+  if (!item) {
+    return {
+      status: "bisa_dibeli",
+      label: "Tidak diketahui",
+      canEquip: false,
+      canBuy: false,
+    };
+  }
+
+  const inventory = state.inventory || DEFAULT_INVENTORY;
+  const isOwned = !!inventory.owned[itemId];
+
+  // Check if equipped
+  let isEquipped = false;
+  if (item.kategori === "karakter") {
+    const slot = item.sub as keyof typeof inventory.equipped.character;
+    isEquipped = inventory.equipped.character[slot] === itemId;
+  } else if (item.kategori === "ecobot") {
+    const slot = item.sub as keyof typeof inventory.equipped.ecobot;
+    isEquipped = inventory.equipped.ecobot[slot] === itemId;
+  } else if (item.kategori === "stiker") {
+    isEquipped = inventory.equipped.stiker === itemId;
+  }
+
+  if (isEquipped) {
+    return {
+      status: "dipakai",
+      label: "Dipakai",
+      canEquip: false,
+      canBuy: false,
+    };
+  }
+
+  if (isOwned) {
+    return {
+      status: "dimiliki",
+      label: "Dimiliki",
+      canEquip: true,
+      canBuy: false,
+    };
+  }
+
+  // If not owned, check badge requirement
+  if (item.syarat.tipe === "badge") {
+    const badgeId = item.syarat.nilai as string;
+    const hasBadge =
+      state.achievements?.badges?.[badgeId] ||
+      state.badges?.some((b) => b.id === badgeId);
+
+    if (hasBadge) {
+      // If player already has badge, it will be granted on next sync
+      return {
+        status: "dimiliki",
+        label: "Siap Dipakai",
+        canEquip: true,
+        canBuy: false,
+      };
+    }
+
+    const badgeDef = BADGE_DEFINITIONS.find((b) => b.id === badgeId);
+    return {
+      status: "hadiah_badge",
+      label: `Hadiah Badge ${badgeDef?.nama || badgeId}`,
+      canEquip: false,
+      canBuy: false,
+      badgeRequiredName: badgeDef?.nama || badgeId,
+    };
+  }
+
+  // Check level requirement
+  if (item.syarat.tipe === "level") {
+    const levelReq = (item.syarat.nilai as number) || 1;
+    const playerLevel = calculateLevel(state.xp).level;
+    if (playerLevel < levelReq) {
+      return {
+        status: "terkunci_level",
+        label: `Capai Level ${levelReq}`,
+        canEquip: false,
+        canBuy: false,
+        levelRequired: levelReq,
+      };
+    }
+  }
+
+  // Check player points
+  if (state.points < item.harga) {
+    const diff = item.harga - state.points;
+    return {
+      status: "poin_kurang",
+      label: `Kurang ${diff} poin`,
+      canEquip: false,
+      canBuy: false,
+      pointsNeeded: diff,
+    };
+  }
+
+  return {
+    status: "bisa_dibeli",
+    label: "Bisa Dibeli",
+    canEquip: false,
+    canBuy: true,
+  };
+}
+
+export function getShopItems(categoryFilter?: string, state = globalState) {
+  let list = ALL_SHOP_ITEMS;
+  if (categoryFilter && categoryFilter !== "all" && categoryFilter !== "semua") {
+    list = list.filter((it) => it.kategori === categoryFilter);
+  }
+
+  return list.map((item) => ({
+    ...item,
+    statusInfo: getItemStatus(item.id, state),
+  }));
+}
+
+export function getEquipped(state: PlayerState): InventoryEquipped {
+  return (
+    state.inventory?.equipped || {
+      character: { ...DEFAULT_INVENTORY.equipped.character },
+      ecobot: { ...DEFAULT_INVENTORY.equipped.ecobot },
+      stiker: undefined,
+    }
+  );
+}
+
+export function getAffordableItems(state: PlayerState): ShopItemDefinition[] {
+  const inv = state.inventory || DEFAULT_INVENTORY;
+  return ALL_SHOP_ITEMS.filter((item) => {
+    if (inv.owned[item.id]) return false;
+    if (item.syarat.tipe === "badge") return false;
+    if (item.syarat.tipe === "level") {
+      const levelReq = (item.syarat.nilai as number) || 1;
+      if (calculateLevel(state.xp).level < levelReq) return false;
+    }
+    return state.points >= item.harga;
+  });
+}
+
+export function getNearestAffordable(
+  state: PlayerState
+): { item: ShopItemDefinition; diff: number } | null {
+  const inv = state.inventory || DEFAULT_INVENTORY;
+  const unowned = ALL_SHOP_ITEMS.filter((item) => {
+    if (inv.owned[item.id]) return false;
+    if (item.syarat.tipe === "badge") return false;
+    if (item.syarat.tipe === "level") {
+      const levelReq = (item.syarat.nilai as number) || 1;
+      if (calculateLevel(state.xp).level < levelReq) return false;
+    }
+    return state.points < item.harga;
+  });
+
+  if (unowned.length === 0) return null;
+
+  unowned.sort((a, b) => a.harga - b.harga);
+  const nearest = unowned[0];
+  return {
+    item: nearest,
+    diff: nearest.harga - state.points,
+  };
 }

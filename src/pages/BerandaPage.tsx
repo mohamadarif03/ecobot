@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { EcobotMascot } from "../components/ecobot/EcobotMascot";
+import { ItemArt } from "../data/toko/art";
 import { usePlayerStore } from "../store/playerStore";
 import { calculateLevel } from "../data/levels";
 import { getTodayFact } from "../data/facts";
@@ -140,7 +141,11 @@ export default function BerandaPage() {
         {/* Right Illustration & Ecobot Mascot */}
         <div className="pointer-events-none select-none">
           <div className="w-[140px] sm:w-[155px] h-[140px] sm:h-[155px] absolute -bottom-1 right-2 sm:right-6 z-10">
-            <EcobotMascot size="hero" className="w-full h-full" />
+            <EcobotMascot
+              size="hero"
+              equippedOverrides={state.inventory?.equipped?.ecobot}
+              className="w-full h-full"
+            />
           </div>
         </div>
       </section>
@@ -562,8 +567,21 @@ export default function BerandaPage() {
           <div className="bg-white rounded-[26px] p-5 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80 flex flex-col gap-4">
             {/* Header: Profil Pemain */}
             <div className="flex items-center gap-3.5 pb-2 border-b border-slate-100">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-400 to-sky-500 text-slate-950 flex items-center justify-center text-2xl shrink-0 shadow-2xs">
-                {state.avatar || "🤖"}
+              <div className="relative shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-400 to-sky-500 text-slate-950 flex items-center justify-center text-2xl shadow-2xs">
+                  {state.avatar || "🤖"}
+                </div>
+                {state.inventory?.equipped?.stiker && (
+                  <div
+                    className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white shadow-xs p-0.5 border border-sky-100 flex items-center justify-center"
+                    title={`Stiker: ${state.inventory.equipped.stiker}`}
+                  >
+                    <ItemArt
+                      itemId={state.inventory.equipped.stiker}
+                      className="w-full h-full"
+                    />
+                  </div>
+                )}
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
