@@ -22,17 +22,6 @@ export function PustakaPage() {
   );
 }
 
-export function PencapaianPage() {
-  return (
-    <PlaceholderPage
-      title="Pencapaian & Badge"
-      subtitle="Koleksi piala, badge kebersihan, dan kartu fakta unik"
-      icon={<Trophy className="w-10 h-10 text-amber-500" />}
-      moduleName="Koleksi Badge & Prestasi"
-      description="Buka seluruh badge petualang kota bersih dan unduh sertifikat kelulusan digitalmu setelah semua misi rampung."
-    />
-  );
-}
 
 export function TokoPage() {
   return (

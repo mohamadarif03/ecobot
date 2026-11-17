@@ -10,9 +10,9 @@ import SumberPage from "./pages/SumberPage";
 import KuisPage from "./pages/KuisPage";
 import KuisPlayerPage from "./pages/KuisPlayerPage";
 import AksiNyataPage from "./pages/AksiNyataPage";
+import PencapaianPage from "./pages/PencapaianPage";
 import {
   PustakaPage,
-  PencapaianPage,
   TokoPage,
   PapanPeringkatPage,
   PengaturanPage,

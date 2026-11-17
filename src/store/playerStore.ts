@@ -15,6 +15,7 @@ import type {
   AksiNyataState,
   ChallengeDayRecord,
   CalculatorHistoryItem,
+  AchievementsState,
 } from "../types/player.ts";
 import { DEFAULT_MISSIONS, ALL_BADGES, calculateLevel } from "../data/levels.ts";
 import { GAME_UPGRADES, type UpgradeId } from "../data/gameUpgrades.ts";
@@ -38,6 +39,18 @@ import { PUSTAKA_TOPICS } from "../data/pustaka/topics.ts";
 import { QUIZ_TOPICS } from "../data/kuis/topics.ts";
 import { CHALLENGE_TASKS } from "../data/aksiNyata/challenge.ts";
 import { getHabitLevel } from "../data/aksiNyata/calculator.ts";
+import { BADGE_DEFINITIONS } from "../data/pencapaian/badges.ts";
+import { FACT_CARDS } from "../data/pencapaian/factCards.ts";
+import { CERTIFICATE_DEFINITIONS } from "../data/pencapaian/certificates.ts";
+import type {
+  BadgeDefinition,
+  FactCardDefinition,
+} from "../data/pencapaian/types.ts";
+import {
+  evaluateAchievements,
+  calculateRadarScores,
+  generateCertificateSerial,
+} from "../game/achievements/engine.ts";
 
 const STORAGE_KEY = "ecobot_player_state_v1";
 
@@ -88,6 +101,12 @@ export const DEFAULT_AKSI_NYATA: AksiNyataState = {
     history: [],
   },
   ideas: {},
+};
+
+export const DEFAULT_ACHIEVEMENTS: AchievementsState = {
+  badges: {},
+  cards: {},
+  certificates: {},
 };
 
 /**
@@ -288,6 +307,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = (() => {
     contentProgress: {},
     quizProgress: DEFAULT_QUIZ_PROGRESS,
     aksiNyata: DEFAULT_AKSI_NYATA,
+    achievements: DEFAULT_ACHIEVEMENTS,
     simulatedDateOffsetDays: 0,
     badges: [],
     activityLog: [],
@@ -445,6 +465,18 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
       duelBest: 80,
     },
     aksiNyata: DEFAULT_AKSI_NYATA,
+    achievements: {
+      badges: {
+        "pemilah-cilik": { unlockedAt: "Hari ini", seen: true },
+        "si-teliti": { unlockedAt: "Kemarin", seen: true },
+        "pembaca-rajin": { unlockedAt: "2 hari lalu", seen: true },
+      },
+      cards: {
+        "card-misi-taman": { unlockedAt: "Hari ini", seen: true },
+        "card-organik-cepat": { unlockedAt: "Kemarin", seen: true },
+      },
+      certificates: {},
+    },
     simulatedDateOffsetDays: 0,
     badges: [
       { ...ALL_BADGES[0], unlockedAt: "Hari ini" },
@@ -473,6 +505,101 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
   };
 })();
 
+// =========================================================================
+// CENTRALIZED ACHIEVEMENTS ENGINE INTEGRATION
+// =========================================================================
+
+type AchievementToastListener = (badge: BadgeDefinition) => void;
+const achievementToastListeners = new Set<AchievementToastListener>();
+
+export function onNewAchievementUnlocked(listener: AchievementToastListener) {
+  achievementToastListeners.add(listener);
+  return () => {
+    achievementToastListeners.delete(listener);
+  };
+}
+
+export function syncAchievements(state: PlayerState): {
+  nextState: PlayerState;
+  newlyUnlockedBadges: BadgeDefinition[];
+  newlyUnlockedCards: FactCardDefinition[];
+} {
+  const { newBadges, newCards } = evaluateAchievements(state);
+  if (newBadges.length === 0 && newCards.length === 0) {
+    return { nextState: state, newlyUnlockedBadges: [], newlyUnlockedCards: [] };
+  }
+
+  const currentAch = state.achievements || DEFAULT_ACHIEVEMENTS;
+  const updatedBadges = { ...(currentAch.badges || {}) };
+  const updatedCards = { ...(currentAch.cards || {}) };
+  const newActivities: ActivityItem[] = [];
+  const legacyBadges = [...(state.badges || [])];
+
+  const dateStr = new Date().toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  newBadges.forEach((b) => {
+    updatedBadges[b.id] = {
+      unlockedAt: dateStr,
+      seen: false,
+    };
+
+    newActivities.push({
+      id: "act-badge-" + b.id + "-" + Date.now(),
+      title: `Meraih Badge: ${b.nama}`,
+      description: b.deskripsi,
+      timestamp: "Baru saja",
+      type: "badge",
+      xpEarned: 50,
+      pointsEarned: 25,
+    });
+
+    if (!legacyBadges.some((x) => x.id === b.id)) {
+      legacyBadges.push({
+        id: b.id,
+        name: b.nama,
+        description: b.deskripsi,
+        icon: b.ikon,
+        unlockedAt: "Baru saja",
+      });
+    }
+
+    // Trigger toast notification
+    if (typeof window !== "undefined") {
+      setTimeout(() => {
+        achievementToastListeners.forEach((fn) => fn(b));
+      }, 50);
+    }
+  });
+
+  newCards.forEach((c) => {
+    updatedCards[c.id] = {
+      unlockedAt: dateStr,
+      seen: false,
+    };
+  });
+
+  let nextState: PlayerState = {
+    ...state,
+    badges: legacyBadges,
+    activityLog: [...newActivities, ...state.activityLog].slice(0, 25),
+    achievements: {
+      badges: updatedBadges,
+      cards: updatedCards,
+      certificates: currentAch.certificates || {},
+    },
+  };
+
+  return {
+    nextState,
+    newlyUnlockedBadges: newBadges,
+    newlyUnlockedCards: newCards,
+  };
+}
+
 // Global in-memory cache to sync across components with safe migrations
 let globalState: PlayerState = (() => {
   try {
@@ -481,6 +608,23 @@ let globalState: PlayerState = (() => {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && typeof parsed === "object") {
+          // Safe migration for achievements
+          const legacyBadges = parsed.badges || [];
+          const initialAchievements: AchievementsState = parsed.achievements || {
+            badges: {},
+            cards: {},
+            certificates: {},
+          };
+
+          if (!parsed.achievements && legacyBadges.length > 0) {
+            legacyBadges.forEach((b: any) => {
+              initialAchievements.badges[b.id] = {
+                unlockedAt: b.unlockedAt || "Hari ini",
+                seen: true,
+              };
+            });
+          }
+
           const migrated = checkAndApplyResets({
             ...INITIAL_PLAYER_STATE,
             ...parsed,
@@ -490,20 +634,23 @@ let globalState: PlayerState = (() => {
             contentProgress: parsed.contentProgress || {},
             quizProgress: parsed.quizProgress || DEFAULT_QUIZ_PROGRESS,
             aksiNyata: parsed.aksiNyata || DEFAULT_AKSI_NYATA,
+            achievements: initialAchievements,
             simulatedDateOffsetDays: parsed.simulatedDateOffsetDays || 0,
             upgrades: { ...DEFAULT_UPGRADES, ...(parsed.upgrades || {}) },
             character: { ...DEFAULT_CHARACTER, ...(parsed.character || {}) },
             settings: { ...INITIAL_PLAYER_STATE.settings, ...(parsed.settings || {}) },
             stats: { ...INITIAL_PLAYER_STATE.stats, ...(parsed.stats || {}) },
           });
-          return migrated;
+
+          // Run sync achievements on loaded state
+          return syncAchievements(migrated).nextState;
         }
       }
     }
   } catch (e) {
     console.error("Failed to read from localStorage", e);
   }
-  return INITIAL_PLAYER_STATE;
+  return syncAchievements(INITIAL_PLAYER_STATE).nextState;
 })();
 
 const listeners = new Set<(state: PlayerState) => void>();
@@ -524,7 +671,9 @@ export function getPlayerState(): PlayerState {
 }
 
 export function setPlayerState(updater: (prev: PlayerState) => PlayerState) {
-  globalState = updater(globalState);
+  const updated = updater(globalState);
+  const { nextState } = syncAchievements(updated);
+  globalState = nextState;
   notify();
 }
 
@@ -1176,19 +1325,6 @@ export function usePlayerStore() {
         pointsEarned: pointsGain,
       };
 
-      // Check badge "Pembaca Rajin" (5 materi dibaca)
-      const badgesToGrant = [...prev.badges];
-      const newlyBadges: string[] = [];
-      const hasBadge = (id: string) => badgesToGrant.some((b) => b.id === id);
-
-      if (completedCount >= 5 && !hasBadge("pembaca-rajin")) {
-        const b = ALL_BADGES.find((x) => x.id === "pembaca-rajin");
-        if (b) {
-          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-          newlyBadges.push("pembaca-rajin");
-        }
-      }
-
       result = {
         success: true,
         xp: xpGain,
@@ -1197,7 +1333,7 @@ export function usePlayerStore() {
         oldLevel: oldLevelInfo.level,
         newLevel: newLevelInfo.level,
         newTitle: newLevelInfo.title,
-        unlockedBadges: newlyBadges,
+        unlockedBadges: [],
       };
 
       let nextState: PlayerState = {
@@ -1209,7 +1345,6 @@ export function usePlayerStore() {
           ...prev.stats,
           topicsRead: completedCount,
         },
-        badges: badgesToGrant,
         activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
       };
 
@@ -1360,19 +1495,6 @@ export function usePlayerStore() {
         pointsEarned: pointsGain,
       };
 
-      // Check badge "Si Pintar" (skor 100% pada 3 kuis)
-      const badgesToGrant = [...prev.badges];
-      const newlyBadges: string[] = [];
-      const hasBadge = (id: string) => badgesToGrant.some((b) => b.id === id);
-
-      if (newStats.perfectCount >= 3 && !hasBadge("si-pintar")) {
-        const b = ALL_BADGES.find((x) => x.id === "si-pintar");
-        if (b) {
-          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-          newlyBadges.push("si-pintar");
-        }
-      }
-
       result = {
         success: true,
         score: payload.score,
@@ -1388,7 +1510,7 @@ export function usePlayerStore() {
         oldLevel: oldLevelInfo.level,
         newLevel: newLevelInfo.level,
         newTitle: newLevelInfo.title,
-        newBadges: newlyBadges,
+        newBadges: [],
       };
 
       let nextState: PlayerState = {
@@ -1400,7 +1522,6 @@ export function usePlayerStore() {
           ...prev.stats,
           quizzesCompleted: newStats.totalQuizzes,
         },
-        badges: badgesToGrant,
         activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
       };
 
@@ -1512,16 +1633,6 @@ export function usePlayerStore() {
       const newLevelInfo = calculateLevel(newXp);
       const leveledUp = newLevelInfo.level > oldLevelInfo.level;
 
-      // Badges
-      const badgesToGrant = [...prev.badges];
-      if (isLastDay && !badgesToGrant.some((b) => b.id === "pahlawan-nyata")) {
-        const badgeDef = ALL_BADGES.find((b) => b.id === "pahlawan-nyata");
-        if (badgeDef) {
-          badgesToGrant.push({ ...badgeDef, unlockedAt: "Hari ini" });
-          badgeGranted = true;
-        }
-      }
-
       const updatedDays: Record<number, ChallengeDayRecord> = {
         ...currentChallenge.days,
         [nextDay]: {
@@ -1551,7 +1662,7 @@ export function usePlayerStore() {
         xpEarned: totalXpGain,
         pointsEarned: totalPointsGain,
         completed: isLastDay,
-        badgeUnlocked: badgeGranted,
+        badgeUnlocked: isLastDay,
         leveledUp,
         newLevel: newLevelInfo.level,
         newTitle: newLevelInfo.title,
@@ -1561,7 +1672,6 @@ export function usePlayerStore() {
         ...prev,
         xp: newXp,
         points: newPoints,
-        badges: badgesToGrant,
         activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
         aksiNyata: {
           ...currentAn,
@@ -2214,48 +2324,7 @@ export function usePlayerStore() {
 
       const newCityMeter = calculateCityCleanlinessMeter(updatedMissions);
 
-      const badgesToGrant: typeof prev.badges = [];
-      const hasBadge = (id: string) => prev.badges.some((b) => b.id === id);
-
-      if (result.missionId === 1 && !hasBadge("pemilah-cilik")) {
-        const b = ALL_BADGES.find((x) => x.id === "pemilah-cilik");
-        if (b) {
-          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-          newlyUnlockedBadgeIds.push("pemilah-cilik");
-        }
-      }
-
-      if (result.accuracy >= 90 && !hasBadge("si-teliti")) {
-        const b = ALL_BADGES.find((x) => x.id === "si-teliti");
-        if (b) {
-          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-          newlyUnlockedBadgeIds.push("si-teliti");
-        }
-      }
-
-      if (result.missionId === 3 && !hasBadge("penjaga-sungai")) {
-        const b = ALL_BADGES.find((x) => x.id === "penjaga-sungai");
-        if (b) {
-          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-          newlyUnlockedBadgeIds.push("penjaga-sungai");
-        }
-      }
-
-      if (newCityMeter >= 100 && !hasBadge("kota-bersih")) {
-        const b = ALL_BADGES.find((x) => x.id === "kota-bersih");
-        if (b) {
-          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-          newlyUnlockedBadgeIds.push("kota-bersih");
-        }
-      }
-
-      if (result.missionId === 6 && result.accuracy >= 85 && !hasBadge("raja-combo")) {
-        const b = ALL_BADGES.find((x) => x.id === "raja-combo");
-        if (b) {
-          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-          newlyUnlockedBadgeIds.push("raja-combo");
-        }
-      }
+      const newlyUnlockedBadgeIds: string[] = [];
 
       const newActivity: ActivityItem = {
         id: "act-" + Date.now(),
@@ -2284,7 +2353,7 @@ export function usePlayerStore() {
         points: prev.points + pointsGain,
         missionProgress: updatedMissions,
         cityCleanlinessMeter: newCityMeter,
-        badges: [...badgesToGrant, ...prev.badges],
+        badges: prev.badges,
         stats: {
           ...prev.stats,
           trashSorted: newTotalSorted,
@@ -2425,6 +2494,121 @@ export function usePlayerStore() {
     setPlayerState(() => INITIAL_PLAYER_STATE);
   };
 
+  const markBadgeSeen = (badgeId: string) => {
+    setPlayerState((prev) => {
+      if (!prev.achievements?.badges?.[badgeId]) return prev;
+      if (prev.achievements.badges[badgeId].seen) return prev;
+      return {
+        ...prev,
+        achievements: {
+          ...prev.achievements,
+          badges: {
+            ...prev.achievements.badges,
+            [badgeId]: {
+              ...prev.achievements.badges[badgeId],
+              seen: true,
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const markCardSeen = (cardId: string) => {
+    setPlayerState((prev) => {
+      if (!prev.achievements?.cards?.[cardId]) return prev;
+      if (prev.achievements.cards[cardId].seen) return prev;
+      return {
+        ...prev,
+        achievements: {
+          ...prev.achievements,
+          cards: {
+            ...prev.achievements.cards,
+            [cardId]: {
+              ...prev.achievements.cards[cardId],
+              seen: true,
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const markAllSeen = () => {
+    setPlayerState((prev) => {
+      if (!prev.achievements) return prev;
+      const newBadges = { ...prev.achievements.badges };
+      let changed = false;
+      for (const k in newBadges) {
+        if (!newBadges[k].seen) {
+          newBadges[k] = { ...newBadges[k], seen: true };
+          changed = true;
+        }
+      }
+      const newCards = { ...prev.achievements.cards };
+      for (const k in newCards) {
+        if (!newCards[k].seen) {
+          newCards[k] = { ...newCards[k], seen: true };
+          changed = true;
+        }
+      }
+      if (!changed) return prev;
+      return {
+        ...prev,
+        achievements: {
+          ...prev.achievements,
+          badges: newBadges,
+          cards: newCards,
+        },
+      };
+    });
+  };
+
+  const issueCertificate = (certId: string) => {
+    const certDef = CERTIFICATE_DEFINITIONS.find((c) => c.id === certId);
+    if (!certDef) return null;
+
+    if (state.achievements?.certificates?.[certId]) {
+      return state.achievements.certificates[certId];
+    }
+
+    if (!certDef.cek(state)) {
+      return null;
+    }
+
+    const serial = generateCertificateSerial(certId);
+    const issuedAt = new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+    setPlayerState((prev) => ({
+      ...prev,
+      achievements: {
+        ...(prev.achievements || DEFAULT_ACHIEVEMENTS),
+        certificates: {
+          ...(prev.achievements?.certificates || {}),
+          [certId]: { issuedAt, serial },
+        },
+      },
+      activityLog: [
+        {
+          id: "act-" + Date.now(),
+          title: `Menerima Sertifikat ${certDef.judul}`,
+          description: `Nomor seri ${serial}`,
+          timestamp: "Baru saja",
+          type: "badge" as const,
+          xpEarned: 0,
+          pointsEarned: 0,
+        },
+        ...prev.activityLog,
+      ].slice(0, 25),
+    }));
+
+    return { serial, issuedAt };
+  };
+
   return {
     state,
     setNickname,
@@ -2459,5 +2643,167 @@ export function usePlayerStore() {
     updateSettings,
     seedSampleData,
     resetData,
+    // Achievement Actions & Selectors
+    markBadgeSeen,
+    markCardSeen,
+    markAllSeen,
+    issueCertificate,
+    getBadgeList: () => getBadgeList(state),
+    getFactCardList: () => getFactCardList(state),
+    getNewAchievementCount: () => getNewAchievementCount(state),
+    getRecentBadges: (limit?: number) => getRecentBadges(state, limit),
+    getNearBadges: (limit?: number) => getNearBadges(state, limit),
+    getStatsSummary: () => getStatsSummary(state),
+    getRadarScores: () => getRadarScores(state),
+    getCertificateStatus: () => getCertificateStatus(state),
   };
+}
+
+/**
+ * Standalone selectors for achievements & stats
+ */
+export function getBadgeList(state: PlayerState) {
+  const badgeState = state.achievements?.badges || {};
+  return BADGE_DEFINITIONS.map((def) => {
+    const unlockedRecord =
+      badgeState[def.id] ||
+      (state.badges?.some((b) => b.id === def.id)
+        ? { unlockedAt: "Telah didapat", seen: true }
+        : undefined);
+    const unlocked = !!unlockedRecord;
+    const progress =
+      def.target && def.ambilProgres
+        ? Math.min(def.target, def.ambilProgres(state))
+        : unlocked
+        ? def.target || 1
+        : 0;
+    return {
+      ...def,
+      unlocked,
+      unlockedAt: unlockedRecord?.unlockedAt,
+      seen: unlockedRecord ? unlockedRecord.seen : true,
+      currentProgress: progress,
+    };
+  });
+}
+
+export function getFactCardList(state: PlayerState) {
+  const cardState = state.achievements?.cards || {};
+  return FACT_CARDS.map((card) => {
+    const record = cardState[card.id];
+    return {
+      ...card,
+      unlocked: !!record,
+      unlockedAt: record?.unlockedAt,
+      seen: record ? record.seen : true,
+    };
+  });
+}
+
+export function getNewAchievementCount(state: PlayerState): number {
+  const badgeState = state.achievements?.badges || {};
+  const cardState = state.achievements?.cards || {};
+
+  let count = 0;
+  for (const key in badgeState) {
+    if (!badgeState[key].seen) count++;
+  }
+  for (const key in cardState) {
+    if (!cardState[key].seen) count++;
+  }
+  return count;
+}
+
+export function getRecentBadges(state: PlayerState, limit = 3) {
+  const list = getBadgeList(state).filter((b) => b.unlocked);
+  return list.slice(-limit).reverse();
+}
+
+export function getNearBadges(state: PlayerState, limit = 2) {
+  const list = getBadgeList(state)
+    .filter((b) => !b.unlocked && b.available && b.target && b.target > 0)
+    .map((b) => ({
+      ...b,
+      percent: Math.round(((b.currentProgress || 0) / (b.target || 1)) * 100),
+    }))
+    .sort((a, b) => b.percent - a.percent);
+  return list.slice(0, limit);
+}
+
+export function getStatsSummary(state: PlayerState) {
+  const totalSorted = state.stats?.trashSorted || 0;
+  const accuracy = state.stats?.sortingAccuracy || 0;
+  const totalStars = (state.missionProgress || []).reduce(
+    (acc, m) => acc + (m.stars || 0),
+    0
+  );
+  const cityMeter = state.cityCleanlinessMeter || 0;
+
+  const completedTopics = Object.values(state.contentProgress || {}).filter(
+    (c) => c.completed
+  ).length;
+  const totalCardsRead = Object.values(state.contentProgress || {}).reduce(
+    (acc, c) => acc + (c.viewedCards?.length || 0),
+    0
+  );
+
+  const totalQuizzes = state.quizProgress?.stats?.totalQuizzes || 0;
+  const totalCorrect = state.quizProgress?.stats?.totalCorrect || 0;
+  const totalAnswered = state.quizProgress?.stats?.totalAnswered || 0;
+  const quizAccuracy =
+    totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0;
+  const perfectQuizzes = state.quizProgress?.stats?.perfectCount || 0;
+
+  const challengeDaysCount = Object.keys(
+    state.aksiNyata?.challenge?.current?.days || {}
+  ).length;
+  const ideasTriedCount = Object.values(state.aksiNyata?.ideas || {}).filter(
+    (i) => i.tried
+  ).length;
+
+  const streak = state.streak || 0;
+  const longestStreak = (state.stats as any)?.streakTerpanjang || streak;
+  const activeDays = state.activeDays?.length || 1;
+  const points = state.points || 0;
+
+  return {
+    trashSorted: totalSorted,
+    sortingAccuracy: accuracy,
+    starsEarned: totalStars,
+    cityMeter,
+    completedTopics,
+    cardsRead: totalCardsRead,
+    totalQuizzes,
+    quizCorrect: totalCorrect,
+    quizAccuracy,
+    perfectQuizzes,
+    challengeDays: challengeDaysCount,
+    ideasTried: ideasTriedCount,
+    streak,
+    longestStreak,
+    activeDays,
+    points,
+  };
+}
+
+export function getRadarScores(state: PlayerState) {
+  return calculateRadarScores(state);
+}
+
+export function getCertificateStatus(state: PlayerState) {
+  const certsState = state.achievements?.certificates || {};
+  return CERTIFICATE_DEFINITIONS.map((cert) => {
+    const isIssued = !!certsState[cert.id];
+    const isEligible = cert.cek(state);
+    return {
+      ...cert,
+      status: isIssued
+        ? ("issued" as const)
+        : isEligible
+        ? ("eligible" as const)
+        : ("locked" as const),
+      issuedAt: certsState[cert.id]?.issuedAt,
+      serial: certsState[cert.id]?.serial,
+    };
+  });
 }

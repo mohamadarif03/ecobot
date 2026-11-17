@@ -64,6 +64,11 @@ export interface PlayerStats {
   sortingAccuracy: number;
   topicsRead: number;
   quizzesCompleted: number;
+  totalSortedCorrect?: number;
+  totalSortedAll?: number;
+  streakTerpanjang?: number;
+  comboTertinggi?: number;
+  hariAktif?: string[];
 }
 
 export interface MissionState {
@@ -185,6 +190,12 @@ export interface AksiNyataState {
   ideas: Record<string, { tried: boolean; at: string }>;
 }
 
+export interface AchievementsState {
+  badges: Record<string, { unlockedAt: string; seen: boolean }>;
+  cards: Record<string, { unlockedAt: string; seen: boolean }>;
+  certificates: Record<string, { issuedAt: string; serial: string }>;
+}
+
 export interface PlayerState {
   nickname: string;
   avatar: string; // avatar identifier
@@ -204,6 +215,7 @@ export interface PlayerState {
   contentProgress: Record<string, TopicReadingProgress>;
   quizProgress: QuizProgress;
   aksiNyata?: AksiNyataState;
+  achievements?: AchievementsState;
   simulatedDateOffsetDays?: number;
   badges: Badge[];
   activityLog: ActivityItem[];

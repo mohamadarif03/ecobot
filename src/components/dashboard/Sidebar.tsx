@@ -15,6 +15,7 @@ import {
   usePlayerStore,
   selectClaimableCount,
   getChallengeStatus,
+  getNewAchievementCount,
 } from "../../store/playerStore";
 import { calculateLevel } from "../../data/levels";
 import { EcobotMascot } from "../ecobot/EcobotMascot";
@@ -30,9 +31,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false }) => {
   const { state } = usePlayerStore();
   const levelInfo = calculateLevel(state.xp);
 
-  // Calculate badges for groups (single source of truth: all claimable missions and chests)
+  // Calculate badges for groups (single source of truth: all claimable missions and achievements)
   const claimableMissionsCount = selectClaimableCount(state);
-  const newBadgesCount = state.badges.length;
+  const newBadgesCount = getNewAchievementCount(state);
   const challengeStatus = getChallengeStatus(state);
 
   // Track accordion open state per group - only open the group that owns the active route.

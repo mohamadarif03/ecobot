@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Bell, HelpCircle, PanelLeft, Sparkles, RotateCcw } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { MobileBottomNav } from "./MobileBottomNav";
-import { usePlayerStore } from "../../store/playerStore";
+import { usePlayerStore, onNewAchievementUnlocked } from "../../store/playerStore";
 
 interface DashboardLayoutProps {
   title: string;
@@ -24,8 +24,17 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
-    setTimeout(() => setToastMsg(null), 2500);
+    setTimeout(() => setToastMsg(null), 3500);
   };
+
+  useEffect(() => {
+    const unsubscribe = onNewAchievementUnlocked((badge) => {
+      triggerToast(
+        `🏆 Lencana Baru: ${badge.nama}! Ecobot bangga padamu!`
+      );
+    });
+    return unsubscribe;
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#EBF5FD] text-slate-800 font-sans p-3 sm:p-5 flex gap-4 lg:gap-5 relative overflow-x-hidden">

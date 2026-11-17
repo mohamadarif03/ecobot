@@ -28,7 +28,22 @@ import {
   getAksiSummary,
   isCalculatorRewardAvailable,
   getEffectiveDateKey,
+  getBadgeList,
+  getFactCardList,
+  getNewAchievementCount,
+  getRecentBadges,
+  getNearBadges,
+  getStatsSummary,
+  getCertificateStatus,
 } from "./playerStore.ts";
+import { BADGE_DEFINITIONS } from "../data/pencapaian/badges.ts";
+import { FACT_CARDS } from "../data/pencapaian/factCards.ts";
+import { CERTIFICATE_DEFINITIONS } from "../data/pencapaian/certificates.ts";
+import {
+  evaluateAchievements,
+  calculateRadarScores,
+  generateCertificateSerial,
+} from "../game/achievements/engine.ts";
 import {
   ALL_QUIZ_QUESTIONS,
   getDailyQuizQuestions,
@@ -469,5 +484,148 @@ describe("Aksi Nyata & Eco-Habits System (PRD 6.6)", () => {
     assert.equal(isCalculatorRewardAvailable(claimedState), false);
   });
 });
+
+describe("Centralized Achievements & Prestasi System", () => {
+  test("BADGE_DEFINITIONS has exactly 12 badges across 4 categories", () => {
+    assert.equal(BADGE_DEFINITIONS.length, 12);
+    const categories = new Set(BADGE_DEFINITIONS.map((b) => b.kategori));
+    assert.ok(categories.has("game"));
+    assert.ok(categories.has("belajar"));
+    assert.ok(categories.has("kebiasaan"));
+    assert.ok(categories.has("spesial"));
+
+    // Check prerequisites for each badge definition
+    BADGE_DEFINITIONS.forEach((b) => {
+      assert.ok(b.id);
+      assert.ok(b.nama);
+      assert.ok(b.deskripsi);
+      assert.ok(b.syaratTeks);
+      assert.ok(b.pesanEcobot);
+      assert.equal(typeof b.ambilProgres, "function");
+      assert.equal(typeof b.cek, "function");
+    });
+  });
+
+  test("FACT_CARDS has exactly 18 cards with 12 umum, 4 langka, and 2 epik", () => {
+    assert.equal(FACT_CARDS.length, 18);
+    const umum = FACT_CARDS.filter((c) => c.kelangkaan === "umum");
+    const langka = FACT_CARDS.filter((c) => c.kelangkaan === "langka");
+    const epik = FACT_CARDS.filter((c) => c.kelangkaan === "epik");
+
+    assert.equal(umum.length, 12);
+    assert.equal(langka.length, 4);
+    assert.equal(epik.length, 2);
+
+    FACT_CARDS.forEach((c) => {
+      assert.ok(c.id);
+      assert.ok(c.judul);
+      assert.ok(c.fakta);
+      assert.ok(c.sumberMateri);
+      assert.equal(typeof c.cek, "function");
+    });
+  });
+
+  test("CERTIFICATE_DEFINITIONS has exactly 3 tiers and serial generator works", () => {
+    assert.equal(CERTIFICATE_DEFINITIONS.length, 3);
+    const tiers = CERTIFICATE_DEFINITIONS.map((c) => c.tier);
+    assert.ok(tiers.includes("perunggu"));
+    assert.ok(tiers.includes("perak"));
+    assert.ok(tiers.includes("emas"));
+
+    const serial = generateCertificateSerial("cert-perunggu", 2026);
+    assert.match(serial, /^ECO-2026-[A-Z0-9]{4}$/);
+  });
+
+  test("evaluateAchievements evaluates newly qualified badges and cards accurately", () => {
+    // Initial state: Level 1, 0 missions, 0 topics -> no badges
+    const initial = { ...INITIAL_PLAYER_STATE };
+    const res1 = evaluateAchievements(initial);
+    assert.equal(res1.newBadges.length, 0);
+
+    // State with Mission 1 completed -> qualifies for "pemilah-cilik"
+    const withM1 = {
+      ...initial,
+      missionProgress: initial.missionProgress.map((m) =>
+        m.missionId === 1 ? { ...m, status: "completed" as const, stars: 2, accuracy: 80 } : m
+      ),
+    };
+    const res2 = evaluateAchievements(withM1);
+    const hasPemilahCilik = res2.newBadges.some((b) => b.id === "pemilah-cilik");
+    assert.ok(hasPemilahCilik, "Misi 1 selesai harus membuka badge pemilah-cilik");
+
+    // Once already marked in achievements.badges, it shouldn't be returned again (idempotent)
+    const alreadySaved = {
+      ...withM1,
+      achievements: {
+        badges: { "pemilah-cilik": { unlockedAt: "2026-11-17", seen: true } },
+        cards: {},
+        certificates: {},
+      },
+    };
+    const res3 = evaluateAchievements(alreadySaved);
+    assert.equal(res3.newBadges.some((b) => b.id === "pemilah-cilik"), false);
+  });
+
+  test("calculateRadarScores clamps scores 0-100 without NaN and picks lowest pillar", () => {
+    const emptyState = { ...INITIAL_PLAYER_STATE };
+    const radar = calculateRadarScores(emptyState);
+
+    assert.equal(typeof radar.memilah, "number");
+    assert.equal(typeof radar.pengetahuan, "number");
+    assert.equal(typeof radar.aksiNyata, "number");
+    assert.equal(typeof radar.konsistensi, "number");
+
+    assert.ok(!isNaN(radar.memilah));
+    assert.ok(!isNaN(radar.pengetahuan));
+    assert.ok(!isNaN(radar.aksiNyata));
+    assert.ok(!isNaN(radar.konsistensi));
+
+    assert.ok(radar.memilah >= 0 && radar.memilah <= 100);
+    assert.ok(radar.pengetahuan >= 0 && radar.pengetahuan <= 100);
+    assert.ok(radar.aksiNyata >= 0 && radar.aksiNyata <= 100);
+    assert.ok(radar.konsistensi >= 0 && radar.konsistensi <= 100);
+
+    assert.ok(radar.terendah);
+    assert.ok(radar.saranEcobot.length > 5);
+    assert.ok(radar.tautanSaran.startsWith("/"));
+  });
+
+  test("getNewAchievementCount accurately counts unseen badges and cards", () => {
+    const testState = {
+      ...INITIAL_PLAYER_STATE,
+      achievements: {
+        badges: {
+          "pemilah-cilik": { unlockedAt: "2026-11-17", seen: false },
+          "si-teliti": { unlockedAt: "2026-11-17", seen: true },
+        },
+        cards: {
+          "card-organik-cepat": { unlockedAt: "2026-11-17", seen: false },
+        },
+        certificates: {},
+      },
+    };
+
+    assert.equal(getNewAchievementCount(testState), 2);
+  });
+
+  test("getStatsSummary compiles 14 metrics without NaN", () => {
+    const summary = getStatsSummary(INITIAL_PLAYER_STATE);
+    assert.equal(typeof summary.trashSorted, "number");
+    assert.equal(typeof summary.sortingAccuracy, "number");
+    assert.equal(typeof summary.starsEarned, "number");
+    assert.equal(typeof summary.cityMeter, "number");
+    assert.equal(typeof summary.completedTopics, "number");
+    assert.equal(typeof summary.cardsRead, "number");
+    assert.equal(typeof summary.totalQuizzes, "number");
+    assert.equal(typeof summary.quizCorrect, "number");
+    assert.equal(typeof summary.quizAccuracy, "number");
+    assert.equal(typeof summary.perfectQuizzes, "number");
+    assert.equal(typeof summary.challengeDays, "number");
+    assert.equal(typeof summary.ideasTried, "number");
+    assert.equal(typeof summary.streak, "number");
+    assert.equal(typeof summary.points, "number");
+  });
+});
+
 
 
