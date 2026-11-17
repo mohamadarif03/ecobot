@@ -20,7 +20,17 @@ import {
   selectClaimableCount,
   getMissionsWithStatus,
   INITIAL_PLAYER_STATE,
+  DEFAULT_QUIZ_PROGRESS,
+  getTodayQuizStatus,
+  getQuizSummary,
 } from "./playerStore.ts";
+import {
+  ALL_QUIZ_QUESTIONS,
+  getDailyQuizQuestions,
+  getTopicQuizQuestions,
+  validateQuizQuestions,
+} from "../data/kuis/questions.ts";
+import { QUIZ_TOPICS } from "../data/kuis/topics.ts";
 import type { MissionProgress } from "../types/player.ts";
 
 describe("Player Gamification Logic", () => {
@@ -238,3 +248,76 @@ describe("Missions System & Reset Logic (PRD 6.3)", () => {
     assert.equal(utama.length, 8);
   });
 });
+
+describe("Quiz Center & Question Bank (PRD KQ)", () => {
+  test("validateQuizQuestions returns 0 violations on all 48 questions", () => {
+    const report = validateQuizQuestions();
+    assert.equal(report.passed, true, `Validation failed: ${JSON.stringify(report.violations)}`);
+    assert.equal(report.violations.length, 0);
+    assert.equal(ALL_QUIZ_QUESTIONS.length, 48);
+  });
+
+  test("each of the 6 topics has exactly 8 questions matching slug", () => {
+    assert.equal(QUIZ_TOPICS.length, 6);
+    QUIZ_TOPICS.forEach((topic) => {
+      const q = ALL_QUIZ_QUESTIONS.filter((item) => item.topikId === topic.id);
+      assert.equal(q.length, 8, `Topic ${topic.id} does not have 8 questions`);
+      q.forEach((item) => {
+        assert.equal(item.materiSlug, topic.slug);
+      });
+    });
+  });
+
+  test("getDailyQuizQuestions is deterministic for a given dateKey", () => {
+    const q1 = getDailyQuizQuestions("2026-11-17");
+    const q2 = getDailyQuizQuestions("2026-11-17");
+    assert.equal(q1.length, 5);
+    assert.equal(q2.length, 5);
+    assert.deepEqual(
+      q1.map((item) => item.id),
+      q2.map((item) => item.id)
+    );
+
+    // Has 3 easy and 2 medium questions
+    const easyCount = q1.filter((item) => item.tingkat === "mudah").length;
+    const medCount = q1.filter((item) => item.tingkat === "sedang").length;
+    assert.equal(easyCount, 3);
+    assert.equal(medCount, 2);
+  });
+
+  test("getTopicQuizQuestions returns requested count of questions", () => {
+    const questions = getTopicQuizQuestions("quiz-jenis-sampah", 5);
+    assert.equal(questions.length, 5);
+    questions.forEach((q) => {
+      assert.equal(q.topikId, "quiz-jenis-sampah");
+    });
+  });
+
+  test("getTodayQuizStatus correctly reflects initial and completed state", () => {
+    const state = {
+      ...INITIAL_PLAYER_STATE,
+      quizProgress: { ...DEFAULT_QUIZ_PROGRESS },
+    };
+    const status = getTodayQuizStatus(state);
+    assert.equal(status.completed, false);
+    assert.equal(status.score, 0);
+
+    const completedState = {
+      ...state,
+      quizProgress: {
+        ...DEFAULT_QUIZ_PROGRESS,
+        harian: {
+          dateKey: status.dateKey,
+          completed: true,
+          score: 5,
+          total: 5,
+          stars: 3,
+        },
+      },
+    };
+    const updatedStatus = getTodayQuizStatus(completedState);
+    assert.equal(updatedStatus.completed, true);
+    assert.equal(updatedStatus.score, 5);
+  });
+});
+

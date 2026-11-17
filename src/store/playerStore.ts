@@ -9,6 +9,9 @@ import type {
   ClaimHistoryItem,
   UniqueEventSets,
   DailyMission,
+  TopicReadingProgress,
+  QuizProgress,
+  QuizHistoryItem,
 } from "../types/player.ts";
 import { DEFAULT_MISSIONS, ALL_BADGES, calculateLevel } from "../data/levels.ts";
 import { GAME_UPGRADES, type UpgradeId } from "../data/gameUpgrades.ts";
@@ -28,6 +31,8 @@ import {
   getLocalDateKey,
   getLocalWeekKey,
 } from "../data/missions.ts";
+import { PUSTAKA_TOPICS } from "../data/pustaka/topics.ts";
+import { QUIZ_TOPICS } from "../data/kuis/topics.ts";
 
 const STORAGE_KEY = "ecobot_player_state_v1";
 
@@ -41,6 +46,25 @@ export const DEFAULT_CHARACTER: CharacterCustomization = {
   skin: "adventurer",
   outfitColor: "#38BDF8",
   accessory: "none",
+};
+
+export const DEFAULT_QUIZ_PROGRESS: QuizProgress = {
+  harian: {
+    dateKey: getLocalDateKey(),
+    completed: false,
+    score: 0,
+    total: 5,
+    stars: 0,
+  },
+  topik: {},
+  history: [],
+  stats: {
+    totalQuizzes: 0,
+    totalCorrect: 0,
+    totalAnswered: 0,
+    perfectCount: 0,
+  },
+  duelBest: 0,
 };
 
 /**
@@ -169,17 +193,46 @@ export function checkAndApplyResets(prev: PlayerState, currentDate = new Date())
     };
   }
 
+  // Quiz daily reset
+  const currentQuizProgress = prev.quizProgress || DEFAULT_QUIZ_PROGRESS;
+  let newQuizHarian = currentQuizProgress.harian;
+  if (!newQuizHarian || newQuizHarian.dateKey !== currentDateKey) {
+    needsUpdate = true;
+    newQuizHarian = {
+      dateKey: currentDateKey,
+      completed: false,
+      score: 0,
+      total: 5,
+      stars: 0,
+    };
+  }
+
   const updatedMissionState: MissionState = {
     harian: newHarian,
     mingguan: newMingguan,
     utama: currentMissionState.utama || { progress: {}, claimed: {} },
   };
 
-  if (needsUpdate || !prev.missionState) {
+  const updatedQuizProgress: QuizProgress = {
+    ...currentQuizProgress,
+    harian: newQuizHarian,
+    topik: currentQuizProgress.topik || {},
+    history: currentQuizProgress.history || [],
+    stats: currentQuizProgress.stats || {
+      totalQuizzes: 0,
+      totalCorrect: 0,
+      totalAnswered: 0,
+      perfectCount: 0,
+    },
+  };
+
+  if (needsUpdate || !prev.missionState || !prev.quizProgress) {
     return {
       ...prev,
       missionState: updatedMissionState,
       dailyMissions: syncDailyMissionsArray(updatedMissionState),
+      quizProgress: updatedQuizProgress,
+      contentProgress: prev.contentProgress || {},
       uniqueSets: prev.uniqueSets || { topicsRead: [], perfectQuizzes: [] },
       claimHistory: prev.claimHistory || [],
     };
@@ -209,6 +262,8 @@ export const INITIAL_PLAYER_STATE: PlayerState = (() => {
       topicsRead: [],
       perfectQuizzes: [],
     },
+    contentProgress: {},
+    quizProgress: DEFAULT_QUIZ_PROGRESS,
     simulatedDateOffsetDays: 0,
     badges: [],
     activityLog: [],
@@ -291,8 +346,79 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
       },
     ],
     uniqueSets: {
-      topicsRead: ["sampah-organik", "daur-ulang-plastik", "kompos-rumah"],
-      perfectQuizzes: ["kuis-topik-1"],
+      topicsRead: ["jenis-sampah", "cara-memilah", "daur-ulang"],
+      perfectQuizzes: ["quiz-jenis-sampah"],
+    },
+    contentProgress: {
+      "jenis-sampah": {
+        cardIndex: 7,
+        viewedCards: ["js-1", "js-2", "js-3", "js-4", "js-5", "js-6", "js-7", "js-8"],
+        completed: true,
+        completedAt: "Hari ini",
+        rewardClaimed: true,
+      },
+      "cara-memilah": {
+        cardIndex: 3,
+        viewedCards: ["cm-1", "cm-2", "cm-3", "cm-4"],
+        completed: false,
+      },
+    },
+    quizProgress: {
+      harian: {
+        dateKey: getLocalDateKey(),
+        completed: true,
+        score: 4,
+        total: 5,
+        stars: 2,
+      },
+      topik: {
+        "quiz-jenis-sampah": {
+          bestScore: 5,
+          bestStars: 3,
+          attempts: 2,
+          firstCompleted: true,
+          perfectClaimed: true,
+        },
+        "quiz-cara-memilah": {
+          bestScore: 4,
+          bestStars: 2,
+          attempts: 1,
+          firstCompleted: true,
+          perfectClaimed: false,
+        },
+      },
+      history: [
+        {
+          id: "qh-sample-1",
+          mode: "harian",
+          topicTitle: "Kuis Harian",
+          score: 4,
+          total: 5,
+          stars: 2,
+          xpEarned: 40,
+          pointsEarned: 15,
+          at: "Hari ini",
+        },
+        {
+          id: "qh-sample-2",
+          mode: "topik",
+          topikId: "quiz-jenis-sampah",
+          topicTitle: "Kenalan dengan Jenis Sampah",
+          score: 5,
+          total: 5,
+          stars: 3,
+          xpEarned: 40,
+          pointsEarned: 10,
+          at: "Kemarin",
+        },
+      ],
+      stats: {
+        totalQuizzes: 3,
+        totalCorrect: 13,
+        totalAnswered: 15,
+        perfectCount: 1,
+      },
+      duelBest: 80,
     },
     simulatedDateOffsetDays: 0,
     badges: [
@@ -336,6 +462,8 @@ let globalState: PlayerState = (() => {
             missionState: parsed.missionState || createDefaultMissionState(),
             claimHistory: parsed.claimHistory || [],
             uniqueSets: parsed.uniqueSets || { topicsRead: [], perfectQuizzes: [] },
+            contentProgress: parsed.contentProgress || {},
+            quizProgress: parsed.quizProgress || DEFAULT_QUIZ_PROGRESS,
             simulatedDateOffsetDays: parsed.simulatedDateOffsetDays || 0,
             upgrades: { ...DEFAULT_UPGRADES, ...(parsed.upgrades || {}) },
             character: { ...DEFAULT_CHARACTER, ...(parsed.character || {}) },
@@ -441,7 +569,6 @@ export function dispatchRecordEvent(
   // 4. Update Utama
   const newUtamaProgress = { ...ms.utama.progress };
   MAIN_MILESTONE_MISSIONS.forEach((def) => {
-    // Milestones that reflect current state directly:
     if (def.event === "level_tercapai") {
       newUtamaProgress[def.id] = Math.min(def.target, currentLevel);
     } else if (def.event === "streak_maks") {
@@ -520,7 +647,6 @@ export function getMissionsWithStatus(
   const items: MissionWithStatus[] = defs.map((def) => {
     let current = progressRecord[def.id] || 0;
 
-    // Direct store sync for milestone missions
     if (def.event === "level_tercapai") {
       current = calculateLevel(state.xp).level;
     } else if (def.event === "streak_maks") {
@@ -550,7 +676,6 @@ export function getMissionsWithStatus(
     };
   });
 
-  // Sort order: "siap" first, then "berjalan", then "diklaim"
   return items.sort((a, b) => {
     const score = (status: "berjalan" | "siap" | "diklaim") =>
       status === "siap" ? 0 : status === "berjalan" ? 1 : 2;
@@ -582,13 +707,11 @@ export function selectClaimableCountByTab(state: PlayerState): {
   let mingguanCount = mingguanList.filter((m) => m.isReadyToClaim).length;
   const utamaCount = utamaList.filter((m) => m.isReadyToClaim).length;
 
-  // Check daily chest
   const allDailyClaimed = harianList.length > 0 && harianList.every((m) => m.isClaimed);
   if (allDailyClaimed && !state.missionState.harian.chestClaimed) {
     harianCount += 1;
   }
 
-  // Check weekly chest
   const allWeeklyClaimed = mingguanList.length > 0 && mingguanList.every((m) => m.isClaimed);
   if (allWeeklyClaimed && !state.missionState.mingguan.chestClaimed) {
     mingguanCount += 1;
@@ -600,6 +723,149 @@ export function selectClaimableCountByTab(state: PlayerState): {
     utama: utamaCount,
   };
 }
+
+// =========================================================================
+// SELECTORS UNTUK KUIS & PUSTAKA
+// =========================================================================
+
+export function getEffectiveDateKey(state: PlayerState): string {
+  const effectiveDate = new Date();
+  if (state.simulatedDateOffsetDays) {
+    effectiveDate.setDate(effectiveDate.getDate() + state.simulatedDateOffsetDays);
+  }
+  return getLocalDateKey(effectiveDate);
+}
+
+export function getTodayQuizStatus(state: PlayerState): {
+  dateKey: string;
+  completed: boolean;
+  score: number;
+  total: number;
+  stars: number;
+} {
+  const dateKey = getEffectiveDateKey(state);
+  const harian = state.quizProgress?.harian;
+  if (!harian) {
+    return { dateKey, completed: false, score: 0, total: 5, stars: 0 };
+  }
+  return {
+    dateKey: harian.dateKey || dateKey,
+    completed: Boolean(harian.completed),
+    score: harian.score || 0,
+    total: harian.total || 5,
+    stars: harian.stars || 0,
+  };
+}
+
+export function getTopicQuizStats(
+  state: PlayerState,
+  topikId: string
+): {
+  bestScore: number;
+  bestStars: number;
+  attempts: number;
+  completed: boolean;
+} {
+  const stats = state.quizProgress?.topik?.[topikId];
+  if (!stats) {
+    return { bestScore: 0, bestStars: 0, attempts: 0, completed: false };
+  }
+  return {
+    bestScore: stats.bestScore || 0,
+    bestStars: stats.bestStars || 0,
+    attempts: stats.attempts || 0,
+    completed: Boolean(stats.firstCompleted),
+  };
+}
+
+export function getWeakTopics(
+  state: PlayerState,
+  n = 2
+): typeof QUIZ_TOPICS {
+  // Sort topics by lowest bestScore or unattempted
+  const scored = QUIZ_TOPICS.map((topic) => {
+    const stats = state.quizProgress?.topik?.[topic.id];
+    return {
+      topic,
+      score: stats ? stats.bestScore : -1,
+      attempts: stats ? stats.attempts : 0,
+    };
+  });
+
+  scored.sort((a, b) => {
+    if (a.score === b.score) return a.attempts - b.attempts;
+    return a.score - b.score;
+  });
+
+  return scored.slice(0, n).map((s) => s.topic);
+}
+
+export function getQuizSummary(state: PlayerState): {
+  totalQuizzes: number;
+  avgScore: number;
+  totalCorrect: number;
+  perfectCount: number;
+} {
+  const stats = state.quizProgress?.stats;
+  if (!stats || stats.totalQuizzes === 0) {
+    return { totalQuizzes: 0, avgScore: 0, totalCorrect: 0, perfectCount: 0 };
+  }
+  const avg =
+    stats.totalAnswered > 0
+      ? Math.round((stats.totalCorrect / stats.totalAnswered) * 100)
+      : 0;
+  return {
+    totalQuizzes: stats.totalQuizzes,
+    avgScore: avg,
+    totalCorrect: stats.totalCorrect,
+    perfectCount: stats.perfectCount || 0,
+  };
+}
+
+// Selectors Pustaka
+export function getTopicStatus(
+  state: PlayerState,
+  slug: string
+): "belum" | "sedang" | "selesai" {
+  const progress = state.contentProgress?.[slug];
+  if (!progress) return "belum";
+  if (progress.completed) return "selesai";
+  if (progress.cardIndex > 0 || (progress.viewedCards && progress.viewedCards.length > 0)) {
+    return "sedang";
+  }
+  return "belum";
+}
+
+export function getReadCount(state: PlayerState): number {
+  return Object.values(state.contentProgress || {}).filter((p) => p.completed).length;
+}
+
+export function getRecommendedTopics(state: PlayerState, n = 3) {
+  // Pick topics that are not completed yet, sorted by urutan
+  const completedSlugs = new Set(
+    Object.entries(state.contentProgress || {})
+      .filter(([_, p]) => p.completed)
+      .map(([slug]) => slug)
+  );
+
+  const unread = PUSTAKA_TOPICS.filter((t) => !completedSlugs.has(t.slug));
+  if (unread.length >= n) return unread.slice(0, n);
+  // If fewer than n unread, fill with the remaining
+  return [...unread, ...PUSTAKA_TOPICS.filter((t) => completedSlugs.has(t.slug))].slice(0, n);
+}
+
+export function getNextUnreadTopic(state: PlayerState) {
+  const completedSlugs = new Set(
+    Object.entries(state.contentProgress || {})
+      .filter(([_, p]) => p.completed)
+      .map(([slug]) => slug)
+  );
+  return PUSTAKA_TOPICS.find((t) => !completedSlugs.has(t.slug)) || null;
+}
+
+// =========================================================================
+// HOOK UTAMA usePlayerStore
+// =========================================================================
 
 export function usePlayerStore() {
   const [state, setState] = useState<PlayerState>(globalState);
@@ -690,7 +956,6 @@ export function usePlayerStore() {
         ? prev.activeDays
         : [...prev.activeDays, today].slice(-14);
 
-      // Trigger streak milestone events
       let nextState: PlayerState = {
         ...prev,
         streak: newStreak,
@@ -713,18 +978,366 @@ export function usePlayerStore() {
     setPlayerState((prev) => checkAndApplyResets(prev));
   };
 
-  const claimMission = (missionId: string) => {
-    let claimResult: {
-      success: boolean;
-      mission?: MissionDefinition;
-      leveledUp: boolean;
-      oldLevel: number;
-      newLevel: number;
-      newTitle: string;
-      xp: number;
-      poin: number;
-    } = {
+  // =========================================================================
+  // AKSI PUSTAKA EDUKASI (READING)
+  // =========================================================================
+
+  const saveReadingPosition = (slug: string, index: number) => {
+    setPlayerState((prev) => {
+      const existing = prev.contentProgress?.[slug] || {
+        cardIndex: 0,
+        viewedCards: [],
+        completed: false,
+      };
+      return {
+        ...prev,
+        contentProgress: {
+          ...prev.contentProgress,
+          [slug]: {
+            ...existing,
+            cardIndex: index,
+          },
+        },
+      };
+    });
+  };
+
+  const markCardViewed = (slug: string, cardId: string) => {
+    setPlayerState((prev) => {
+      const existing = prev.contentProgress?.[slug] || {
+        cardIndex: 0,
+        viewedCards: [],
+        completed: false,
+      };
+      const isFirstTime = !existing.viewedCards.includes(cardId);
+      const newViewed = isFirstTime ? [...existing.viewedCards, cardId] : existing.viewedCards;
+
+      let nextState: PlayerState = {
+        ...prev,
+        contentProgress: {
+          ...prev.contentProgress,
+          [slug]: {
+            ...existing,
+            viewedCards: newViewed,
+          },
+        },
+      };
+
+      if (isFirstTime) {
+        nextState = dispatchRecordEvent(nextState, "kartu_dibuka");
+      }
+
+      return nextState;
+    });
+  };
+
+  const completeTopic = (slug: string) => {
+    let result = {
       success: false,
+      xp: 0,
+      poin: 0,
+      leveledUp: false,
+      oldLevel: 1,
+      newLevel: 1,
+      newTitle: "",
+      unlockedBadges: [] as string[],
+    };
+
+    setPlayerState((prev) => {
+      const existing = prev.contentProgress?.[slug];
+      const topic = PUSTAKA_TOPICS.find((t) => t.slug === slug);
+      if (!topic) return prev;
+
+      // Idempotency: if already completed and claimed, do not award rewards twice
+      if (existing?.rewardClaimed) {
+        return prev;
+      }
+
+      const xpGain = 20;
+      const pointsGain = 10;
+      const oldLevelInfo = calculateLevel(prev.xp);
+      const newXp = prev.xp + xpGain;
+      const newPoints = prev.points + pointsGain;
+      const newLevelInfo = calculateLevel(newXp);
+      const leveledUp = newLevelInfo.level > oldLevelInfo.level;
+
+      const newContentProgress: Record<string, TopicReadingProgress> = {
+        ...prev.contentProgress,
+        [slug]: {
+          cardIndex: topic.kartu.length - 1,
+          viewedCards: topic.kartu.map((k) => k.id),
+          completed: true,
+          completedAt: "Baru saja",
+          rewardClaimed: true,
+        },
+      };
+
+      const completedCount = Object.values(newContentProgress).filter((p) => p.completed).length;
+
+      // Activity log
+      const newActivity: ActivityItem = {
+        id: "act-" + Date.now(),
+        title: `Selesai Membaca: ${topic.judul}`,
+        description: `Mendapatkan +${xpGain} XP dan +${pointsGain} Poin`,
+        timestamp: "Baru saja",
+        type: "reading",
+        xpEarned: xpGain,
+        pointsEarned: pointsGain,
+      };
+
+      // Check badge "Pembaca Rajin" (5 materi dibaca)
+      const badgesToGrant = [...prev.badges];
+      const newlyBadges: string[] = [];
+      const hasBadge = (id: string) => badgesToGrant.some((b) => b.id === id);
+
+      if (completedCount >= 5 && !hasBadge("pembaca-rajin")) {
+        const b = ALL_BADGES.find((x) => x.id === "pembaca-rajin");
+        if (b) {
+          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
+          newlyBadges.push("pembaca-rajin");
+        }
+      }
+
+      result = {
+        success: true,
+        xp: xpGain,
+        poin: pointsGain,
+        leveledUp,
+        oldLevel: oldLevelInfo.level,
+        newLevel: newLevelInfo.level,
+        newTitle: newLevelInfo.title,
+        unlockedBadges: newlyBadges,
+      };
+
+      let nextState: PlayerState = {
+        ...prev,
+        xp: newXp,
+        points: newPoints,
+        contentProgress: newContentProgress,
+        stats: {
+          ...prev.stats,
+          topicsRead: completedCount,
+        },
+        badges: badgesToGrant,
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+      };
+
+      nextState = dispatchRecordEvent(nextState, "materi_dibaca");
+      nextState = dispatchRecordEvent(nextState, "materi_dibaca_unik", { id: slug });
+
+      return nextState;
+    });
+
+    return result;
+  };
+
+  // =========================================================================
+  // AKSI KUIS & TANTANGAN (QUIZ)
+  // =========================================================================
+
+  const submitQuizResult = (payload: {
+    mode: "harian" | "topik" | "latihan";
+    topikId?: string;
+    topicTitle: string;
+    score: number;
+    total: number;
+    usedHint?: boolean;
+  }) => {
+    let result = {
+      success: false,
+      score: payload.score,
+      total: payload.total,
+      percent: 0,
+      stars: 1,
+      xpEarned: 0,
+      pointsEarned: 0,
+      isFirstDaily: false,
+      isFirstTopic: false,
+      isPerfectBonus: false,
+      leveledUp: false,
+      oldLevel: 1,
+      newLevel: 1,
+      newTitle: "",
+      newBadges: [] as string[],
+    };
+
+    setPlayerState((prev) => {
+      const percent = Math.round((payload.score / payload.total) * 100);
+
+      // Star calculation (PRD KQ-05)
+      // 3 = 100% without hint; 2 = >= 80% (or 100% with hint); 1 = completed
+      let stars = 1;
+      if (percent === 100) {
+        stars = payload.usedHint ? 2 : 3;
+      } else if (percent >= 80) {
+        stars = 2;
+      } else {
+        stars = 1;
+      }
+
+      let xpGain = 0;
+      let pointsGain = 0;
+      let isFirstDaily = false;
+      let isFirstTopic = false;
+      let isPerfectBonus = false;
+
+      const currentQp = prev.quizProgress || DEFAULT_QUIZ_PROGRESS;
+
+      // Anti-farming reward logic
+      if (payload.mode === "harian") {
+        if (!currentQp.harian.completed) {
+          xpGain = 40;
+          pointsGain = 15;
+          isFirstDaily = true;
+        }
+      } else if (payload.mode === "topik" && payload.topikId) {
+        const topicStats = currentQp.topik?.[payload.topikId];
+        if (!topicStats?.firstCompleted) {
+          xpGain = 30;
+          pointsGain = 10;
+          isFirstTopic = true;
+        }
+        if (percent === 100 && !topicStats?.perfectClaimed) {
+          xpGain += 10;
+          isPerfectBonus = true;
+        }
+      }
+
+      const oldLevelInfo = calculateLevel(prev.xp);
+      const newXp = prev.xp + xpGain;
+      const newPoints = prev.points + pointsGain;
+      const newLevelInfo = calculateLevel(newXp);
+      const leveledUp = newLevelInfo.level > oldLevelInfo.level;
+
+      // Update quizProgress
+      const newStats = {
+        totalQuizzes: (currentQp.stats?.totalQuizzes || 0) + 1,
+        totalCorrect: (currentQp.stats?.totalCorrect || 0) + payload.score,
+        totalAnswered: (currentQp.stats?.totalAnswered || 0) + payload.total,
+        perfectCount: (currentQp.stats?.perfectCount || 0) + (percent === 100 ? 1 : 0),
+      };
+
+      const newHistoryItem: QuizHistoryItem = {
+        id: "qh-" + Date.now(),
+        mode: payload.mode,
+        topikId: payload.topikId,
+        topicTitle: payload.topicTitle,
+        score: payload.score,
+        total: payload.total,
+        stars,
+        xpEarned: xpGain,
+        pointsEarned: pointsGain,
+        at: "Baru saja",
+      };
+
+      const updatedTopikRecord = { ...currentQp.topik };
+      if (payload.topikId) {
+        const existing = updatedTopikRecord[payload.topikId];
+        updatedTopikRecord[payload.topikId] = {
+          bestScore: existing ? Math.max(existing.bestScore, payload.score) : payload.score,
+          bestStars: existing ? Math.max(existing.bestStars, stars) : stars,
+          attempts: (existing?.attempts || 0) + 1,
+          firstCompleted: true,
+          perfectClaimed: existing?.perfectClaimed || isPerfectBonus,
+        };
+      }
+
+      const updatedQuizProgress: QuizProgress = {
+        ...currentQp,
+        harian:
+          payload.mode === "harian"
+            ? {
+                ...currentQp.harian,
+                completed: true,
+                score: Math.max(currentQp.harian.score || 0, payload.score),
+                stars: Math.max(currentQp.harian.stars || 0, stars),
+              }
+            : currentQp.harian,
+        topik: updatedTopikRecord,
+        stats: newStats,
+        history: [newHistoryItem, ...(currentQp.history || [])].slice(0, 50),
+      };
+
+      // Activity log
+      const newActivity: ActivityItem = {
+        id: "act-" + Date.now(),
+        title: `Kuis ${payload.topicTitle}`,
+        description: `Menyelesaikan kuis dengan skor ${payload.score}/${payload.total} (${percent}%) - ${stars} Bintang`,
+        timestamp: "Baru saja",
+        type: "quiz",
+        xpEarned: xpGain,
+        pointsEarned: pointsGain,
+      };
+
+      // Check badge "Si Pintar" (skor 100% pada 3 kuis)
+      const badgesToGrant = [...prev.badges];
+      const newlyBadges: string[] = [];
+      const hasBadge = (id: string) => badgesToGrant.some((b) => b.id === id);
+
+      if (newStats.perfectCount >= 3 && !hasBadge("si-pintar")) {
+        const b = ALL_BADGES.find((x) => x.id === "si-pintar");
+        if (b) {
+          badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
+          newlyBadges.push("si-pintar");
+        }
+      }
+
+      result = {
+        success: true,
+        score: payload.score,
+        total: payload.total,
+        percent,
+        stars,
+        xpEarned: xpGain,
+        pointsEarned: pointsGain,
+        isFirstDaily,
+        isFirstTopic,
+        isPerfectBonus,
+        leveledUp,
+        oldLevel: oldLevelInfo.level,
+        newLevel: newLevelInfo.level,
+        newTitle: newLevelInfo.title,
+        newBadges: newlyBadges,
+      };
+
+      let nextState: PlayerState = {
+        ...prev,
+        xp: newXp,
+        points: newPoints,
+        quizProgress: updatedQuizProgress,
+        stats: {
+          ...prev.stats,
+          quizzesCompleted: newStats.totalQuizzes,
+        },
+        badges: badgesToGrant,
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+      };
+
+      // Dispatch events for Misi
+      nextState = dispatchRecordEvent(nextState, "kuis_selesai");
+      if (payload.mode === "harian") {
+        nextState = dispatchRecordEvent(nextState, "kuis_harian_selesai");
+      }
+      if (percent === 100) {
+        nextState = dispatchRecordEvent(nextState, "kuis_sempurna", {
+          id: payload.topikId || "harian",
+        });
+      }
+
+      return nextState;
+    });
+
+    return result;
+  };
+
+  // =========================================================================
+  // AKSI MISI & KLAIM
+  // =========================================================================
+
+  const claimMission = (missionId: string) => {
+    let claimResult = {
+      success: false,
+      mission: undefined as MissionDefinition | undefined,
       leveledUp: false,
       oldLevel: 1,
       newLevel: 1,
@@ -761,7 +1374,6 @@ export function usePlayerStore() {
         if (def.event === "kuis_sempurna") currentProgress = prev.uniqueSets?.perfectQuizzes?.length || 0;
       }
 
-      // Idempotency: if already claimed or target not reached, do nothing
       if (isClaimed || currentProgress < def.target) {
         return prev;
       }
@@ -783,7 +1395,6 @@ export function usePlayerStore() {
         poin: def.poin,
       };
 
-      // Update claimed records
       const newHarianClaimed = { ...ms.harian.claimed };
       const newMingguanClaimed = { ...ms.mingguan.claimed };
       const newUtamaClaimed = { ...ms.utama.claimed };
@@ -817,28 +1428,6 @@ export function usePlayerStore() {
         pointsEarned: def.poin,
       };
 
-      // Check badges that might unlock
-      const badgesToGrant = [...prev.badges];
-      const hasBadge = (id: string) => badgesToGrant.some((b) => b.id === id);
-
-      // Pembaca Rajin: 5 materi dibaca
-      if (prev.uniqueSets?.topicsRead?.length >= 5 && !hasBadge("pembaca-rajin")) {
-        const b = ALL_BADGES.find((x) => x.id === "pembaca-rajin");
-        if (b) badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-      }
-
-      // Si Pintar: 3 kuis sempurna
-      if (prev.uniqueSets?.perfectQuizzes?.length >= 3 && !hasBadge("si-pintar")) {
-        const b = ALL_BADGES.find((x) => x.id === "si-pintar");
-        if (b) badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-      }
-
-      // Api Semangat: streak 7 hari
-      if (prev.streak >= 7 && !hasBadge("api-semangat")) {
-        const b = ALL_BADGES.find((x) => x.id === "api-semangat");
-        if (b) badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
-      }
-
       return {
         ...prev,
         xp: newXp,
@@ -847,7 +1436,6 @@ export function usePlayerStore() {
         dailyMissions: syncDailyMissionsArray(updatedMissionState),
         claimHistory: [newClaimItem, ...prev.claimHistory].slice(0, 30),
         activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
-        badges: badgesToGrant,
       };
     });
 
@@ -855,15 +1443,7 @@ export function usePlayerStore() {
   };
 
   const claimChest = (type: "harian" | "mingguan") => {
-    let result: {
-      success: boolean;
-      type: "harian" | "mingguan";
-      xp: number;
-      poin: number;
-      leveledUp: boolean;
-      newLevel: number;
-      newTitle: string;
-    } = {
+    let result = {
       success: false,
       type,
       xp: 0,
@@ -1002,7 +1582,6 @@ export function usePlayerStore() {
           }
         });
 
-        // Also claim chest if all missions in this tab are now claimed
         if (t === "harian" || t === "mingguan") {
           const ms = currentState.missionState;
           const allClaimed =
@@ -1275,7 +1854,6 @@ export function usePlayerStore() {
         activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
       };
 
-      // Trigger gamification mission events
       nextState = dispatchRecordEvent(nextState, "sampah_benar", { amount: itemsCount });
       nextState = dispatchRecordEvent(nextState, "misi_game_dimulai");
       if (result.missionId === 1) nextState = dispatchRecordEvent(nextState, "misi_game_selesai:taman");
@@ -1420,6 +1998,10 @@ export function usePlayerStore() {
     claimDailyMission,
     claimChest,
     claimAllMissions,
+    saveReadingPosition,
+    markCardViewed,
+    completeTopic,
+    submitQuizResult,
     simulateEvent,
     resetDailyMissions,
     resetWeeklyMissions,

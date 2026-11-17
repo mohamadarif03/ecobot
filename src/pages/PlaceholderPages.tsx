@@ -22,18 +22,6 @@ export function PustakaPage() {
   );
 }
 
-export function KuisPage() {
-  return (
-    <PlaceholderPage
-      title="Kuis & Tantangan"
-      subtitle="Uji pengetahuan lingkunganmu dan raih bintang prestasi"
-      icon={<HelpCircle className="w-10 h-10 text-amber-600" />}
-      moduleName="Kuis Interaktif"
-      description="Jawab pertanyaan seru seputar lingkungan, dapatkan penjelasan langsung dari Ecobot, dan kalahkan rekor skormu sendiri."
-    />
-  );
-}
-
 export function AksiNyataPage() {
   return (
     <PlaceholderPage

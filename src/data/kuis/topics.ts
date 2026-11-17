@@ -1,0 +1,58 @@
+import type { QuizTopicMeta } from "./types";
+
+export const QUIZ_TOPICS: QuizTopicMeta[] = [
+  {
+    id: "quiz-jenis-sampah",
+    slug: "jenis-sampah",
+    judul: "Kenalan dengan Jenis Sampah",
+    deskripsi: "Pilah sampah organik, anorganik, dan B3 ke warna tong yang tepat.",
+    icon: "apple",
+    color: "emerald",
+    badgeBg: "bg-emerald-100 text-emerald-800",
+  },
+  {
+    id: "quiz-cara-memilah",
+    slug: "cara-memilah",
+    judul: "Cara Memilah Sampah",
+    deskripsi: "Langkah membersihkan, mengeringkan, dan memipihkan sampah daur ulang.",
+    icon: "box",
+    color: "sky",
+    badgeBg: "bg-sky-100 text-sky-800",
+  },
+  {
+    id: "quiz-daur-ulang",
+    slug: "daur-ulang",
+    judul: "Daur Ulang dan Pakai Ulang",
+    deskripsi: "Kuasai konsep 3R (Reduce, Reuse, Recycle) dan peran bank sampah.",
+    icon: "recycle",
+    color: "teal",
+    badgeBg: "bg-teal-100 text-teal-800",
+  },
+  {
+    id: "quiz-dampak-plastik",
+    slug: "dampak-plastik",
+    judul: "Dampak Plastik bagi Bumi",
+    deskripsi: "Pahami waktu urai plastik, bahaya mikroplastik, dan ancaman laut.",
+    icon: "shield-alert",
+    color: "amber",
+    badgeBg: "bg-amber-100 text-amber-800",
+  },
+  {
+    id: "quiz-kompos",
+    slug: "kompos",
+    judul: "Kompos: Sampah Jadi Pupuk",
+    deskripsi: "Kombinasi bahan hijau dan cokelat serta peran bakteri pengurai.",
+    icon: "sprout",
+    color: "lime",
+    badgeBg: "bg-lime-100 text-lime-800",
+  },
+  {
+    id: "quiz-sampah-b3",
+    slug: "sampah-b3",
+    judul: "Bahaya Sampah B3",
+    deskripsi: "Kenali limbah beracun baterai, lampu bekas, dan cara aman menanganinya.",
+    icon: "alert-triangle",
+    color: "rose",
+    badgeBg: "bg-rose-100 text-rose-800",
+  },
+];

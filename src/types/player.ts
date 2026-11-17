@@ -101,6 +101,55 @@ export interface UniqueEventSets {
   perfectQuizzes: string[];
 }
 
+export interface TopicReadingProgress {
+  cardIndex: number;
+  viewedCards: string[];
+  completed: boolean;
+  completedAt?: string;
+  rewardClaimed?: boolean;
+}
+
+export interface QuizHistoryItem {
+  id: string;
+  mode: "harian" | "topik" | "latihan";
+  topikId?: string;
+  topicTitle: string;
+  score: number;
+  total: number;
+  stars: number;
+  xpEarned: number;
+  pointsEarned: number;
+  at: string;
+}
+
+export interface QuizProgress {
+  harian: {
+    dateKey: string;
+    completed: boolean;
+    score: number;
+    total: number;
+    stars: number;
+  };
+  topik: Record<
+    string,
+    {
+      bestScore: number;
+      bestStars: number;
+      attempts: number;
+      firstCompleted: boolean;
+      perfectClaimed: boolean;
+    }
+  >;
+  history: QuizHistoryItem[];
+  stats: {
+    totalQuizzes: number;
+    totalCorrect: number;
+    totalAnswered: number;
+    perfectCount: number;
+  };
+  duelBest?: number;
+}
+
 export interface PlayerState {
   nickname: string;
   avatar: string; // avatar identifier
@@ -117,6 +166,8 @@ export interface PlayerState {
   missionState: MissionState;
   claimHistory: ClaimHistoryItem[];
   uniqueSets: UniqueEventSets;
+  contentProgress: Record<string, TopicReadingProgress>;
+  quizProgress: QuizProgress;
   simulatedDateOffsetDays?: number;
   badges: Badge[];
   activityLog: ActivityItem[];

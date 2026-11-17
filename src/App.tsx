@@ -7,9 +7,10 @@ import MainGamePage from "./pages/MainGamePage";
 import MisiPage from "./pages/MisiPage";
 import PrivasiPage from "./pages/PrivasiPage";
 import SumberPage from "./pages/SumberPage";
+import KuisPage from "./pages/KuisPage";
+import KuisPlayerPage from "./pages/KuisPlayerPage";
 import {
   PustakaPage,
-  KuisPage,
   AksiNyataPage,
   PencapaianPage,
   TokoPage,
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/misi" element={<MisiPage />} />
         <Route path="/pustaka" element={<PustakaPage />} />
         <Route path="/kuis" element={<KuisPage />} />
+        <Route path="/kuis/main" element={<KuisPlayerPage />} />
         <Route path="/aksi-nyata" element={<AksiNyataPage />} />
         <Route path="/pencapaian" element={<PencapaianPage />} />
         <Route path="/toko" element={<TokoPage />} />
