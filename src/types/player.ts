@@ -47,6 +47,18 @@ export interface PlayerSettings {
   controlMode: "auto" | "touch" | "keyboard";
 }
 
+export interface PlayerUpgrades {
+  bag: number;
+  shoes: number;
+  grabber: number;
+}
+
+export interface CharacterCustomization {
+  skin: string;
+  outfitColor: string;
+  accessory: string;
+}
+
 export interface PlayerStats {
   trashSorted: number;
   sortingAccuracy: number;
@@ -56,7 +68,7 @@ export interface PlayerStats {
 
 export interface PlayerState {
   nickname: string;
-  avatar: string; // avatar identifier or emoji
+  avatar: string; // avatar identifier
   xp: number;
   points: number;
   streak: number;
@@ -64,6 +76,8 @@ export interface PlayerState {
   activeDays: string[]; // List of YYYY-MM-DD for the 7-day indicator
   cityCleanlinessMeter: number; // 0 - 100%
   missionProgress: MissionProgress[];
+  upgrades: PlayerUpgrades;
+  character: CharacterCustomization;
   dailyMissions: DailyMission[];
   badges: Badge[];
   activityLog: ActivityItem[];

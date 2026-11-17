@@ -3,10 +3,10 @@ import LandingPage from "./pages/LandingPage";
 import SectionPage from "./pages/SectionPage";
 import BerandaPage from "./pages/BerandaPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import MainGamePage from "./pages/MainGamePage";
 import PrivasiPage from "./pages/PrivasiPage";
 import SumberPage from "./pages/SumberPage";
 import {
-  MainGamePage,
   MisiPage,
   PustakaPage,
   KuisPage,

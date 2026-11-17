@@ -2,6 +2,13 @@ import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 import { calculateLevel, LEVELS } from "../data/levels.ts";
 import { ENVIRONMENTAL_FACTS, getTodayFact } from "../data/facts.ts";
+import {
+  calculateStars,
+  getMissionStatus,
+  calculateCityCleanlinessMeter,
+  GAME_MISSIONS,
+} from "../data/gameMissions.ts";
+import type { MissionProgress } from "../types/player.ts";
 
 describe("Player Gamification Logic", () => {
   test("calculateLevel maps XP correctly to levels and titles", () => {
@@ -44,5 +51,105 @@ describe("Player Gamification Logic", () => {
     assert.ok(typeof fact.fact === "string" && fact.fact.length > 0);
     assert.ok(typeof fact.actionTip === "string" && fact.actionTip.length > 0);
     assert.ok(typeof fact.source === "string" && fact.source.length > 0);
+  });
+});
+
+describe("Game Missions & Rules (PRD 7.4, 7.6)", () => {
+  test("calculateStars follows star reward rules", () => {
+    // Uncompleted = 0 stars
+    assert.equal(calculateStars(100, false), 0);
+    assert.equal(calculateStars(50, false), 0);
+
+    // Completed but < 75% accuracy = 1 star
+    assert.equal(calculateStars(60, true), 1);
+    assert.equal(calculateStars(74, true), 1);
+
+    // Completed and >= 75% accuracy = 2 stars
+    assert.equal(calculateStars(75, true), 2);
+    assert.equal(calculateStars(89, true), 2);
+
+    // Completed and >= 90% accuracy = 3 stars
+    assert.equal(calculateStars(90, true), 3);
+    assert.equal(calculateStars(100, true), 3);
+  });
+
+  test("getMissionStatus unlocks missions correctly by prerequisite", () => {
+    const emptyProgress: MissionProgress[] = [];
+
+    // M1 always available
+    assert.equal(getMissionStatus(1, emptyProgress), "available");
+    // Others locked initially
+    assert.equal(getMissionStatus(2, emptyProgress), "locked");
+    assert.equal(getMissionStatus(3, emptyProgress), "locked");
+    assert.equal(getMissionStatus(4, emptyProgress), "locked");
+    assert.equal(getMissionStatus(5, emptyProgress), "locked");
+    assert.equal(getMissionStatus(6, emptyProgress), "locked");
+
+    // After M1 is completed
+    const m1Done: MissionProgress[] = [
+      {
+        missionId: 1,
+        title: "Taman Kota",
+        location: "Zona 1",
+        status: "completed",
+        stars: 3,
+        accuracy: 95,
+        bestScore: 240,
+      },
+    ];
+    assert.equal(getMissionStatus(1, m1Done), "completed");
+    assert.equal(getMissionStatus(2, m1Done), "available");
+    assert.equal(getMissionStatus(3, m1Done), "locked");
+    assert.equal(getMissionStatus(6, m1Done), "locked"); // M6 requires M1 and M2
+
+    // After M1 & M2 completed
+    const m1m2Done: MissionProgress[] = [
+      ...m1Done,
+      {
+        missionId: 2,
+        title: "Pasar Tradisional",
+        location: "Zona 2",
+        status: "completed",
+        stars: 2,
+        accuracy: 80,
+        bestScore: 300,
+      },
+    ];
+    assert.equal(getMissionStatus(2, m1m2Done), "completed");
+    assert.equal(getMissionStatus(3, m1m2Done), "available");
+    assert.equal(getMissionStatus(5, m1m2Done), "available");
+    assert.equal(getMissionStatus(6, m1m2Done), "available"); // M6 unlocked!
+    assert.equal(getMissionStatus(4, m1m2Done), "locked"); // M4 requires M3
+
+    // After M3 completed
+    const m3Done: MissionProgress[] = [
+      ...m1m2Done,
+      {
+        missionId: 3,
+        title: "Tepi Sungai",
+        location: "Zona 3",
+        status: "completed",
+        stars: 3,
+        accuracy: 92,
+        bestScore: 350,
+      },
+    ];
+    assert.equal(getMissionStatus(4, m3Done), "available");
+  });
+
+  test("calculateCityCleanlinessMeter scales with completed missions and bonus stars", () => {
+    assert.equal(calculateCityCleanlinessMeter([]), 12); // default base
+
+    const allCompletedMaxStars: MissionProgress[] = GAME_MISSIONS.map((m) => ({
+      missionId: m.id,
+      title: m.title,
+      location: m.location,
+      status: "completed",
+      stars: 3,
+      accuracy: 100,
+      bestScore: 500,
+    }));
+
+    assert.equal(calculateCityCleanlinessMeter(allCompletedMaxStars), 100);
   });
 });

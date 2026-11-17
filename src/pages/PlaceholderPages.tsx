@@ -1,6 +1,5 @@
 import { PlaceholderPage } from "../components/dashboard/PlaceholderPage";
 import {
-  Gamepad2,
   Target,
   BookOpen,
   HelpCircle,
@@ -11,20 +10,6 @@ import {
   Settings,
   Info,
 } from "lucide-react";
-
-export function MainGamePage() {
-  return (
-    <PlaceholderPage
-      title="Main Game 3D"
-      subtitle="Jelajahi Zona Kota dan pilah sampah bersama Ecobot"
-      icon={<Gamepad2 className="w-10 h-10" />}
-      moduleName="Game 3D Zona Kota"
-      description="Dunia 3D kota blocky ala Roblox tempat kamu mengendalikan karakter memilah sampah organik, anorganik, dan B3 ke tong yang tepat."
-      actionText="Mulai Petualangan"
-      actionDisabled={true}
-    />
-  );
-}
 
 export function MisiPage() {
   return (
