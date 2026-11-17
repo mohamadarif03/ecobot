@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" fill="none">
+  <defs>
+    <linearGradient id="can-metal" x1="50" y1="180" x2="150" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E2E8F0"/>
+      <stop offset="0.25" stop-color="#FFFFFF"/>
+      <stop offset="0.6" stop-color="#CBD5E1"/>
+      <stop offset="1" stop-color="#94A3B8"/>
+    </linearGradient>
+    <linearGradient id="can-stripe" x1="50" y1="180" x2="150" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8"/>
+      <stop offset="0.3" stop-color="#7DD3FC"/>
+      <stop offset="0.8" stop-color="#0284C7"/>
+      <stop offset="1" stop-color="#0369A1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Top Rim Lip -->
+  <ellipse cx="100" cy="74" rx="46" ry="14" fill="#94A3B8" stroke="#2B3A55" stroke-width="3"/>
+  <ellipse cx="100" cy="72" rx="40" ry="11" fill="#E2E8F0" stroke="#2B3A55" stroke-width="2"/>
+
+  <!-- Can Pull-Tab -->
+  <ellipse cx="100" cy="72" rx="10" ry="5" fill="#94A3B8" stroke="#2B3A55" stroke-width="2"/>
+  <circle cx="100" cy="72" r="2.5" fill="#2B3A55"/>
+
+  <!-- Can Neck Inward Taper -->
+  <path d="M54 74L60 96H140L146 74" fill="url(#can-metal)" stroke="#2B3A55" stroke-width="3"/>
+
+  <!-- Can Main Body -->
+  <rect x="60" y="96" width="80" height="184" rx="10" fill="url(#can-metal)" stroke="#2B3A55" stroke-width="3.5"/>
+
+  <!-- Decorative Blue Brand Stripe (Sky Blue Theme) -->
+  <path d="M60 134H140V220H60Z" fill="url(#can-stripe)" stroke="#2B3A55" stroke-width="2"/>
+
+  <!-- Inner cute recycling eco wave on stripe -->
+  <path d="M74 150C84 140 116 140 126 150" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+
+  <!-- Cute Kawaii Face on Center of Can -->
+  <g>
+    <!-- Left Eye -->
+    <circle cx="86" cy="176" r="5" fill="#FFFFFF"/>
+    <circle cx="86" cy="176" r="3.5" fill="#2B3A55"/>
+    <circle cx="85" cy="174" r="1.5" fill="#FFFFFF"/>
+
+    <!-- Right Eye -->
+    <circle cx="114" cy="176" r="5" fill="#FFFFFF"/>
+    <circle cx="114" cy="176" r="3.5" fill="#2B3A55"/>
+    <circle cx="113" cy="174" r="1.5" fill="#FFFFFF"/>
+
+    <!-- Pink Blushing Cheeks -->
+    <circle cx="77" cy="184" r="4.5" fill="#FB7185" opacity="0.85"/>
+    <circle cx="123" cy="184" r="4.5" fill="#FB7185" opacity="0.85"/>
+
+    <!-- Cheerful Big Smile with tiny tongue -->
+    <path d="M95 186C97 194 103 194 105 186" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Bottom Rim Base -->
+  <path d="M60 280L56 294C56 302 76 308 100 308C124 308 144 302 144 294L140 280" fill="url(#can-metal)" stroke="#2B3A55" stroke-width="3" stroke-linejoin="round"/>
+  <ellipse cx="100" cy="280" rx="40" ry="6" fill="#CBD5E1"/>
+
+  <!-- Vertical Gloss Highlights -->
+  <line x1="72" y1="102" x2="72" y2="274" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+  <line x1="80" y1="102" x2="80" y2="274" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+</svg>

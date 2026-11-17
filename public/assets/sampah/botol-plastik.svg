@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" fill="none">
+  <defs>
+    <linearGradient id="bottle-plastic" x1="60" y1="180" x2="140" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E0F2FE" stop-opacity="0.9"/>
+      <stop offset="0.3" stop-color="#BAE6FD" stop-opacity="0.8"/>
+      <stop offset="0.8" stop-color="#7DD3FC" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#38BDF8" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="cap-grad" x1="86" y1="40" x2="114" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0284C7"/>
+      <stop offset="1" stop-color="#0369A1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Bottle Cap (Blue screw cap) -->
+  <rect x="86" y="38" width="28" height="22" rx="4" fill="url(#cap-grad)" stroke="#2B3A55" stroke-width="3"/>
+  <!-- Cap grip ribs -->
+  <line x1="93" y1="42" x2="93" y2="56" stroke="#38BDF8" stroke-width="1.8"/>
+  <line x1="100" y1="42" x2="100" y2="56" stroke="#38BDF8" stroke-width="1.8"/>
+  <line x1="107" y1="42" x2="107" y2="56" stroke="#38BDF8" stroke-width="1.8"/>
+
+  <!-- Neck Ring & Neck -->
+  <rect x="84" y="60" width="32" height="6" rx="2" fill="#0284C7" stroke="#2B3A55" stroke-width="2"/>
+  <path d="M88 66L72 108C68 116 62 124 60 134V280C60 298 76 308 100 308C124 308 140 298 140 280V134C138 124 132 116 128 108L112 66H88Z" fill="url(#bottle-plastic)" stroke="#2B3A55" stroke-width="3.5" stroke-linejoin="round"/>
+
+  <!-- Ribbed Plastic Waves / Grooves on Upper Neck -->
+  <path d="M66 124C78 120 122 120 134 124" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M64 138C78 134 122 134 136 138" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Plain White Label Wrap (No real brand) -->
+  <rect x="60" y="160" width="80" height="74" rx="6" fill="#FFFFFF" stroke="#2B3A55" stroke-width="3"/>
+  <!-- Subtle green eco leaf emblem on label -->
+  <circle cx="100" cy="184" r="18" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+
+  <!-- Cute Surprised Kawaii Face on Label (Big round eyes, 'O' mouth) -->
+  <g>
+    <!-- Left Eye (Big and wide) -->
+    <circle cx="88" cy="184" r="5" fill="#2B3A55"/>
+    <circle cx="86.5" cy="182" r="1.8" fill="#FFFFFF"/>
+
+    <!-- Right Eye (Big and wide) -->
+    <circle cx="112" cy="184" r="5" fill="#2B3A55"/>
+    <circle cx="110.5" cy="182" r="1.8" fill="#FFFFFF"/>
+
+    <!-- Soft Blushing Cheeks -->
+    <circle cx="80" cy="192" r="4" fill="#FB7185" opacity="0.8"/>
+    <circle cx="120" cy="192" r="4" fill="#FB7185" opacity="0.8"/>
+
+    <!-- Surprised Cute 'O' Mouth -->
+    <ellipse cx="100" cy="194" rx="3.5" ry="5" fill="#2B3A55"/>
+  </g>
+
+  <!-- Lower Grip Ring -->
+  <path d="M62 254C78 250 122 250 138 254" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Vertical Gloss Streak (Translucent Plastic) -->
+  <path d="M70 110L68 280" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+</svg>

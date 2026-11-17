@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" fill="none">
+  <defs>
+    <linearGradient id="glass-green" x1="60" y1="180" x2="140" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#15803D"/>
+      <stop offset="0.3" stop-color="#22C55E"/>
+      <stop offset="0.8" stop-color="#16A34A"/>
+      <stop offset="1" stop-color="#14532D"/>
+    </linearGradient>
+    <linearGradient id="cork-grad" x1="90" y1="46" x2="110" y2="46" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D97706"/>
+      <stop offset="1" stop-color="#B45309"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Cork Stopper at Top -->
+  <polygon points="90,44 110,44 107,64 93,64" fill="url(#cork-grad)" stroke="#2B3A55" stroke-width="2.5"/>
+
+  <!-- Thick Glass Mouth Rim -->
+  <ellipse cx="100" cy="64" rx="16" ry="6" fill="#86EFAC" stroke="#2B3A55" stroke-width="3"/>
+  <ellipse cx="100" cy="64" rx="10" ry="3.5" fill="#14532D"/>
+
+  <!-- Elegant Tall Glass Bottle Neck -->
+  <path d="M90 68V114C80 134 64 150 60 170V286C60 300 76 308 100 308C124 308 140 300 140 286V170C136 150 120 134 110 114V68H90Z" fill="url(#glass-green)" stroke="#2B3A55" stroke-width="3.5" stroke-linejoin="round"/>
+
+  <!-- Cute Calm Kawaii Face on Glass Belly -->
+  <g>
+    <!-- Left Calm Happy Eye -->
+    <circle cx="86" cy="204" r="5" fill="#FFFFFF"/>
+    <circle cx="86" cy="204" r="3.5" fill="#2B3A55"/>
+    <circle cx="84.5" cy="202" r="1.5" fill="#FFFFFF"/>
+
+    <!-- Right Calm Happy Eye -->
+    <circle cx="114" cy="204" r="5" fill="#FFFFFF"/>
+    <circle cx="114" cy="204" r="3.5" fill="#2B3A55"/>
+    <circle cx="112.5" cy="202" r="1.5" fill="#FFFFFF"/>
+
+    <!-- Soft Blushing Pink Cheeks -->
+    <circle cx="78" cy="212" r="4.5" fill="#FDA4AF" opacity="0.8"/>
+    <circle cx="122" cy="212" r="4.5" fill="#FDA4AF" opacity="0.8"/>
+
+    <!-- Serene Smile -->
+    <path d="M96 214C98 219 102 219 104 214" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Thick Glossy Glass Highlights (Sharp vertical reflections) -->
+  <path d="M68 150L68 280" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.75"/>
+  <path d="M76 170L76 260" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  <path d="M128 170L128 270" stroke="#86EFAC" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Glass Base Bottom Edge -->
+  <ellipse cx="100" cy="298" rx="34" ry="6" fill="#14532D" opacity="0.5"/>
+</svg>

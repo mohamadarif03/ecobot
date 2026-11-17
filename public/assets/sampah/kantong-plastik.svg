@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" fill="none">
+  <defs>
+    <linearGradient id="bag-grad" x1="100" y1="60" x2="100" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E0F2FE" stop-opacity="0.95"/>
+      <stop offset="0.5" stop-color="#BAE6FD" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#7DD3FC" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="handle-grad" x1="100" y1="40" x2="100" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F0F9FF"/>
+      <stop offset="1" stop-color="#BAE6FD"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Left Handle loop -->
+  <path d="M60 120V70C60 52 74 48 80 64L80 120" fill="url(#handle-grad)" stroke="#2B3A55" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Handle cutout inner hole left -->
+  <path d="M68 116V74C68 64 74 64 74 74V116" stroke="#2B3A55" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Right Handle loop -->
+  <path d="M140 120V70C140 52 126 48 120 64L120 120" fill="url(#handle-grad)" stroke="#2B3A55" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Handle cutout inner hole right -->
+  <path d="M132 116V74C132 64 126 64 126 74V116" stroke="#2B3A55" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Main Puffy Plastic Bag Body (Jellyfish-like rounded silhouette) -->
+  <path d="M50 120C40 150 36 210 42 260C46 290 70 304 100 304C130 304 154 290 158 260C164 210 160 150 150 120C132 130 118 126 100 126C82 126 68 130 50 120Z" fill="url(#bag-grad)" stroke="#2B3A55" stroke-width="3.5" stroke-linejoin="round"/>
+
+  <!-- Cute Kawaii Floaty Face (Jellyfish style) -->
+  <g>
+    <!-- Left Eye -->
+    <circle cx="82" cy="190" r="5.5" fill="#2B3A55"/>
+    <circle cx="80.2" cy="188.2" r="2" fill="#FFFFFF"/>
+
+    <!-- Right Eye -->
+    <circle cx="118" cy="190" r="5.5" fill="#2B3A55"/>
+    <circle cx="116.2" cy="188.2" r="2" fill="#FFFFFF"/>
+
+    <!-- Blushing Pink Cheeks -->
+    <circle cx="73" cy="199" r="5.5" fill="#FB7185" opacity="0.8"/>
+    <circle cx="127" cy="199" r="5.5" fill="#FB7185" opacity="0.8"/>
+
+    <!-- Cute Float Smile -->
+    <path d="M96 200C98 206 102 206 104 200" stroke="#2B3A55" stroke-width="2.8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Crinkled Plastic Highlights & Ripples -->
+  <path d="M56 160C62 180 72 230 76 270" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+  <path d="M144 160C138 180 128 230 124 270" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+  <path d="M68 284C84 294 116 294 132 284" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+</svg>

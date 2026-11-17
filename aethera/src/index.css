@@ -1,0 +1,14 @@
+@import "./styles/fonts.css";
+@import "tailwindcss";
+@import "./styles/theme.css";
+
+@layer base {
+  html,
+  body {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" fill="none">
+  <defs>
+    <linearGradient id="paper-grad" x1="100" y1="50" x2="100" y2="310" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.7" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#E2E8F0"/>
+    </linearGradient>
+    <linearGradient id="fold-grad" x1="60" y1="120" x2="140" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E2E8F0"/>
+      <stop offset="1" stop-color="#CBD5E1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shadow under newspaper -->
+  <ellipse cx="100" cy="318" rx="60" ry="10" fill="#0F172A" opacity="0.08"/>
+
+  <!-- Back Layer Page -->
+  <path d="M52 68C52 62 58 56 66 56H144C152 56 158 62 158 70V286C158 294 150 298 142 296L52 280V68Z" fill="#CBD5E1" stroke="#2B3A55" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- Main Folded Newspaper Body -->
+  <rect x="44" y="66" width="112" height="236" rx="14" fill="url(#paper-grad)" stroke="#2B3A55" stroke-width="3.5"/>
+
+  <!-- Top Banner / Header Header Bar (Eco News header box) -->
+  <rect x="54" y="78" width="92" height="24" rx="6" fill="#38BDF8" stroke="#2B3A55" stroke-width="2.5"/>
+  <rect x="62" y="86" width="50" height="8" rx="3" fill="#FFFFFF"/>
+  <circle cx="134" cy="90" r="5" fill="#22C55E"/>
+
+  <!-- Center Fold Crease Line -->
+  <line x1="44" y1="184" x2="156" y2="184" stroke="#94A3B8" stroke-width="2.5" stroke-dasharray="4 3"/>
+
+  <!-- Abstract Grey Text Lines (Top Half) -->
+  <rect x="54" y="112" width="42" height="4" rx="2" fill="#94A3B8"/>
+  <rect x="54" y="122" width="38" height="4" rx="2" fill="#CBD5E1"/>
+  <rect x="54" y="132" width="40" height="4" rx="2" fill="#CBD5E1"/>
+
+  <!-- Picture Placeholder on Newspaper -->
+  <rect x="104" y="112" width="42" height="32" rx="6" fill="#BAE6FD" stroke="#2B3A55" stroke-width="2"/>
+  <circle cx="125" cy="128" r="7" fill="#38BDF8"/>
+
+  <!-- Cute Sleepy Kawaii Face (In the middle) -->
+  <g>
+    <!-- Left Sleepy Curved Eye -->
+    <path d="M78 206C82 201 88 201 92 206" stroke="#2B3A55" stroke-width="3" stroke-linecap="round"/>
+    <!-- Right Sleepy Curved Eye -->
+    <path d="M108 206C112 201 118 201 122 206" stroke="#2B3A55" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Soft Pink Blushing Cheeks -->
+    <circle cx="73" cy="214" r="5" fill="#FB7185" opacity="0.75"/>
+    <circle cx="127" cy="214" r="5" fill="#FB7185" opacity="0.75"/>
+
+    <!-- Small Sweet Smile -->
+    <path d="M96 216C98 220 102 220 104 216" stroke="#2B3A55" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Abstract Grey Text Lines (Bottom Half) -->
+  <rect x="56" y="238" width="88" height="4" rx="2" fill="#94A3B8"/>
+  <rect x="56" y="248" width="76" height="4" rx="2" fill="#CBD5E1"/>
+  <rect x="56" y="258" width="82" height="4" rx="2" fill="#CBD5E1"/>
+  <rect x="56" y="268" width="60" height="4" rx="2" fill="#CBD5E1"/>
+
+  <!-- Corner Dog-Ear Fold at Bottom-Right -->
+  <path d="M142 302H156V286L142 302Z" fill="#94A3B8" stroke="#2B3A55" stroke-width="2"/>
+</svg>

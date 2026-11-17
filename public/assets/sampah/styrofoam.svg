@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 360" fill="none">
+  <defs>
+    <linearGradient id="foam-white" x1="100" y1="80" x2="100" y2="300" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.75" stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#E2E8F0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Open Lid (Tilted at top) -->
+  <path d="M42 120L62 76C66 68 80 62 100 62C120 62 134 68 138 76L158 120" fill="url(#foam-white)" stroke="#2B3A55" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- Lid latch tab -->
+  <rect x="92" y="56" width="16" height="8" rx="3" fill="#E2E8F0" stroke="#2B3A55" stroke-width="2"/>
+  <ellipse cx="100" cy="90" rx="34" ry="10" fill="#F1F5F9" stroke="#2B3A55" stroke-width="2"/>
+
+  <!-- Hinge / Opening Gap Shadow -->
+  <ellipse cx="100" cy="122" rx="60" ry="14" fill="#CBD5E1" stroke="#2B3A55" stroke-width="2"/>
+
+  <!-- Main Bottom Bowl / Clamshell Tray -->
+  <path d="M40 124L48 260C50 284 72 296 100 296C128 296 150 284 152 260L160 124" fill="url(#foam-white)" stroke="#2B3A55" stroke-width="3.5" stroke-linejoin="round"/>
+
+  <!-- Ribbed Horizontal Textures (Signature Styrofoam ridges) -->
+  <path d="M50 160C70 168 130 168 150 160" stroke="#E2E8F0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M52 200C72 208 128 208 148 200" stroke="#E2E8F0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M56 240C74 246 126 246 144 240" stroke="#E2E8F0" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Cute Pale Kawaii Face (Slightly nervous / brittle expression) -->
+  <g>
+    <!-- Left Eye with slight concern -->
+    <circle cx="86" cy="180" r="4.5" fill="#2B3A55"/>
+    <circle cx="84.8" cy="178.5" r="1.6" fill="#FFFFFF"/>
+
+    <!-- Right Eye with slight concern -->
+    <circle cx="114" cy="180" r="4.5" fill="#2B3A55"/>
+    <circle cx="112.8" cy="178.5" r="1.6" fill="#FFFFFF"/>
+
+    <!-- Soft Peach/Pink Cheeks -->
+    <circle cx="78" cy="188" r="4" fill="#FDA4AF" opacity="0.75"/>
+    <circle cx="122" cy="188" r="4" fill="#FDA4AF" opacity="0.75"/>
+
+    <!-- Cute wavy nervous mouth -->
+    <path d="M96 190C98 188 102 192 104 190" stroke="#2B3A55" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Crumbled White Beads / Little Styrofoam Particles Flecks -->
+  <circle cx="34" cy="240" r="3" fill="#FFFFFF" stroke="#2B3A55" stroke-width="1.5"/>
+  <circle cx="28" cy="256" r="2.5" fill="#FFFFFF" stroke="#2B3A55" stroke-width="1.5"/>
+  <circle cx="166" cy="235" r="3.5" fill="#FFFFFF" stroke="#2B3A55" stroke-width="1.5"/>
+  <circle cx="172" cy="250" r="2.5" fill="#FFFFFF" stroke="#2B3A55" stroke-width="1.5"/>
+
+  <!-- Rim Highlight -->
+  <path d="M46 132C70 142 130 142 154 132" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+</svg>

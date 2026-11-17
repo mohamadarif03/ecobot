@@ -1,0 +1,6 @@
+{
+  "name": "Aethera",
+  "description": "Beyond silence, we build the eternal. Digital havens for deep work and pure flows.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
