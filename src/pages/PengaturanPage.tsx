@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { User, Gamepad2, Eye, ShieldCheck } from "lucide-react";
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { usePlayerStore } from "../store/playerStore";
@@ -150,6 +150,22 @@ export const PengaturanPage: React.FC = () => {
               onNotifySave={triggerToast}
             />
           )}
+        </div>
+
+        {/* Help Center Banner Link */}
+        <div className="mt-8 p-4 rounded-2xl bg-sky-50 border border-sky-200/80 flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl">💬</span>
+            <span className="text-xs sm:text-sm text-sky-900 font-medium">
+              Ada pertanyaan seputar pengaturan atau cara bermain?
+            </span>
+          </div>
+          <Link
+            to="/bantuan?tab=faq"
+            className="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-all shadow-sm"
+          >
+            Buka FAQ Pusat Bantuan ↗
+          </Link>
         </div>
       </div>
 

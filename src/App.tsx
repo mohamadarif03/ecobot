@@ -14,10 +14,10 @@ import PencapaianPage from "./pages/PencapaianPage";
 import TokoPage from "./pages/TokoPage";
 import PapanPeringkatPage from "./pages/PapanPeringkatPage";
 import PengaturanPage from "./pages/PengaturanPage";
+import BantuanPage from "./pages/BantuanPage";
 import { SettingsApplier } from "./components/settings/SettingsApplier";
 import {
   PustakaPage,
-  BantuanPage,
 } from "./pages/PlaceholderPages";
 
 export default function App() {

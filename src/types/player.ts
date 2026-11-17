@@ -68,6 +68,9 @@ export interface PlayerSettings {
 
   // Bahasa
   language: "id" | "en";
+
+  // Panduan & Onboarding
+  tourSeen?: boolean;
 }
 
 export interface PlayerUpgrades {

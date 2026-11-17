@@ -85,6 +85,7 @@ export const DEFAULT_SETTINGS: PlayerSettings = {
   highContrast: false,
   iconLabels: true,
   language: "id",
+  tourSeen: false,
 };
 
 export const DEFAULT_UPGRADES: PlayerUpgrades = {
@@ -2745,6 +2746,10 @@ export function usePlayerStore() {
     }
   };
 
+  const setTourSeen = (seen: boolean) => {
+    updateSettings({ tourSeen: seen });
+  };
+
   const resetAllData = () => {
     try {
       if (typeof localStorage !== "undefined") {
@@ -3348,6 +3353,7 @@ export function usePlayerStore() {
     updateSettings,
     resetSettingsSection,
     updateProfile,
+    setTourSeen,
     resetAllData,
     restoreBackupData,
     undoRestoreBackup,

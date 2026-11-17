@@ -669,6 +669,16 @@ export default function MainGamePage() {
                     <p>• <strong>Esc:</strong> Jeda permainan dan buka menu pause.</p>
                   </div>
                 )}
+
+                <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-500">Butuh panduan lebih rinci?</span>
+                  <Link
+                    to="/bantuan?tab=kontrol"
+                    className="font-bold text-sky-600 hover:text-sky-700 underline"
+                  >
+                    Buka Panduan Kontrol & HUD ↗
+                  </Link>
+                </div>
               </div>
 
               {/* Mobile Portrait Recommendation Banner */}

@@ -784,6 +784,17 @@ export const GameStage: React.FC<GameStageProps> = ({
                     <span>Pengaturan Suara & Grafis</span>
                   </button>
 
+                  <a
+                    href="/bantuan?tab=kontrol"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 rounded-full bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/30 font-bold text-xs flex items-center justify-center gap-2 transition"
+                    title="Buka panduan kontrol dan tata letak layar di tab baru"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    <span>Panduan Kontrol & Bantuan ↗</span>
+                  </a>
+
                   <button
                     type="button"
                     onClick={onExit}

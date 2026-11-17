@@ -21,15 +21,3 @@ export function PustakaPage() {
     />
   );
 }
-
-export function BantuanPage() {
-  return (
-    <PlaceholderPage
-      title="Bantuan & Panduan"
-      subtitle="Cara bermain, panduan kontrol, dan tanya jawab ramah anak"
-      icon={<Info className="w-10 h-10 text-sky-600" />}
-      moduleName="Panduan Bermain bersama Ecobot"
-      description="Pelajari cara menggerakkan karakter, mengambil sampah, memilih tong yang tepat, serta tip agar selalu menang dalam misi."
-    />
-  );
-}

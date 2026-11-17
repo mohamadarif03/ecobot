@@ -78,6 +78,13 @@ import {
   getHabitLevel,
 } from "../data/aksiNyata/calculator.ts";
 import { CREATIVE_IDEAS } from "../data/aksiNyata/ideas.ts";
+import { FAQ_ITEMS, FAQ_CATEGORIES } from "../data/bantuan/faq.ts";
+import { searchHelpContent } from "../data/bantuan/search.ts";
+import { FEATURE_MENU_ITEMS } from "../data/bantuan/featureMap.ts";
+import { TOUR_STEPS } from "../data/bantuan/tour.ts";
+import { TRASH_BINS, STAR_RULES, CORE_PLAY_STEPS } from "../data/bantuan/guide.ts";
+import { ABOUT_CONFIG } from "../config/about.ts";
+import { CONTACT_CONFIG } from "../config/contact.ts";
 import type { MissionProgress } from "../types/player.ts";
 
 describe("Player Gamification Logic", () => {
@@ -1027,6 +1034,120 @@ describe("Pengaturan & Cadangan Progres (PRD 6.10, 9, 10)", () => {
     assert.equal(res.summary.level, 4); // 450 XP = level 4
   });
 });
+
+describe("Pusat Bantuan & Panduan Ramah Anak (PRD 6.11)", () => {
+  test("FAQ contains at least 26 realistic questions across 5 valid categories", () => {
+    assert.ok(FAQ_ITEMS.length >= 26, `FAQ should have at least 26 items, found ${FAQ_ITEMS.length}`);
+
+    const validCategories = new Set(["bermain", "hadiah", "belajar", "akun", "teknis"]);
+    const idSet = new Set<string>();
+
+    for (const item of FAQ_ITEMS) {
+      assert.ok(item.id.startsWith("faq-"), `FAQ id should start with 'faq-', got ${item.id}`);
+      assert.equal(idSet.has(item.id), false, `Duplicate FAQ id found: ${item.id}`);
+      idSet.add(item.id);
+
+      assert.ok(validCategories.has(item.category), `Invalid category ${item.category} in ${item.id}`);
+      assert.ok(item.question.length >= 10, `Question too short in ${item.id}`);
+      assert.ok(item.answer.length >= 20, `Answer too short in ${item.id}`);
+      assert.ok(Array.isArray(item.keywords) && item.keywords.length > 0, `Keywords missing in ${item.id}`);
+    }
+
+    // Check category filter metadata
+    assert.equal(FAQ_CATEGORIES.length, 6); // semua + 5 categories
+  });
+
+  test("Guide data contains 3 bins, 3 star rules, and core steps", () => {
+    assert.equal(TRASH_BINS.length, 3);
+    const binIds = TRASH_BINS.map((b) => b.id);
+    assert.deepEqual(binIds, ["organik", "anorganik", "b3"]);
+
+    assert.equal(STAR_RULES.length, 3);
+    assert.equal(STAR_RULES[0].stars, 1);
+    assert.equal(STAR_RULES[1].stars, 2);
+    assert.equal(STAR_RULES[2].stars, 3);
+
+    assert.equal(CORE_PLAY_STEPS.length, 3);
+  });
+
+  test("searchHelpContent returns ranked results across multiple tabs and handles edge cases", () => {
+    // Edge case: empty or too short
+    assert.deepEqual(searchHelpContent(""), []);
+    assert.deepEqual(searchHelpContent("a"), []);
+    assert.deepEqual(searchHelpContent("   "), []);
+
+    // Search "tong sampah" -> should match FAQ, Cara Bermain, etc.
+    const resTong = searchHelpContent("tong sampah");
+    assert.ok(resTong.length > 0);
+    assert.ok(resTong[0].score > 0);
+    const hasCaraBermain = resTong.some((r) => r.tab === "cara-bermain");
+    assert.ok(hasCaraBermain, "Search for 'tong sampah' should include Cara Bermain tab");
+
+    // Search "kidal" -> should match controls / technical FAQ
+    const resKidal = searchHelpContent("kidal");
+    assert.ok(resKidal.length > 0);
+    assert.ok(resKidal.some((r) => r.title.toLowerCase().includes("kidal") || r.snippet.toLowerCase().includes("kidal")));
+
+    // Search "3 bintang"
+    const resBintang = searchHelpContent("3 bintang");
+    assert.ok(resBintang.length > 0);
+
+    // Search "lag"
+    const resLag = searchHelpContent("lag");
+    assert.ok(resLag.length > 0);
+  });
+
+  test("Feature Map registers all 11 sidebar menus with ready status", () => {
+    assert.equal(FEATURE_MENU_ITEMS.length, 11);
+    const menuIds = FEATURE_MENU_ITEMS.map((f) => f.id);
+    const expected = [
+      "beranda",
+      "main-game",
+      "misi",
+      "pustaka",
+      "kuis",
+      "aksi-nyata",
+      "pencapaian",
+      "toko",
+      "papan-peringkat",
+      "pengaturan",
+      "bantuan",
+    ];
+    assert.deepEqual(menuIds, expected);
+
+    for (const item of FEATURE_MENU_ITEMS) {
+      assert.equal(item.status, "siap");
+      assert.ok(item.highlights.length >= 2);
+      assert.ok(item.path.startsWith("/"));
+    }
+  });
+
+  test("Guided Tour configuration has 6 ordered steps with mascot mood", () => {
+    assert.equal(TOUR_STEPS.length, 6);
+    TOUR_STEPS.forEach((step, idx) => {
+      assert.equal(step.stepNumber, idx + 1);
+      assert.ok(step.title.length > 0);
+      assert.ok(step.description.length > 0);
+      assert.ok(step.ecobotTip.length > 0);
+      assert.ok(step.mascotMood);
+    });
+  });
+
+  test("About & Contact config files contain non-empty metadata and safe kid guidelines", () => {
+    assert.ok(ABOUT_CONFIG.appName.includes("ECOBOT"));
+    assert.ok(ABOUT_CONFIG.version.length > 0);
+    assert.ok(ABOUT_CONFIG.credits.length >= 3);
+
+    assert.ok(CONTACT_CONFIG.supportEmail.includes("@"));
+    assert.ok(CONTACT_CONFIG.noticeForKids.length > 0);
+    assert.ok(CONTACT_CONFIG.notesForParents.length > 0);
+  });
+
+  test("DEFAULT_SETTINGS initializes tourSeen to false", () => {
+    assert.equal(DEFAULT_SETTINGS.tourSeen, false);
+  });
+});
+
 
 
 
