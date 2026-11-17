@@ -61,7 +61,11 @@ import type {
   InventoryState,
   TokoState,
   InventoryEquipped,
+  XpLogState,
+  LeaderboardState,
+  LigaHistoryItem,
 } from "../types/player.ts";
+import type { LigaStatus, LigaTier } from "../data/peringkat/types.ts";
 
 const STORAGE_KEY = "ecobot_player_state_v1";
 
@@ -137,6 +141,20 @@ export const DEFAULT_INVENTORY: InventoryState = {
 export const DEFAULT_TOKO: TokoState = {
   totalSpent: 0,
   purchases: [],
+};
+
+export const DEFAULT_XP_LOG: XpLogState = {
+  weekKey: getLocalWeekKey(),
+  weeklyXp: 0,
+  dailyXp: {},
+};
+
+export const DEFAULT_LEADERBOARD: LeaderboardState = {
+  showOnBoard: true,
+  liga: {
+    claimed: {},
+    history: [],
+  },
 };
 
 /**
@@ -298,7 +316,46 @@ export function checkAndApplyResets(prev: PlayerState, currentDate = new Date())
     },
   };
 
-  if (needsUpdate || !prev.missionState || !prev.quizProgress) {
+  // Weekly XP & Liga reset check
+  const currentXpLog = prev.xpLog || {
+    weekKey: currentWeekKey,
+    weeklyXp: 0,
+    dailyXp: {},
+  };
+  let newXpLog = currentXpLog;
+  let newLeaderboard = prev.leaderboard || DEFAULT_LEADERBOARD;
+
+  if (currentXpLog.weekKey !== currentWeekKey) {
+    needsUpdate = true;
+    const prevWeeklyXp = currentXpLog.weeklyXp || 0;
+    let archivedTier: "perunggu" | "perak" | "emas" | null = null;
+    if (prevWeeklyXp >= 500) archivedTier = "emas";
+    else if (prevWeeklyXp >= 250) archivedTier = "perak";
+    else if (prevWeeklyXp >= 100) archivedTier = "perunggu";
+
+    const historyItem: LigaHistoryItem = {
+      weekKey: currentXpLog.weekKey,
+      tier: archivedTier,
+      weeklyXp: prevWeeklyXp,
+      completedAt: effectiveDate.toISOString(),
+    };
+
+    newLeaderboard = {
+      ...newLeaderboard,
+      liga: {
+        ...newLeaderboard.liga,
+        history: [historyItem, ...(newLeaderboard.liga?.history || [])].slice(0, 8),
+      },
+    };
+
+    newXpLog = {
+      weekKey: currentWeekKey,
+      weeklyXp: 0,
+      dailyXp: {},
+    };
+  }
+
+  if (needsUpdate || !prev.missionState || !prev.quizProgress || !prev.xpLog || !prev.leaderboard) {
     return {
       ...prev,
       missionState: updatedMissionState,
@@ -307,6 +364,8 @@ export function checkAndApplyResets(prev: PlayerState, currentDate = new Date())
       contentProgress: prev.contentProgress || {},
       uniqueSets: prev.uniqueSets || { topicsRead: [], perfectQuizzes: [] },
       claimHistory: prev.claimHistory || [],
+      xpLog: newXpLog,
+      leaderboard: newLeaderboard,
     };
   }
 
@@ -340,6 +399,8 @@ export const INITIAL_PLAYER_STATE: PlayerState = (() => {
     achievements: DEFAULT_ACHIEVEMENTS,
     inventory: DEFAULT_INVENTORY,
     toko: DEFAULT_TOKO,
+    xpLog: DEFAULT_XP_LOG,
+    leaderboard: DEFAULT_LEADERBOARD,
     simulatedDateOffsetDays: 0,
     badges: [],
     activityLog: [],
@@ -535,6 +596,36 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
         { itemId: "kacamata-bulat", price: 50, at: "Kemarin" },
         { itemId: "stiker-daun", price: 30, at: "Kemarin" },
       ],
+    },
+    xpLog: {
+      weekKey: getLocalWeekKey(),
+      weeklyXp: 180,
+      dailyXp: {},
+    },
+    leaderboard: {
+      showOnBoard: true,
+      rankSnapshot: {
+        weeklyRank: 8,
+        allTimeRank: 12,
+        updatedAt: new Date().toISOString(),
+      },
+      liga: {
+        claimed: {},
+        history: [
+          {
+            weekKey: "2026-W45",
+            tier: "perak",
+            weeklyXp: 280,
+            completedAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+          },
+          {
+            weekKey: "2026-W44",
+            tier: "perunggu",
+            weeklyXp: 160,
+            completedAt: new Date(Date.now() - 14 * 86400000).toISOString(),
+          },
+        ],
+      },
     },
     simulatedDateOffsetDays: 0,
     badges: [
@@ -1255,8 +1346,32 @@ export function usePlayerStore() {
     }));
   };
 
-  const addXp = (amount: number, reason: string) => {
+  const addXp = (amount: number, reason: string, options?: { source?: string }) => {
     setPlayerState((prev) => {
+      const effectiveDate = new Date();
+      if (prev.simulatedDateOffsetDays) {
+        effectiveDate.setDate(effectiveDate.getDate() + prev.simulatedDateOffsetDays);
+      }
+      const dateKey = getLocalDateKey(effectiveDate);
+      const weekKey = getLocalWeekKey(effectiveDate);
+
+      const currentXpLog =
+        prev.xpLog && prev.xpLog.weekKey === weekKey
+          ? prev.xpLog
+          : { weekKey, weeklyXp: 0, dailyXp: {} };
+
+      const isLiga = options?.source === "liga";
+      const addWeekly = isLiga ? 0 : amount;
+
+      const updatedXpLog: XpLogState = {
+        weekKey,
+        weeklyXp: currentXpLog.weeklyXp + addWeekly,
+        dailyXp: {
+          ...currentXpLog.dailyXp,
+          [dateKey]: (currentXpLog.dailyXp[dateKey] || 0) + addWeekly,
+        },
+      };
+
       const newXp = prev.xp + amount;
       const newActivity: ActivityItem = {
         id: "act-" + Date.now(),
@@ -1271,6 +1386,7 @@ export function usePlayerStore() {
       return {
         ...prev,
         xp: newXp,
+        xpLog: updatedXpLog,
         activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
       };
     });
@@ -2951,6 +3067,106 @@ export function usePlayerStore() {
     });
   };
 
+  // Leaderboard & Liga Actions
+  const setShowOnBoard = (show: boolean) => {
+    setPlayerState((prev) => {
+      const lb = prev.leaderboard || DEFAULT_LEADERBOARD;
+      return {
+        ...prev,
+        leaderboard: {
+          ...lb,
+          showOnBoard: show,
+        },
+      };
+    });
+  };
+
+  const updateRankSnapshot = (weeklyRank: number, allTimeRank: number) => {
+    setPlayerState((prev) => {
+      const lb = prev.leaderboard || DEFAULT_LEADERBOARD;
+      return {
+        ...prev,
+        leaderboard: {
+          ...lb,
+          rankSnapshot: {
+            weeklyRank,
+            allTimeRank,
+            updatedAt: new Date().toISOString(),
+          },
+        },
+      };
+    });
+  };
+
+  const claimLigaReward = (tier: LigaTier) => {
+    let claimedSuccess = false;
+    let earnedPoints = 0;
+    let earnedXp = 0;
+
+    setPlayerState((prev) => {
+      const effectiveDate = new Date();
+      if (prev.simulatedDateOffsetDays) {
+        effectiveDate.setDate(effectiveDate.getDate() + prev.simulatedDateOffsetDays);
+      }
+      const weekKey = getLocalWeekKey(effectiveDate);
+      const weeklyXp = prev.xpLog && prev.xpLog.weekKey === weekKey ? prev.xpLog.weeklyXp : 0;
+
+      const threshold = tier === "emas" ? 500 : tier === "perak" ? 250 : 100;
+      if (weeklyXp < threshold) {
+        return prev;
+      }
+
+      const claimKey = `${weekKey}_${tier}`;
+      const lb = prev.leaderboard || DEFAULT_LEADERBOARD;
+      if (lb.liga?.claimed?.[claimKey]) {
+        return prev;
+      }
+
+      claimedSuccess = true;
+      earnedPoints = tier === "emas" ? 120 : tier === "perak" ? 60 : 30;
+      earnedXp = tier === "emas" ? 60 : tier === "perak" ? 30 : 15;
+
+      const updatedClaimed = {
+        ...(lb.liga?.claimed || {}),
+        [claimKey]: true,
+      };
+
+      const newActivity: ActivityItem = {
+        id: "act-" + Date.now(),
+        title: `Klaim Hadiah Liga ${tier.charAt(0).toUpperCase() + tier.slice(1)}`,
+        description: `Mendapatkan +${earnedPoints} Poin & +${earnedXp} XP`,
+        timestamp: "Baru saja",
+        type: "game",
+        xpEarned: earnedXp,
+        pointsEarned: earnedPoints,
+      };
+
+      const nextState: PlayerState = {
+        ...prev,
+        points: prev.points + earnedPoints,
+        xp: prev.xp + earnedXp,
+        leaderboard: {
+          ...lb,
+          liga: {
+            ...lb.liga,
+            claimed: updatedClaimed,
+            history: lb.liga?.history || [],
+          },
+        },
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+      };
+
+      return nextState;
+    });
+
+    if (claimedSuccess) {
+      recordEvent("liga_diklaim", { id: tier });
+      if (tier === "emas") {
+        recordEvent("liga_emas", { id: "emas" });
+      }
+    }
+  };
+
   return {
     state,
     setNickname,
@@ -3008,6 +3224,13 @@ export function usePlayerStore() {
     getStatsSummary: () => getStatsSummary(state),
     getRadarScores: () => getRadarScores(state),
     getCertificateStatus: () => getCertificateStatus(state),
+    // Leaderboard & Liga
+    setShowOnBoard,
+    updateRankSnapshot,
+    claimLigaReward,
+    getWeeklyXp: () => getWeeklyXp(state),
+    getLigaStatus: () => getLigaStatus(state),
+    hasUnclaimedLigaReward: () => hasUnclaimedLigaReward(state),
   };
 }
 
@@ -3329,4 +3552,81 @@ export function getNearestAffordable(
     item: nearest,
     diff: nearest.harga - state.points,
   };
+}
+
+/**
+ * Standalone selectors for Leaderboard & Liga
+ */
+export function getWeeklyXp(state: PlayerState, currentDate = new Date()): number {
+  const effectiveDate = new Date(currentDate);
+  if (state.simulatedDateOffsetDays) {
+    effectiveDate.setDate(effectiveDate.getDate() + state.simulatedDateOffsetDays);
+  }
+  const weekKey = getLocalWeekKey(effectiveDate);
+  if (state.xpLog && state.xpLog.weekKey === weekKey) {
+    return state.xpLog.weeklyXp || 0;
+  }
+  return 0;
+}
+
+export function getLigaStatus(state: PlayerState, currentDate = new Date()): LigaStatus {
+  const effectiveDate = new Date(currentDate);
+  if (state.simulatedDateOffsetDays) {
+    effectiveDate.setDate(effectiveDate.getDate() + state.simulatedDateOffsetDays);
+  }
+  const weekKey = getLocalWeekKey(effectiveDate);
+  const weeklyXp = getWeeklyXp(state, effectiveDate);
+
+  const claimedPerunggu = Boolean(state.leaderboard?.liga?.claimed?.[`${weekKey}_perunggu`]);
+  const claimedPerak = Boolean(state.leaderboard?.liga?.claimed?.[`${weekKey}_perak`]);
+  const claimedEmas = Boolean(state.leaderboard?.liga?.claimed?.[`${weekKey}_emas`]);
+
+  const canClaimPerunggu = weeklyXp >= 100 && !claimedPerunggu;
+  const canClaimPerak = weeklyXp >= 250 && !claimedPerak;
+  const canClaimEmas = weeklyXp >= 500 && !claimedEmas;
+
+  let currentTier: LigaTier | null = null;
+  let nextTier: LigaTier | null = "perunggu";
+  let xpToNextTier = 100 - weeklyXp;
+  let percentToNext = Math.min(100, Math.round((weeklyXp / 100) * 100));
+
+  if (weeklyXp >= 500) {
+    currentTier = "emas";
+    nextTier = null;
+    xpToNextTier = 0;
+    percentToNext = 100;
+  } else if (weeklyXp >= 250) {
+    currentTier = "perak";
+    nextTier = "emas";
+    xpToNextTier = 500 - weeklyXp;
+    percentToNext = Math.min(100, Math.round(((weeklyXp - 250) / 250) * 100));
+  } else if (weeklyXp >= 100) {
+    currentTier = "perunggu";
+    nextTier = "perak";
+    xpToNextTier = 250 - weeklyXp;
+    percentToNext = Math.min(100, Math.round(((weeklyXp - 100) / 150) * 100));
+  }
+
+  return {
+    currentTier,
+    nextTier,
+    weeklyXp,
+    xpToNextTier: Math.max(0, xpToNextTier),
+    percentToNext,
+    canClaim: {
+      perunggu: canClaimPerunggu,
+      perak: canClaimPerak,
+      emas: canClaimEmas,
+    },
+    claimed: {
+      perunggu: claimedPerunggu,
+      perak: claimedPerak,
+      emas: claimedEmas,
+    },
+  };
+}
+
+export function hasUnclaimedLigaReward(state: PlayerState): boolean {
+  const status = getLigaStatus(state);
+  return status.canClaim.perunggu || status.canClaim.perak || status.canClaim.emas;
 }

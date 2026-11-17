@@ -16,6 +16,7 @@ import {
   selectClaimableCount,
   getChallengeStatus,
   getNewAchievementCount,
+  hasUnclaimedLigaReward,
 } from "../../store/playerStore";
 import { calculateLevel } from "../../data/levels";
 import { EcobotMascot } from "../ecobot/EcobotMascot";
@@ -238,6 +239,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false }) => {
                         badgeText = `${claimableMissionsCount}`;
                       } else if (subItem.badgeKey === "newBadges" && newBadgesCount > 0) {
                         badgeText = `${newBadgesCount}`;
+                      } else if (subItem.path === "/papan-peringkat" && hasUnclaimedLigaReward(state)) {
+                        badgeText = "!";
                       }
 
                       return (

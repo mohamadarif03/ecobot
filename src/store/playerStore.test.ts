@@ -13,6 +13,7 @@ import {
   DAILY_MISSION_POOL,
   WEEKLY_MISSIONS,
   MAIN_MILESTONE_MISSIONS,
+  getLocalWeekKey,
 } from "../data/missions.ts";
 import {
   createDefaultMissionState,
@@ -40,7 +41,13 @@ import {
   getEquipped,
   getAffordableItems,
   grantBadgeItems,
+  getWeeklyXp,
+  getLigaStatus,
+  hasUnclaimedLigaReward,
 } from "./playerStore.ts";
+import { leaderboardService, getSurroundingEntries } from "../services/leaderboard/index.ts";
+import { sanitizeNickname, hasProfanity } from "../data/peringkat/profanity.ts";
+import { LIGA_TIERS } from "../data/peringkat/liga.ts";
 import { ALL_SHOP_ITEMS } from "../data/toko/items.ts";
 import { BADGE_DEFINITIONS } from "../data/pencapaian/badges.ts";
 import { FACT_CARDS } from "../data/pencapaian/factCards.ts";
@@ -492,8 +499,8 @@ describe("Aksi Nyata & Eco-Habits System (PRD 6.6)", () => {
 });
 
 describe("Centralized Achievements & Prestasi System", () => {
-  test("BADGE_DEFINITIONS has exactly 13 badges across 4 categories (including Gaya Keren)", () => {
-    assert.equal(BADGE_DEFINITIONS.length, 13);
+  test("BADGE_DEFINITIONS has exactly 14 badges across 4 categories (including Gaya Keren & Bintang Mingguan)", () => {
+    assert.equal(BADGE_DEFINITIONS.length, 14);
     const categories = new Set(BADGE_DEFINITIONS.map((b) => b.kategori));
     assert.ok(categories.has("game"));
     assert.ok(categories.has("belajar"));
@@ -763,6 +770,149 @@ describe("Toko & Kustomisasi System (PRD 6.9)", () => {
     assert.equal(res2.newItems.length, 0);
   });
 });
+
+describe("Papan Peringkat & Liga Mingguan (PRD 6.8)", () => {
+  test("profanity filter and sanitizer fall back safely without leaking offensive names", () => {
+    assert.equal(hasProfanity("anakbaik"), false);
+    assert.equal(hasProfanity("anjing"), true);
+    assert.equal(hasProfanity("b@bi"), false); // normalized alphanumeric
+    assert.equal(hasProfanity("babi"), true);
+
+    assert.equal(sanitizeNickname("BumiCeria"), "BumiCeria");
+    assert.equal(sanitizeNickname("  "), "Pahlawan Bumi");
+    assert.equal(sanitizeNickname("a"), "Pahlawan Bumi");
+    assert.equal(sanitizeNickname("anjing"), "Pahlawan Bumi");
+  });
+
+  test("leaderboardService generates 19 entries, properly sorted descending by XP with valid ranks", () => {
+    const currentWeekKey = getLocalWeekKey();
+    const testState = {
+      ...INITIAL_PLAYER_STATE,
+      nickname: "RakaTest",
+      xp: 450,
+      xpLog: {
+        weekKey: currentWeekKey,
+        weeklyXp: 300,
+        dailyXp: {},
+      },
+    };
+
+    const res = leaderboardService.getLeaderboard("mingguan", testState);
+    assert.equal(res.period, "mingguan");
+    assert.equal(res.totalParticipants, 19); // 18 demo + 1 user
+    assert.equal(res.entries.length, 19);
+
+    // Verify descending sort
+    for (let i = 0; i < res.entries.length - 1; i++) {
+      assert.ok(
+        res.entries[i].xp >= res.entries[i + 1].xp,
+        `Entry at index ${i} (${res.entries[i].xp}) should be >= index ${i + 1} (${res.entries[i + 1].xp})`
+      );
+      assert.equal(res.entries[i].rank, i + 1);
+    }
+
+    // Verify current user entry exists and matches rank
+    const user = res.entries.find((e) => e.isCurrentUser);
+    assert.ok(user);
+    assert.equal(user.nickname, "RakaTest");
+    assert.equal(user.xp, 300);
+    assert.equal(user.rank, res.currentUserEntry.rank);
+  });
+
+  test("privacy toggle showOnBoard: false disguises player as Pemain Rahasia", () => {
+    const privateState = {
+      ...INITIAL_PLAYER_STATE,
+      nickname: "AnakHebat",
+      avatar: "🚀",
+      leaderboard: {
+        showOnBoard: false,
+        liga: { claimed: {}, history: [] },
+      },
+    };
+
+    const res = leaderboardService.getLeaderboard("sepanjang-masa", privateState);
+    const user = res.entries.find((e) => e.isCurrentUser);
+    assert.ok(user);
+    assert.equal(user.nickname, "Pemain Rahasia");
+    assert.equal(user.avatar, "🕵️");
+  });
+
+  test("getLigaStatus computes correct progression across Perunggu, Perak, and Emas", () => {
+    const currentWeekKey = getLocalWeekKey();
+
+    // 1. Under 100 XP -> Belum Masuk Liga
+    const stateLow = {
+      ...INITIAL_PLAYER_STATE,
+      xpLog: { weekKey: currentWeekKey, weeklyXp: 40, dailyXp: {} },
+    };
+    const sLow = getLigaStatus(stateLow);
+    assert.equal(sLow.currentTier, null);
+    assert.equal(sLow.nextTier, "perunggu");
+    assert.equal(sLow.canClaim.perunggu, false);
+    assert.equal(hasUnclaimedLigaReward(stateLow), false);
+
+    // 2. 120 XP -> Perunggu reached, can claim
+    const statePerunggu = {
+      ...INITIAL_PLAYER_STATE,
+      xpLog: { weekKey: currentWeekKey, weeklyXp: 120, dailyXp: {} },
+    };
+    const sPerunggu = getLigaStatus(statePerunggu);
+    assert.equal(sPerunggu.currentTier, "perunggu");
+    assert.equal(sPerunggu.nextTier, "perak");
+    assert.equal(sPerunggu.canClaim.perunggu, true);
+    assert.equal(sPerunggu.canClaim.perak, false);
+    assert.equal(hasUnclaimedLigaReward(statePerunggu), true);
+
+    // 3. 260 XP -> Perak reached
+    const statePerak = {
+      ...INITIAL_PLAYER_STATE,
+      xpLog: { weekKey: currentWeekKey, weeklyXp: 260, dailyXp: {} },
+    };
+    const sPerak = getLigaStatus(statePerak);
+    assert.equal(sPerak.currentTier, "perak");
+    assert.equal(sPerak.nextTier, "emas");
+    assert.equal(sPerak.canClaim.perunggu, true);
+    assert.equal(sPerak.canClaim.perak, true);
+    assert.equal(sPerak.canClaim.emas, false);
+
+    // 4. 520 XP -> Emas reached (max tier)
+    const stateEmas = {
+      ...INITIAL_PLAYER_STATE,
+      xpLog: { weekKey: currentWeekKey, weeklyXp: 520, dailyXp: {} },
+    };
+    const sEmas = getLigaStatus(stateEmas);
+    assert.equal(sEmas.currentTier, "emas");
+    assert.equal(sEmas.nextTier, null);
+    assert.equal(sEmas.canClaim.emas, true);
+  });
+
+  test("getSurroundingEntries returns surrounding slice if rank > 10 and empty if rank <= 10", () => {
+    const dummyEntries = Array.from({ length: 20 }, (_, i) => ({
+      id: `p-${i + 1}`,
+      isCurrentUser: i + 1 === 14,
+      isDemo: true,
+      rank: i + 1,
+      nickname: `P${i + 1}`,
+      avatar: "🤖",
+      level: 1,
+      title: "Relawan",
+      xp: 500 - i * 10,
+      trend: "tetap" as const,
+    }));
+
+    // User rank 14 (> 10) -> returns rank 13, 14, 15
+    const surrounding = getSurroundingEntries(dummyEntries, 14);
+    assert.equal(surrounding.length, 3);
+    assert.equal(surrounding[0].rank, 13);
+    assert.equal(surrounding[1].rank, 14);
+    assert.equal(surrounding[2].rank, 15);
+
+    // User rank 5 (<= 10) -> returns empty array
+    const topSlice = getSurroundingEntries(dummyEntries, 5);
+    assert.equal(topSlice.length, 0);
+  });
+});
+
 
 
 

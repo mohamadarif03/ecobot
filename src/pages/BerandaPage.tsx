@@ -22,7 +22,7 @@ import {
 import { DashboardLayout } from "../components/dashboard/DashboardLayout";
 import { EcobotMascot } from "../components/ecobot/EcobotMascot";
 import { ItemArt } from "../data/toko/art";
-import { usePlayerStore } from "../store/playerStore";
+import { usePlayerStore, getWeeklyXp, getLigaStatus } from "../store/playerStore";
 import { calculateLevel } from "../data/levels";
 import { getTodayFact } from "../data/facts";
 
@@ -59,6 +59,8 @@ export default function BerandaPage() {
 
   const levelInfo = calculateLevel(state.xp);
   const todayFact = getTodayFact();
+  const weeklyXp = getWeeklyXp(state);
+  const ligaStatus = getLigaStatus(state);
 
   // Progress in current level
   const currentLevelXp = Math.max(0, state.xp - levelInfo.minXp);
@@ -485,6 +487,36 @@ export default function BerandaPage() {
                     ))}
                   </div>
                 )}
+              </div>
+
+              {/* CARD 6: Peringkat & Liga Mingguan */}
+              <div className="bg-gradient-to-r from-sky-500/10 via-emerald-500/10 to-teal-500/10 rounded-[24px] p-5 sm:p-6 border border-sky-200/80 shadow-[0_2px_10px_rgba(14,165,233,0.04)] flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
+                    {ligaStatus.currentTier ? (ligaStatus.currentTier === "emas" ? "🥇" : ligaStatus.currentTier === "perak" ? "🥈" : "🥉") : "🏆"}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[16px] font-black text-slate-900 leading-tight">
+                        Peringkat Mingguanmu
+                      </h3>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        {ligaStatus.currentTier ? `Liga ${ligaStatus.currentTier.charAt(0).toUpperCase() + ligaStatus.currentTier.slice(1)}` : "Tantangan Baru"}
+                      </span>
+                    </div>
+                    <p className="text-[12px] font-medium text-slate-500 mt-0.5">
+                      Kamu sudah mengumpulkan <strong className="text-emerald-600 font-bold">{weeklyXp} XP</strong> minggu ini. Terus tingkatkan untuk naik podium!
+                    </p>
+                  </div>
+                </div>
+
+                <Link
+                  to="/papan-peringkat"
+                  className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-xs shadow-sm transition-all"
+                >
+                  <span>Lihat Papan Peringkat</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
               </div>
             </>
           ) : (

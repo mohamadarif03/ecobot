@@ -260,4 +260,26 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
       return bought >= 5;
     },
   },
+  {
+    id: "bintang-mingguan",
+    nama: "Bintang Mingguan",
+    deskripsi: "Capai target Liga Emas (500 XP dalam satu minggu) di Papan Peringkat.",
+    kategori: "spesial",
+    ikon: "🌟",
+    syaratTeks: "Raih Liga Emas (500 XP seminggu)",
+    available: true,
+    target: 1,
+    pesanEcobot: "Luar biasa! Kamu meraih target Liga Emas minggu ini, bintang pelindung bumi sejati!",
+    tautan: "/papan-peringkat?tab=liga",
+    ambilProgres: (state: PlayerState) => {
+      const weeklyXp = state.xpLog?.weeklyXp || 0;
+      const historyHasEmas = state.leaderboard?.liga?.history?.some((h) => h.tier === "emas");
+      return weeklyXp >= 500 || historyHasEmas ? 1 : 0;
+    },
+    cek: (state: PlayerState) => {
+      const weeklyXp = state.xpLog?.weeklyXp || 0;
+      const historyHasEmas = state.leaderboard?.liga?.history?.some((h) => h.tier === "emas");
+      return Boolean(weeklyXp >= 500 || historyHasEmas);
+    },
+  },
 ];

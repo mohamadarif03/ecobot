@@ -22,20 +22,6 @@ export function PustakaPage() {
   );
 }
 
-
-
-export function PapanPeringkatPage() {
-  return (
-    <PlaceholderPage
-      title="Papan Peringkat"
-      subtitle="Lihat relawan cilik teraktif minggu ini di seluruh kota"
-      icon={<Award className="w-10 h-10 text-indigo-600" />}
-      moduleName="Papan Peringkat Mingguan"
-      description="Kumpulkan XP dari game, kuis, dan aksi nyata untuk memuncaki podium pahlawan lingkungan tanpa data pribadi."
-    />
-  );
-}
-
 export function PengaturanPage() {
   return (
     <PlaceholderPage

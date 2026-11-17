@@ -235,6 +235,32 @@ export interface TokoState {
   purchases: TokoPurchaseRecord[];
 }
 
+export interface XpLogState {
+  weekKey: string;
+  weeklyXp: number;
+  dailyXp: Record<string, number>;
+}
+
+export interface LigaHistoryItem {
+  weekKey: string;
+  tier: "perunggu" | "perak" | "emas" | null;
+  weeklyXp: number;
+  completedAt: string;
+}
+
+export interface LeaderboardState {
+  showOnBoard: boolean;
+  rankSnapshot?: {
+    weeklyRank: number;
+    allTimeRank: number;
+    updatedAt: string;
+  };
+  liga: {
+    claimed: Record<string, boolean>;
+    history: LigaHistoryItem[];
+  };
+}
+
 export interface PlayerState {
   nickname: string;
   avatar: string; // avatar identifier
@@ -257,6 +283,8 @@ export interface PlayerState {
   achievements?: AchievementsState;
   inventory?: InventoryState;
   toko?: TokoState;
+  xpLog?: XpLogState;
+  leaderboard?: LeaderboardState;
   simulatedDateOffsetDays?: number;
   badges: Badge[];
   activityLog: ActivityItem[];

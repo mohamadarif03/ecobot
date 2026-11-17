@@ -12,9 +12,9 @@ import KuisPlayerPage from "./pages/KuisPlayerPage";
 import AksiNyataPage from "./pages/AksiNyataPage";
 import PencapaianPage from "./pages/PencapaianPage";
 import TokoPage from "./pages/TokoPage";
+import PapanPeringkatPage from "./pages/PapanPeringkatPage";
 import {
   PustakaPage,
-  PapanPeringkatPage,
   PengaturanPage,
   BantuanPage,
 } from "./pages/PlaceholderPages";
