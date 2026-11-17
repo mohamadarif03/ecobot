@@ -4,10 +4,10 @@ import SectionPage from "./pages/SectionPage";
 import BerandaPage from "./pages/BerandaPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import MainGamePage from "./pages/MainGamePage";
+import MisiPage from "./pages/MisiPage";
 import PrivasiPage from "./pages/PrivasiPage";
 import SumberPage from "./pages/SumberPage";
 import {
-  MisiPage,
   PustakaPage,
   KuisPage,
   AksiNyataPage,

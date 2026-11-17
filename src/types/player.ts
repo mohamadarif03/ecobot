@@ -66,6 +66,41 @@ export interface PlayerStats {
   quizzesCompleted: number;
 }
 
+export interface MissionState {
+  harian: {
+    dateKey: string;
+    missionIds: string[];
+    progress: Record<string, number>;
+    claimed: Record<string, boolean>;
+    chestClaimed: boolean;
+  };
+  mingguan: {
+    weekKey: string;
+    missionIds: string[];
+    progress: Record<string, number>;
+    claimed: Record<string, boolean>;
+    chestClaimed: boolean;
+  };
+  utama: {
+    progress: Record<string, number>;
+    claimed: Record<string, boolean>;
+  };
+}
+
+export interface ClaimHistoryItem {
+  id: string;
+  missionId: string;
+  title: string;
+  xp: number;
+  poin: number;
+  at: string;
+}
+
+export interface UniqueEventSets {
+  topicsRead: string[];
+  perfectQuizzes: string[];
+}
+
 export interface PlayerState {
   nickname: string;
   avatar: string; // avatar identifier
@@ -79,6 +114,10 @@ export interface PlayerState {
   upgrades: PlayerUpgrades;
   character: CharacterCustomization;
   dailyMissions: DailyMission[];
+  missionState: MissionState;
+  claimHistory: ClaimHistoryItem[];
+  uniqueSets: UniqueEventSets;
+  simulatedDateOffsetDays?: number;
   badges: Badge[];
   activityLog: ActivityItem[];
   stats: PlayerStats;

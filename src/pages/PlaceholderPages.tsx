@@ -1,6 +1,5 @@
 import { PlaceholderPage } from "../components/dashboard/PlaceholderPage";
 import {
-  Target,
   BookOpen,
   HelpCircle,
   Leaf,
@@ -10,18 +9,6 @@ import {
   Settings,
   Info,
 } from "lucide-react";
-
-export function MisiPage() {
-  return (
-    <PlaceholderPage
-      title="Misi & Tugas"
-      subtitle="Selesaikan misi harian, mingguan, dan zona utama"
-      icon={<Target className="w-10 h-10 text-emerald-600" />}
-      moduleName="Pusat Misi"
-      description="Kumpulkan XP dan Poin dengan menyelesaikan misi pemilahan sampah, membaca artikel lingkungan, dan menjaga streak belajar."
-    />
-  );
-}
 
 export function PustakaPage() {
   return (

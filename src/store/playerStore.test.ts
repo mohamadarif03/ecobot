@@ -8,6 +8,19 @@ import {
   calculateCityCleanlinessMeter,
   GAME_MISSIONS,
 } from "../data/gameMissions.ts";
+import {
+  getDailyMissionsForDate,
+  DAILY_MISSION_POOL,
+  WEEKLY_MISSIONS,
+  MAIN_MILESTONE_MISSIONS,
+} from "../data/missions.ts";
+import {
+  createDefaultMissionState,
+  dispatchRecordEvent,
+  selectClaimableCount,
+  getMissionsWithStatus,
+  INITIAL_PLAYER_STATE,
+} from "./playerStore.ts";
 import type { MissionProgress } from "../types/player.ts";
 
 describe("Player Gamification Logic", () => {
@@ -151,5 +164,77 @@ describe("Game Missions & Rules (PRD 7.4, 7.6)", () => {
     }));
 
     assert.equal(calculateCityCleanlinessMeter(allCompletedMaxStars), 100);
+  });
+});
+
+describe("Missions System & Reset Logic (PRD 6.3)", () => {
+  test("getDailyMissionsForDate is deterministic and guarantees 1 learning & 1 game", () => {
+    const dateKey = "2026-11-17";
+    const run1 = getDailyMissionsForDate(dateKey);
+    const run2 = getDailyMissionsForDate(dateKey);
+
+    assert.equal(run1.length, 3);
+    assert.deepEqual(run1.map((m) => m.id), run2.map((m) => m.id));
+
+    // Must have at least 1 learning (baca or kuis)
+    const hasLearning = run1.some((m) => m.kategori === "baca" || m.kategori === "kuis");
+    assert.ok(hasLearning, "Harus ada minimal 1 misi belajar");
+
+    // Must have at least 1 game
+    const hasGame = run1.some((m) => m.kategori === "game");
+    assert.ok(hasGame, "Harus ada minimal 1 misi game");
+
+    // All 3 IDs must be unique
+    const uniqueIds = new Set(run1.map((m) => m.id));
+    assert.equal(uniqueIds.size, 3);
+  });
+
+  test("dispatchRecordEvent advances progress up to target", () => {
+    let state = {
+      ...INITIAL_PLAYER_STATE,
+      missionState: createDefaultMissionState(),
+    };
+
+    // Find an active daily mission
+    const activeDailyId = state.missionState.harian.missionIds[0];
+    const def = DAILY_MISSION_POOL.find((d) => d.id === activeDailyId);
+    assert.ok(def);
+
+    state = dispatchRecordEvent(state, def.event, { amount: 1 });
+    assert.equal(state.missionState.harian.progress[def.id], 1);
+
+    // Over-reporting cannot exceed target
+    state = dispatchRecordEvent(state, def.event, { amount: 999 });
+    assert.equal(state.missionState.harian.progress[def.id], def.target);
+  });
+
+  test("selectClaimableCount accurately counts ready missions", () => {
+    let state = {
+      ...INITIAL_PLAYER_STATE,
+      missionState: createDefaultMissionState(),
+    };
+    assert.equal(selectClaimableCount(state), 0);
+
+    const activeDailyId = state.missionState.harian.missionIds[0];
+    const def = DAILY_MISSION_POOL.find((d) => d.id === activeDailyId);
+    assert.ok(def);
+
+    state = dispatchRecordEvent(state, def.event, { amount: def.target });
+    assert.equal(selectClaimableCount(state), 1);
+  });
+
+  test("getMissionsWithStatus formats weekly and utama lists correctly", () => {
+    const state = {
+      ...INITIAL_PLAYER_STATE,
+      missionState: createDefaultMissionState(),
+    };
+
+    const weekly = getMissionsWithStatus(state, "mingguan");
+    assert.equal(weekly.length, WEEKLY_MISSIONS.length);
+    assert.equal(weekly.length, 3);
+
+    const utama = getMissionsWithStatus(state, "utama");
+    assert.equal(utama.length, MAIN_MILESTONE_MISSIONS.length);
+    assert.equal(utama.length, 8);
   });
 });

@@ -39,7 +39,7 @@ function getPast7Days(activeDays: string[]) {
 
 export default function BerandaPage() {
   const navigate = useNavigate();
-  const { state, updateStreak, claimDailyMission } = usePlayerStore();
+  const { state, updateStreak, claimDailyMission, recordEvent } = usePlayerStore();
   const [activeTab, setActiveTab] = useState<"ringkasan" | "aktivitas">("ringkasan");
   const [showFactModal, setShowFactModal] = useState(false);
 
@@ -50,9 +50,10 @@ export default function BerandaPage() {
     }
   }, [state.nickname, navigate]);
 
-  // Update daily streak on mount
+  // Update daily streak and record daily fact read on mount
   useEffect(() => {
     updateStreak();
+    recordEvent("fakta_dibaca");
   }, [updateStreak]);
 
   const levelInfo = calculateLevel(state.xp);

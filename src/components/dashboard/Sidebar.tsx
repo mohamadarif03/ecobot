@@ -11,7 +11,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { MENU_GROUPS } from "../../config/navigation";
-import { usePlayerStore } from "../../store/playerStore";
+import { usePlayerStore, selectClaimableCount } from "../../store/playerStore";
 import { calculateLevel } from "../../data/levels";
 import { EcobotMascot } from "../ecobot/EcobotMascot";
 
@@ -26,10 +26,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false }) => {
   const { state } = usePlayerStore();
   const levelInfo = calculateLevel(state.xp);
 
-  // Calculate badges for groups
-  const claimableMissionsCount = state.dailyMissions.filter(
-    (m) => m.current >= m.target && !m.claimed
-  ).length;
+  // Calculate badges for groups (single source of truth: all claimable missions and chests)
+  const claimableMissionsCount = selectClaimableCount(state);
   const newBadgesCount = state.badges.length;
 
   // Track accordion open state per group - only open the group that owns the active route.

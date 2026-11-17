@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   ChevronRight,
   BookOpen,
+  Target,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { GAME_MISSIONS, GameMissionConfig } from "../../data/gameMissions";
@@ -453,10 +454,31 @@ export const GameStage: React.FC<GameStageProps> = ({
           )}
 
           {/* Ecobot Final Fact */}
-          <div className="p-3.5 rounded-2xl bg-sky-950/60 border border-sky-800 text-left text-xs text-sky-200 mb-6">
+          <div className="p-3.5 rounded-2xl bg-sky-950/60 border border-sky-800 text-left text-xs text-sky-200 mb-4">
             <strong className="text-sky-300 block mb-0.5">Catatan Ecobot:</strong>
             Setiap sampah yang kamu buang ke tong yang tepat membuat Kota Harapan semakin bersih dan asri!
           </div>
+
+          {/* Daily Mission Progress Notification (PRD Bagian D) */}
+          {(() => {
+            const activeGameDaily = state.dailyMissions.find(
+              (dm) => dm.type === "game" && dm.current > 0
+            );
+            if (!activeGameDaily) return null;
+            return (
+              <div className="p-3 rounded-2xl bg-emerald-950/60 border border-emerald-800 text-left text-xs text-emerald-200 mb-6 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Target className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span className="truncate">
+                    Misi harian maju: <strong>{activeGameDaily.title}</strong>
+                  </span>
+                </div>
+                <span className="font-mono font-bold text-emerald-300 shrink-0">
+                  {activeGameDaily.current}/{activeGameDaily.target}
+                </span>
+              </div>
+            );
+          })()}
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row items-center gap-3">

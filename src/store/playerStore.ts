@@ -1,18 +1,33 @@
 import { useState, useEffect } from "react";
-import {
+import type {
   PlayerState,
   ActivityItem,
   PlayerUpgrades,
   CharacterCustomization,
   PlayerSettings,
-} from "../types/player";
-import { DEFAULT_MISSIONS, DEFAULT_DAILY_MISSIONS, ALL_BADGES } from "../data/levels";
-import { GAME_UPGRADES, UpgradeId } from "../data/gameUpgrades";
+  MissionState,
+  ClaimHistoryItem,
+  UniqueEventSets,
+  DailyMission,
+} from "../types/player.ts";
+import { DEFAULT_MISSIONS, ALL_BADGES, calculateLevel } from "../data/levels.ts";
+import { GAME_UPGRADES, type UpgradeId } from "../data/gameUpgrades.ts";
 import {
   calculateStars,
   calculateCityCleanlinessMeter,
   GAME_MISSIONS,
-} from "../data/gameMissions";
+} from "../data/gameMissions.ts";
+import {
+  DAILY_MISSION_POOL,
+  WEEKLY_MISSIONS,
+  MAIN_MILESTONE_MISSIONS,
+  CHEST_REWARDS,
+  type MissionDefinition,
+  type MissionType,
+  getDailyMissionsForDate,
+  getLocalDateKey,
+  getLocalWeekKey,
+} from "../data/missions.ts";
 
 const STORAGE_KEY = "ecobot_player_state_v1";
 
@@ -28,118 +43,307 @@ export const DEFAULT_CHARACTER: CharacterCustomization = {
   accessory: "none",
 };
 
-export const INITIAL_PLAYER_STATE: PlayerState = {
-  nickname: "Raka", // Default friendly nickname, or empty string if fresh
-  avatar: "🤖",
-  xp: 0,
-  points: 0,
-  streak: 1,
-  lastActiveDate: new Date().toISOString().split("T")[0],
-  activeDays: [new Date().toISOString().split("T")[0]],
-  cityCleanlinessMeter: 12,
-  missionProgress: DEFAULT_MISSIONS,
-  upgrades: DEFAULT_UPGRADES,
-  character: DEFAULT_CHARACTER,
-  dailyMissions: DEFAULT_DAILY_MISSIONS,
-  badges: [],
-  activityLog: [],
-  stats: {
-    trashSorted: 0,
-    sortingAccuracy: 0,
-    topicsRead: 0,
-    quizzesCompleted: 0,
-  },
-  settings: {
-    musicVolume: 80,
-    sfxVolume: 80,
-    graphicsQuality: "medium",
-    language: "id",
-    controlMode: "auto",
-  },
-};
+/**
+ * Creates a clean default MissionState for a given date
+ */
+export function createDefaultMissionState(date = new Date()): MissionState {
+  const dateKey = getLocalDateKey(date);
+  const weekKey = getLocalWeekKey(date);
+  const dailyDefs = getDailyMissionsForDate(dateKey);
 
-export const SAMPLE_PLAYER_STATE: PlayerState = {
-  nickname: "Raka",
-  avatar: "🤖",
-  xp: 320,
-  points: 175,
-  streak: 5,
-  lastActiveDate: new Date().toISOString().split("T")[0],
-  activeDays: (() => {
-    const days: string[] = [];
-    const today = new Date();
-    for (let i = 4; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      days.push(d.toISOString().split("T")[0]);
-    }
-    return days;
-  })(),
-  cityCleanlinessMeter: 58,
-  missionProgress: [
-    { missionId: 1, title: "Taman Kota", location: "Zona 1 - Taman", status: "completed", stars: 3, accuracy: 94, bestScore: 180 },
-    { missionId: 2, title: "Pasar Tradisional", location: "Zona 2 - Pasar", status: "available", stars: 1, accuracy: 78, bestScore: 120 },
-    { missionId: 3, title: "Tepi Sungai", location: "Zona 3 - Sungai", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
-    { missionId: 4, title: "Tegur Pelaku", location: "Zona 4 - Pemukiman", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
-    { missionId: 5, title: "Bangun Fasilitas", location: "Zona 5 - Bank Sampah", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
-    { missionId: 6, title: "Ban Berjalan Cepat", location: "Zona 6 - Pusat Daur Ulang", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
-  ],
-  upgrades: {
-    bag: 2,
-    shoes: 1,
-    grabber: 1,
-  },
-  character: {
-    skin: "adventurer",
-    outfitColor: "#38BDF8",
-    accessory: "leaf_hat",
-  },
-  dailyMissions: [
-    { id: "dm-1", title: "Pilah 10 Sampah di Game", description: "Bantu Ecobot memilah sampah di Taman Kota", target: 10, current: 10, rewardXp: 30, rewardPoints: 20, claimed: true, type: "game" },
-    { id: "dm-2", title: "Baca 1 Materi Pustaka", description: "Buka topik pemilahan sampah organik & anorganik", target: 1, current: 1, rewardXp: 20, rewardPoints: 15, claimed: false, type: "reading" },
-    { id: "dm-3", title: "Selesaikan 1 Kuis Harian", description: "Uji pengetahuan lingkunganmu hari ini", target: 1, current: 0, rewardXp: 40, rewardPoints: 25, claimed: false, type: "quiz" },
-  ],
-  badges: [
-    { ...ALL_BADGES[0], unlockedAt: "Hari ini" },
-    { ...ALL_BADGES[1], unlockedAt: "Kemarin" },
-    { ...ALL_BADGES[4], unlockedAt: "2 hari lalu" },
-  ],
-  activityLog: [
-    { id: "act-1", title: "Menyelesaikan Misi Taman Kota", description: "Meraih 3 bintang dengan akurasi 94%", timestamp: "10 menit lalu", type: "game", xpEarned: 75, pointsEarned: 50 },
-    { id: "act-2", title: "Membaca Materi Daur Ulang", description: "Memahami siklus botol plastik dan kertas", timestamp: "1 jam lalu", type: "reading", xpEarned: 20, pointsEarned: 10 },
-    { id: "act-3", title: "Mendapatkan Badge 'Si Teliti'", description: "Akurasi pemilahan sampah di atas 90%", timestamp: "Kemarin", type: "badge", xpEarned: 50, pointsEarned: 25 },
-    { id: "act-4", title: "Streak Belajar 5 Hari!", description: "Rajin membuka dashboard dan berlatih memilah", timestamp: "Kemarin", type: "streak", xpEarned: 30, pointsEarned: 20 },
-  ],
-  stats: {
-    trashSorted: 42,
-    sortingAccuracy: 88,
-    topicsRead: 3,
-    quizzesCompleted: 4,
-  },
-  settings: {
-    musicVolume: 80,
-    sfxVolume: 80,
-    graphicsQuality: "medium",
-    language: "id",
-    controlMode: "auto",
-  },
-};
+  const dailyProgress: Record<string, number> = {};
+  const dailyClaimed: Record<string, boolean> = {};
+  dailyDefs.forEach((d) => {
+    dailyProgress[d.id] = 0;
+    dailyClaimed[d.id] = false;
+  });
+
+  const weeklyProgress: Record<string, number> = {};
+  const weeklyClaimed: Record<string, boolean> = {};
+  WEEKLY_MISSIONS.forEach((w) => {
+    weeklyProgress[w.id] = 0;
+    weeklyClaimed[w.id] = false;
+  });
+
+  const utamaProgress: Record<string, number> = {};
+  const utamaClaimed: Record<string, boolean> = {};
+  MAIN_MILESTONE_MISSIONS.forEach((u) => {
+    utamaProgress[u.id] = 0;
+    utamaClaimed[u.id] = false;
+  });
+
+  return {
+    harian: {
+      dateKey,
+      missionIds: dailyDefs.map((d) => d.id),
+      progress: dailyProgress,
+      claimed: dailyClaimed,
+      chestClaimed: false,
+    },
+    mingguan: {
+      weekKey,
+      missionIds: WEEKLY_MISSIONS.map((w) => w.id),
+      progress: weeklyProgress,
+      claimed: weeklyClaimed,
+      chestClaimed: false,
+    },
+    utama: {
+      progress: utamaProgress,
+      claimed: utamaClaimed,
+    },
+  };
+}
+
+/**
+ * Synchronizes the legacy dailyMissions array from missionState.harian
+ */
+export function syncDailyMissionsArray(missionState: MissionState): DailyMission[] {
+  const dailyDefs = DAILY_MISSION_POOL.filter((d) =>
+    missionState.harian.missionIds.includes(d.id)
+  );
+
+  return dailyDefs.map((def) => ({
+    id: def.id,
+    title: def.judul,
+    description: def.deskripsi,
+    target: def.target,
+    current: missionState.harian.progress[def.id] || 0,
+    rewardXp: def.xp,
+    rewardPoints: def.poin,
+    claimed: Boolean(missionState.harian.claimed[def.id]),
+    type: def.kategori === "baca" ? "reading" : def.kategori === "kuis" ? "quiz" : "game",
+  }));
+}
+
+/**
+ * Pure check to apply daily & weekly resets
+ */
+export function checkAndApplyResets(prev: PlayerState, currentDate = new Date()): PlayerState {
+  const effectiveDate = new Date(currentDate);
+  if (prev.simulatedDateOffsetDays) {
+    effectiveDate.setDate(effectiveDate.getDate() + prev.simulatedDateOffsetDays);
+  }
+
+  const currentDateKey = getLocalDateKey(effectiveDate);
+  const currentWeekKey = getLocalWeekKey(effectiveDate);
+
+  const currentMissionState = prev.missionState || createDefaultMissionState(effectiveDate);
+  let needsUpdate = false;
+
+  let newHarian = currentMissionState.harian;
+  if (!newHarian || newHarian.dateKey !== currentDateKey) {
+    needsUpdate = true;
+    const dailyDefs = getDailyMissionsForDate(currentDateKey);
+    const progress: Record<string, number> = {};
+    const claimed: Record<string, boolean> = {};
+    dailyDefs.forEach((d) => {
+      progress[d.id] = 0;
+      claimed[d.id] = false;
+    });
+
+    newHarian = {
+      dateKey: currentDateKey,
+      missionIds: dailyDefs.map((d) => d.id),
+      progress,
+      claimed,
+      chestClaimed: false,
+    };
+  }
+
+  let newMingguan = currentMissionState.mingguan;
+  if (!newMingguan || newMingguan.weekKey !== currentWeekKey) {
+    needsUpdate = true;
+    const progress: Record<string, number> = {};
+    const claimed: Record<string, boolean> = {};
+    WEEKLY_MISSIONS.forEach((w) => {
+      progress[w.id] = 0;
+      claimed[w.id] = false;
+    });
+
+    newMingguan = {
+      weekKey: currentWeekKey,
+      missionIds: WEEKLY_MISSIONS.map((w) => w.id),
+      progress,
+      claimed,
+      chestClaimed: false,
+    };
+  }
+
+  const updatedMissionState: MissionState = {
+    harian: newHarian,
+    mingguan: newMingguan,
+    utama: currentMissionState.utama || { progress: {}, claimed: {} },
+  };
+
+  if (needsUpdate || !prev.missionState) {
+    return {
+      ...prev,
+      missionState: updatedMissionState,
+      dailyMissions: syncDailyMissionsArray(updatedMissionState),
+      uniqueSets: prev.uniqueSets || { topicsRead: [], perfectQuizzes: [] },
+      claimHistory: prev.claimHistory || [],
+    };
+  }
+
+  return prev;
+}
+
+export const INITIAL_PLAYER_STATE: PlayerState = (() => {
+  const defaultMissionState = createDefaultMissionState();
+  return {
+    nickname: "Raka",
+    avatar: "🤖",
+    xp: 0,
+    points: 0,
+    streak: 1,
+    lastActiveDate: getLocalDateKey(),
+    activeDays: [getLocalDateKey()],
+    cityCleanlinessMeter: 12,
+    missionProgress: DEFAULT_MISSIONS,
+    upgrades: DEFAULT_UPGRADES,
+    character: DEFAULT_CHARACTER,
+    missionState: defaultMissionState,
+    dailyMissions: syncDailyMissionsArray(defaultMissionState),
+    claimHistory: [],
+    uniqueSets: {
+      topicsRead: [],
+      perfectQuizzes: [],
+    },
+    simulatedDateOffsetDays: 0,
+    badges: [],
+    activityLog: [],
+    stats: {
+      trashSorted: 0,
+      sortingAccuracy: 0,
+      topicsRead: 0,
+      quizzesCompleted: 0,
+    },
+    settings: {
+      musicVolume: 80,
+      sfxVolume: 80,
+      graphicsQuality: "medium",
+      language: "id",
+      controlMode: "auto",
+    },
+  };
+})();
+
+export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
+  const sampleMissionState = createDefaultMissionState();
+  // Mark one sample mission completed & ready to claim
+  const firstDailyId = sampleMissionState.harian.missionIds[0];
+  const secondDailyId = sampleMissionState.harian.missionIds[1];
+  if (firstDailyId) {
+    sampleMissionState.harian.progress[firstDailyId] = 10;
+    sampleMissionState.harian.claimed[firstDailyId] = true;
+  }
+  if (secondDailyId) {
+    sampleMissionState.harian.progress[secondDailyId] = 1;
+    sampleMissionState.harian.claimed[secondDailyId] = false;
+  }
+
+  return {
+    nickname: "Raka",
+    avatar: "🤖",
+    xp: 320,
+    points: 175,
+    streak: 5,
+    lastActiveDate: getLocalDateKey(),
+    activeDays: (() => {
+      const days: string[] = [];
+      const today = new Date();
+      for (let i = 4; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        days.push(getLocalDateKey(d));
+      }
+      return days;
+    })(),
+    cityCleanlinessMeter: 58,
+    missionProgress: [
+      { missionId: 1, title: "Taman Kota", location: "Zona 1 - Taman", status: "completed", stars: 3, accuracy: 94, bestScore: 180 },
+      { missionId: 2, title: "Pasar Tradisional", location: "Zona 2 - Pasar", status: "available", stars: 1, accuracy: 78, bestScore: 120 },
+      { missionId: 3, title: "Tepi Sungai", location: "Zona 3 - Sungai", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
+      { missionId: 4, title: "Tegur Pelaku", location: "Zona 4 - Pemukiman", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
+      { missionId: 5, title: "Bangun Fasilitas", location: "Zona 5 - Bank Sampah", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
+      { missionId: 6, title: "Ban Berjalan Cepat", location: "Zona 6 - Pusat Daur Ulang", status: "locked", stars: 0, accuracy: 0, bestScore: 0 },
+    ],
+    upgrades: {
+      bag: 2,
+      shoes: 1,
+      grabber: 1,
+    },
+    character: {
+      skin: "adventurer",
+      outfitColor: "#38BDF8",
+      accessory: "leaf_hat",
+    },
+    missionState: sampleMissionState,
+    dailyMissions: syncDailyMissionsArray(sampleMissionState),
+    claimHistory: [
+      {
+        id: "ch-sample-1",
+        missionId: firstDailyId || "h-pilah-10",
+        title: "Pilah 10 Sampah di Game",
+        xp: 30,
+        poin: 20,
+        at: "Hari ini",
+      },
+    ],
+    uniqueSets: {
+      topicsRead: ["sampah-organik", "daur-ulang-plastik", "kompos-rumah"],
+      perfectQuizzes: ["kuis-topik-1"],
+    },
+    simulatedDateOffsetDays: 0,
+    badges: [
+      { ...ALL_BADGES[0], unlockedAt: "Hari ini" },
+      { ...ALL_BADGES[1], unlockedAt: "Kemarin" },
+      { ...ALL_BADGES[4], unlockedAt: "2 hari lalu" },
+    ],
+    activityLog: [
+      { id: "act-1", title: "Menyelesaikan Misi Taman Kota", description: "Meraih 3 bintang dengan akurasi 94%", timestamp: "10 menit lalu", type: "game", xpEarned: 75, pointsEarned: 50 },
+      { id: "act-2", title: "Membaca Materi Daur Ulang", description: "Memahami siklus botol plastik dan kertas", timestamp: "1 jam lalu", type: "reading", xpEarned: 20, pointsEarned: 10 },
+      { id: "act-3", title: "Mendapatkan Badge 'Si Teliti'", description: "Akurasi pemilahan sampah di atas 90%", timestamp: "Kemarin", type: "badge", xpEarned: 50, pointsEarned: 25 },
+      { id: "act-4", title: "Streak Belajar 5 Hari!", description: "Rajin membuka dashboard dan berlatih memilah", timestamp: "Kemarin", type: "streak", xpEarned: 30, pointsEarned: 20 },
+    ],
+    stats: {
+      trashSorted: 42,
+      sortingAccuracy: 88,
+      topicsRead: 3,
+      quizzesCompleted: 4,
+    },
+    settings: {
+      musicVolume: 80,
+      sfxVolume: 80,
+      graphicsQuality: "medium",
+      language: "id",
+      controlMode: "auto",
+    },
+  };
+})();
 
 // Global in-memory cache to sync across components with safe migrations
 let globalState: PlayerState = (() => {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") {
-        return {
-          ...INITIAL_PLAYER_STATE,
-          ...parsed,
-          upgrades: { ...DEFAULT_UPGRADES, ...(parsed.upgrades || {}) },
-          character: { ...DEFAULT_CHARACTER, ...(parsed.character || {}) },
-          settings: { ...INITIAL_PLAYER_STATE.settings, ...(parsed.settings || {}) },
-          stats: { ...INITIAL_PLAYER_STATE.stats, ...(parsed.stats || {}) },
-        };
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") {
+          const migrated = checkAndApplyResets({
+            ...INITIAL_PLAYER_STATE,
+            ...parsed,
+            missionState: parsed.missionState || createDefaultMissionState(),
+            claimHistory: parsed.claimHistory || [],
+            uniqueSets: parsed.uniqueSets || { topicsRead: [], perfectQuizzes: [] },
+            simulatedDateOffsetDays: parsed.simulatedDateOffsetDays || 0,
+            upgrades: { ...DEFAULT_UPGRADES, ...(parsed.upgrades || {}) },
+            character: { ...DEFAULT_CHARACTER, ...(parsed.character || {}) },
+            settings: { ...INITIAL_PLAYER_STATE.settings, ...(parsed.settings || {}) },
+            stats: { ...INITIAL_PLAYER_STATE.stats, ...(parsed.stats || {}) },
+          });
+          return migrated;
+        }
       }
     }
   } catch (e) {
@@ -152,7 +356,9 @@ const listeners = new Set<(state: PlayerState) => void>();
 
 function notify() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(globalState));
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(globalState));
+    }
   } catch (e) {
     console.error("Failed to write to localStorage", e);
   }
@@ -168,6 +374,233 @@ export function setPlayerState(updater: (prev: PlayerState) => PlayerState) {
   notify();
 }
 
+/**
+ * Dispatch event to advance active missions (PRD 6.3)
+ */
+export function dispatchRecordEvent(
+  prev: PlayerState,
+  eventName: string,
+  payload?: { amount?: number; id?: string }
+): PlayerState {
+  const stateWithReset = checkAndApplyResets(prev);
+  const amount = payload?.amount ?? 1;
+
+  // 1. Handle unique event tracking
+  const uniqueSets: UniqueEventSets = {
+    topicsRead: [...(stateWithReset.uniqueSets?.topicsRead || [])],
+    perfectQuizzes: [...(stateWithReset.uniqueSets?.perfectQuizzes || [])],
+  };
+
+  if (eventName === "materi_dibaca_unik" && payload?.id) {
+    if (!uniqueSets.topicsRead.includes(payload.id)) {
+      uniqueSets.topicsRead.push(payload.id);
+    }
+  }
+
+  if (eventName === "kuis_sempurna" && payload?.id) {
+    if (!uniqueSets.perfectQuizzes.includes(payload.id)) {
+      uniqueSets.perfectQuizzes.push(payload.id);
+    }
+  }
+
+  const currentLevel = calculateLevel(stateWithReset.xp).level;
+  const currentStreak = stateWithReset.streak;
+  const currentMeter = stateWithReset.cityCleanlinessMeter;
+
+  const ms = stateWithReset.missionState;
+
+  // 2. Update Harian
+  const newHarianProgress = { ...ms.harian.progress };
+  ms.harian.missionIds.forEach((mId) => {
+    const def = DAILY_MISSION_POOL.find((d) => d.id === mId);
+    if (!def) return;
+
+    if (def.event === eventName) {
+      newHarianProgress[mId] = Math.min(def.target, (newHarianProgress[mId] || 0) + amount);
+    }
+  });
+
+  // 3. Update Mingguan
+  const newMingguanProgress = { ...ms.mingguan.progress };
+  ms.mingguan.missionIds.forEach((mId) => {
+    const def = WEEKLY_MISSIONS.find((w) => w.id === mId);
+    if (!def) return;
+
+    if (def.event === eventName) {
+      if (eventName === "materi_dibaca_unik") {
+        newMingguanProgress[mId] = Math.min(def.target, uniqueSets.topicsRead.length);
+      } else {
+        newMingguanProgress[mId] = Math.min(
+          def.target,
+          (newMingguanProgress[mId] || 0) + amount
+        );
+      }
+    }
+  });
+
+  // 4. Update Utama
+  const newUtamaProgress = { ...ms.utama.progress };
+  MAIN_MILESTONE_MISSIONS.forEach((def) => {
+    // Milestones that reflect current state directly:
+    if (def.event === "level_tercapai") {
+      newUtamaProgress[def.id] = Math.min(def.target, currentLevel);
+    } else if (def.event === "streak_maks") {
+      newUtamaProgress[def.id] = Math.min(def.target, currentStreak);
+    } else if (def.event === "meter_kota") {
+      newUtamaProgress[def.id] = Math.min(def.target, currentMeter);
+    } else if (def.event === "materi_dibaca_unik") {
+      newUtamaProgress[def.id] = Math.min(def.target, uniqueSets.topicsRead.length);
+    } else if (def.event === "kuis_sempurna") {
+      newUtamaProgress[def.id] = Math.min(def.target, uniqueSets.perfectQuizzes.length);
+    } else if (def.event === eventName) {
+      newUtamaProgress[def.id] = Math.min(
+        def.target,
+        (newUtamaProgress[def.id] || 0) + amount
+      );
+    }
+  });
+
+  const updatedMissionState: MissionState = {
+    harian: {
+      ...ms.harian,
+      progress: newHarianProgress,
+    },
+    mingguan: {
+      ...ms.mingguan,
+      progress: newMingguanProgress,
+    },
+    utama: {
+      ...ms.utama,
+      progress: newUtamaProgress,
+    },
+  };
+
+  return {
+    ...stateWithReset,
+    missionState: updatedMissionState,
+    dailyMissions: syncDailyMissionsArray(updatedMissionState),
+    uniqueSets,
+  };
+}
+
+export interface MissionWithStatus extends MissionDefinition {
+  current: number;
+  target: number;
+  isReadyToClaim: boolean;
+  isClaimed: boolean;
+  status: "berjalan" | "siap" | "diklaim";
+}
+
+/**
+ * Returns missions for a specific tab with status and sorted
+ */
+export function getMissionsWithStatus(
+  state: PlayerState,
+  type: MissionType
+): MissionWithStatus[] {
+  const ms = state.missionState;
+  let defs: MissionDefinition[] = [];
+  let progressRecord: Record<string, number> = {};
+  let claimedRecord: Record<string, boolean> = {};
+
+  if (type === "harian") {
+    defs = DAILY_MISSION_POOL.filter((d) => ms.harian.missionIds.includes(d.id));
+    progressRecord = ms.harian.progress;
+    claimedRecord = ms.harian.claimed;
+  } else if (type === "mingguan") {
+    defs = WEEKLY_MISSIONS.filter((w) => ms.mingguan.missionIds.includes(w.id));
+    progressRecord = ms.mingguan.progress;
+    claimedRecord = ms.mingguan.claimed;
+  } else {
+    defs = MAIN_MILESTONE_MISSIONS;
+    progressRecord = ms.utama.progress;
+    claimedRecord = ms.utama.claimed;
+  }
+
+  const items: MissionWithStatus[] = defs.map((def) => {
+    let current = progressRecord[def.id] || 0;
+
+    // Direct store sync for milestone missions
+    if (def.event === "level_tercapai") {
+      current = calculateLevel(state.xp).level;
+    } else if (def.event === "streak_maks") {
+      current = state.streak;
+    } else if (def.event === "meter_kota") {
+      current = state.cityCleanlinessMeter;
+    } else if (def.event === "materi_dibaca_unik") {
+      current = state.uniqueSets?.topicsRead?.length || 0;
+    } else if (def.event === "kuis_sempurna") {
+      current = state.uniqueSets?.perfectQuizzes?.length || 0;
+    }
+
+    const isClaimed = Boolean(claimedRecord[def.id]);
+    const isReadyToClaim = !isClaimed && current >= def.target;
+    const status: "berjalan" | "siap" | "diklaim" = isClaimed
+      ? "diklaim"
+      : isReadyToClaim
+      ? "siap"
+      : "berjalan";
+
+    return {
+      ...def,
+      current: Math.min(def.target, current),
+      isReadyToClaim,
+      isClaimed,
+      status,
+    };
+  });
+
+  // Sort order: "siap" first, then "berjalan", then "diklaim"
+  return items.sort((a, b) => {
+    const score = (status: "berjalan" | "siap" | "diklaim") =>
+      status === "siap" ? 0 : status === "berjalan" ? 1 : 2;
+    return score(a.status) - score(b.status);
+  });
+}
+
+/**
+ * Counts claimable items (missions and chests) across all tabs
+ */
+export function selectClaimableCount(state: PlayerState): number {
+  const counts = selectClaimableCountByTab(state);
+  return counts.harian + counts.mingguan + counts.utama;
+}
+
+/**
+ * Counts claimable items separated by tab
+ */
+export function selectClaimableCountByTab(state: PlayerState): {
+  harian: number;
+  mingguan: number;
+  utama: number;
+} {
+  const harianList = getMissionsWithStatus(state, "harian");
+  const mingguanList = getMissionsWithStatus(state, "mingguan");
+  const utamaList = getMissionsWithStatus(state, "utama");
+
+  let harianCount = harianList.filter((m) => m.isReadyToClaim).length;
+  let mingguanCount = mingguanList.filter((m) => m.isReadyToClaim).length;
+  const utamaCount = utamaList.filter((m) => m.isReadyToClaim).length;
+
+  // Check daily chest
+  const allDailyClaimed = harianList.length > 0 && harianList.every((m) => m.isClaimed);
+  if (allDailyClaimed && !state.missionState.harian.chestClaimed) {
+    harianCount += 1;
+  }
+
+  // Check weekly chest
+  const allWeeklyClaimed = mingguanList.length > 0 && mingguanList.every((m) => m.isClaimed);
+  if (allWeeklyClaimed && !state.missionState.mingguan.chestClaimed) {
+    mingguanCount += 1;
+  }
+
+  return {
+    harian: harianCount,
+    mingguan: mingguanCount,
+    utama: utamaCount,
+  };
+}
+
 export function usePlayerStore() {
   const [state, setState] = useState<PlayerState>(globalState);
 
@@ -177,6 +610,11 @@ export function usePlayerStore() {
     return () => {
       listeners.delete(handleUpdate);
     };
+  }, []);
+
+  // Ensure daily/weekly resets whenever app focuses or re-mounts
+  useEffect(() => {
+    setPlayerState((prev) => checkAndApplyResets(prev));
   }, []);
 
   const setNickname = (nickname: string, avatar?: string) => {
@@ -199,24 +637,39 @@ export function usePlayerStore() {
         xpEarned: amount,
         pointsEarned: 0,
       };
+
       return {
         ...prev,
         xp: newXp,
-        activityLog: [newActivity, ...prev.activityLog].slice(0, 20),
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
       };
     });
   };
 
-  const addPoints = (amount: number) => {
-    setPlayerState((prev) => ({
-      ...prev,
-      points: Math.max(0, prev.points + amount),
-    }));
+  const addPoints = (amount: number, reason: string) => {
+    setPlayerState((prev) => {
+      const newPoints = Math.max(0, prev.points + amount);
+      const newActivity: ActivityItem = {
+        id: "act-" + Date.now(),
+        title: reason,
+        description: `Mendapatkan +${amount} Poin`,
+        timestamp: "Baru saja",
+        type: "game",
+        xpEarned: 0,
+        pointsEarned: amount,
+      };
+
+      return {
+        ...prev,
+        points: newPoints,
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+      };
+    });
   };
 
   const updateStreak = () => {
-    const today = new Date().toISOString().split("T")[0];
     setPlayerState((prev) => {
+      const today = getLocalDateKey();
       if (prev.lastActiveDate === today) {
         return prev;
       }
@@ -237,44 +690,380 @@ export function usePlayerStore() {
         ? prev.activeDays
         : [...prev.activeDays, today].slice(-14);
 
-      return {
+      // Trigger streak milestone events
+      let nextState: PlayerState = {
         ...prev,
         streak: newStreak,
         lastActiveDate: today,
         activeDays: newActiveDays,
       };
+
+      nextState = dispatchRecordEvent(nextState, "hari_aktif_minggu");
+      nextState = dispatchRecordEvent(nextState, "streak_maks");
+
+      return nextState;
     });
   };
 
-  const claimDailyMission = (id: string) => {
+  const recordEvent = (eventName: string, payload?: { amount?: number; id?: string }) => {
+    setPlayerState((prev) => dispatchRecordEvent(prev, eventName, payload));
+  };
+
+  const ensureDailyWeeklyReset = () => {
+    setPlayerState((prev) => checkAndApplyResets(prev));
+  };
+
+  const claimMission = (missionId: string) => {
+    let claimResult: {
+      success: boolean;
+      mission?: MissionDefinition;
+      leveledUp: boolean;
+      oldLevel: number;
+      newLevel: number;
+      newTitle: string;
+      xp: number;
+      poin: number;
+    } = {
+      success: false,
+      leveledUp: false,
+      oldLevel: 1,
+      newLevel: 1,
+      newTitle: "",
+      xp: 0,
+      poin: 0,
+    };
+
     setPlayerState((prev) => {
-      const mission = prev.dailyMissions.find((m) => m.id === id);
-      if (!mission || mission.claimed || mission.current < mission.target) {
+      const def =
+        DAILY_MISSION_POOL.find((d) => d.id === missionId) ||
+        WEEKLY_MISSIONS.find((w) => w.id === missionId) ||
+        MAIN_MILESTONE_MISSIONS.find((u) => u.id === missionId);
+
+      if (!def) return prev;
+
+      const ms = prev.missionState;
+      let isClaimed = false;
+      let currentProgress = 0;
+
+      if (def.tipe === "harian") {
+        isClaimed = Boolean(ms.harian.claimed[missionId]);
+        currentProgress = ms.harian.progress[missionId] || 0;
+      } else if (def.tipe === "mingguan") {
+        isClaimed = Boolean(ms.mingguan.claimed[missionId]);
+        currentProgress = ms.mingguan.progress[missionId] || 0;
+      } else {
+        isClaimed = Boolean(ms.utama.claimed[missionId]);
+        currentProgress = ms.utama.progress[missionId] || 0;
+        if (def.event === "level_tercapai") currentProgress = calculateLevel(prev.xp).level;
+        if (def.event === "streak_maks") currentProgress = prev.streak;
+        if (def.event === "meter_kota") currentProgress = prev.cityCleanlinessMeter;
+        if (def.event === "materi_dibaca_unik") currentProgress = prev.uniqueSets?.topicsRead?.length || 0;
+        if (def.event === "kuis_sempurna") currentProgress = prev.uniqueSets?.perfectQuizzes?.length || 0;
+      }
+
+      // Idempotency: if already claimed or target not reached, do nothing
+      if (isClaimed || currentProgress < def.target) {
         return prev;
       }
 
-      const updatedMissions = prev.dailyMissions.map((m) =>
-        m.id === id ? { ...m, claimed: true } : m
-      );
+      const oldLevelInfo = calculateLevel(prev.xp);
+      const newXp = prev.xp + def.xp;
+      const newPoints = prev.points + def.poin;
+      const newLevelInfo = calculateLevel(newXp);
+      const leveledUp = newLevelInfo.level > oldLevelInfo.level;
+
+      claimResult = {
+        success: true,
+        mission: def,
+        leveledUp,
+        oldLevel: oldLevelInfo.level,
+        newLevel: newLevelInfo.level,
+        newTitle: newLevelInfo.title,
+        xp: def.xp,
+        poin: def.poin,
+      };
+
+      // Update claimed records
+      const newHarianClaimed = { ...ms.harian.claimed };
+      const newMingguanClaimed = { ...ms.mingguan.claimed };
+      const newUtamaClaimed = { ...ms.utama.claimed };
+
+      if (def.tipe === "harian") newHarianClaimed[missionId] = true;
+      else if (def.tipe === "mingguan") newMingguanClaimed[missionId] = true;
+      else newUtamaClaimed[missionId] = true;
+
+      const updatedMissionState: MissionState = {
+        harian: { ...ms.harian, claimed: newHarianClaimed },
+        mingguan: { ...ms.mingguan, claimed: newMingguanClaimed },
+        utama: { ...ms.utama, claimed: newUtamaClaimed },
+      };
+
+      const newClaimItem: ClaimHistoryItem = {
+        id: "ch-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
+        missionId: def.id,
+        title: def.judul,
+        xp: def.xp,
+        poin: def.poin,
+        at: "Baru saja",
+      };
 
       const newActivity: ActivityItem = {
         id: "act-" + Date.now(),
-        title: `Klaim Hadiah: ${mission.title}`,
-        description: `Mendapatkan +${mission.rewardXp} XP dan +${mission.rewardPoints} Poin!`,
+        title: `Klaim Misi: ${def.judul}`,
+        description: `Mendapatkan +${def.xp} XP dan +${def.poin} Poin`,
+        timestamp: "Baru saja",
+        type: def.kategori === "baca" ? "reading" : def.kategori === "kuis" ? "quiz" : "game",
+        xpEarned: def.xp,
+        pointsEarned: def.poin,
+      };
+
+      // Check badges that might unlock
+      const badgesToGrant = [...prev.badges];
+      const hasBadge = (id: string) => badgesToGrant.some((b) => b.id === id);
+
+      // Pembaca Rajin: 5 materi dibaca
+      if (prev.uniqueSets?.topicsRead?.length >= 5 && !hasBadge("pembaca-rajin")) {
+        const b = ALL_BADGES.find((x) => x.id === "pembaca-rajin");
+        if (b) badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
+      }
+
+      // Si Pintar: 3 kuis sempurna
+      if (prev.uniqueSets?.perfectQuizzes?.length >= 3 && !hasBadge("si-pintar")) {
+        const b = ALL_BADGES.find((x) => x.id === "si-pintar");
+        if (b) badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
+      }
+
+      // Api Semangat: streak 7 hari
+      if (prev.streak >= 7 && !hasBadge("api-semangat")) {
+        const b = ALL_BADGES.find((x) => x.id === "api-semangat");
+        if (b) badgesToGrant.push({ ...b, unlockedAt: "Baru saja" });
+      }
+
+      return {
+        ...prev,
+        xp: newXp,
+        points: newPoints,
+        missionState: updatedMissionState,
+        dailyMissions: syncDailyMissionsArray(updatedMissionState),
+        claimHistory: [newClaimItem, ...prev.claimHistory].slice(0, 30),
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+        badges: badgesToGrant,
+      };
+    });
+
+    return claimResult;
+  };
+
+  const claimChest = (type: "harian" | "mingguan") => {
+    let result: {
+      success: boolean;
+      type: "harian" | "mingguan";
+      xp: number;
+      poin: number;
+      leveledUp: boolean;
+      newLevel: number;
+      newTitle: string;
+    } = {
+      success: false,
+      type,
+      xp: 0,
+      poin: 0,
+      leveledUp: false,
+      newLevel: 1,
+      newTitle: "",
+    };
+
+    setPlayerState((prev) => {
+      const ms = prev.missionState;
+      const config = CHEST_REWARDS[type];
+
+      if (type === "harian") {
+        const allClaimed =
+          ms.harian.missionIds.length > 0 &&
+          ms.harian.missionIds.every((id) => ms.harian.claimed[id]);
+        if (!allClaimed || ms.harian.chestClaimed) return prev;
+      } else {
+        const allClaimed =
+          ms.mingguan.missionIds.length > 0 &&
+          ms.mingguan.missionIds.every((id) => ms.mingguan.claimed[id]);
+        if (!allClaimed || ms.mingguan.chestClaimed) return prev;
+      }
+
+      const oldLevelInfo = calculateLevel(prev.xp);
+      const newXp = prev.xp + config.xp;
+      const newPoints = prev.points + config.poin;
+      const newLevelInfo = calculateLevel(newXp);
+
+      result = {
+        success: true,
+        type,
+        xp: config.xp,
+        poin: config.poin,
+        leveledUp: newLevelInfo.level > oldLevelInfo.level,
+        newLevel: newLevelInfo.level,
+        newTitle: newLevelInfo.title,
+      };
+
+      const updatedMissionState: MissionState = {
+        ...ms,
+        [type]: {
+          ...ms[type],
+          chestClaimed: true,
+        },
+      };
+
+      const newClaimItem: ClaimHistoryItem = {
+        id: "ch-chest-" + Date.now(),
+        missionId: `chest-${type}`,
+        title: config.title,
+        xp: config.xp,
+        poin: config.poin,
+        at: "Baru saja",
+      };
+
+      const newActivity: ActivityItem = {
+        id: "act-chest-" + Date.now(),
+        title: `Membuka ${config.title}`,
+        description: `Mendapatkan bonus +${config.xp} XP dan +${config.poin} Poin!`,
         timestamp: "Baru saja",
         type: "streak",
-        xpEarned: mission.rewardXp,
-        pointsEarned: mission.rewardPoints,
+        xpEarned: config.xp,
+        pointsEarned: config.poin,
       };
 
       return {
         ...prev,
-        xp: prev.xp + mission.rewardXp,
-        points: prev.points + mission.rewardPoints,
-        dailyMissions: updatedMissions,
-        activityLog: [newActivity, ...prev.activityLog].slice(0, 20),
+        xp: newXp,
+        points: newPoints,
+        missionState: updatedMissionState,
+        claimHistory: [newClaimItem, ...prev.claimHistory].slice(0, 30),
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
       };
     });
+
+    return result;
+  };
+
+  const claimAllMissions = (tab?: "harian" | "mingguan" | "utama") => {
+    let totalXp = 0;
+    let totalPoints = 0;
+    let claimedCount = 0;
+    let leveledUp = false;
+    let finalLevel = 1;
+    let finalTitle = "";
+
+    setPlayerState((prev) => {
+      let currentState = { ...prev };
+      const tabsToProcess: ("harian" | "mingguan" | "utama")[] = tab
+        ? [tab]
+        : ["harian", "mingguan", "utama"];
+
+      tabsToProcess.forEach((t) => {
+        const missions = getMissionsWithStatus(currentState, t);
+        missions.forEach((m) => {
+          if (m.isReadyToClaim) {
+            const oldLevel = calculateLevel(currentState.xp).level;
+            const newXp = currentState.xp + m.xp;
+            const newLevelInfo = calculateLevel(newXp);
+
+            totalXp += m.xp;
+            totalPoints += m.poin;
+            claimedCount += 1;
+            if (newLevelInfo.level > oldLevel) {
+              leveledUp = true;
+              finalLevel = newLevelInfo.level;
+              finalTitle = newLevelInfo.title;
+            }
+
+            const ms = currentState.missionState;
+            const newClaimed = { ...ms[t].claimed, [m.id]: true };
+            const updatedMissionState: MissionState = {
+              ...ms,
+              [t]: { ...ms[t], claimed: newClaimed },
+            };
+
+            const claimItem: ClaimHistoryItem = {
+              id: "ch-" + Date.now() + "-" + m.id,
+              missionId: m.id,
+              title: m.judul,
+              xp: m.xp,
+              poin: m.poin,
+              at: "Baru saja",
+            };
+
+            currentState = {
+              ...currentState,
+              xp: newXp,
+              points: currentState.points + m.poin,
+              missionState: updatedMissionState,
+              dailyMissions: syncDailyMissionsArray(updatedMissionState),
+              claimHistory: [claimItem, ...currentState.claimHistory].slice(0, 30),
+            };
+          }
+        });
+
+        // Also claim chest if all missions in this tab are now claimed
+        if (t === "harian" || t === "mingguan") {
+          const ms = currentState.missionState;
+          const allClaimed =
+            ms[t].missionIds.length > 0 &&
+            ms[t].missionIds.every((id) => ms[t].claimed[id]);
+
+          if (allClaimed && !ms[t].chestClaimed) {
+            const cfg = CHEST_REWARDS[t];
+            totalXp += cfg.xp;
+            totalPoints += cfg.poin;
+            claimedCount += 1;
+
+            const oldLevel = calculateLevel(currentState.xp).level;
+            const newXp = currentState.xp + cfg.xp;
+            const newLevelInfo = calculateLevel(newXp);
+            if (newLevelInfo.level > oldLevel) {
+              leveledUp = true;
+              finalLevel = newLevelInfo.level;
+              finalTitle = newLevelInfo.title;
+            }
+
+            const updatedMissionState: MissionState = {
+              ...ms,
+              [t]: { ...ms[t], chestClaimed: true },
+            };
+
+            const chestClaimItem: ClaimHistoryItem = {
+              id: "ch-chest-" + Date.now(),
+              missionId: `chest-${t}`,
+              title: cfg.title,
+              xp: cfg.xp,
+              poin: cfg.poin,
+              at: "Baru saja",
+            };
+
+            currentState = {
+              ...currentState,
+              xp: newXp,
+              points: currentState.points + cfg.poin,
+              missionState: updatedMissionState,
+              claimHistory: [chestClaimItem, ...currentState.claimHistory].slice(0, 30),
+            };
+          }
+        }
+      });
+
+      return currentState;
+    });
+
+    return {
+      claimedCount,
+      totalXp,
+      totalPoints,
+      leveledUp,
+      newLevel: finalLevel,
+      newTitle: finalTitle,
+    };
+  };
+
+  const claimDailyMission = (id: string) => {
+    return claimMission(id);
   };
 
   const unlockBadge = (badgeId: string) => {
@@ -367,14 +1156,12 @@ export function usePlayerStore() {
 
     setPlayerState((prev) => {
       earnedStars = calculateStars(result.accuracy, true);
-      // XP: +50 for mission completed, bonus +25 per star above 1 (PRD 8.1)
       xpGain = 50 + Math.max(0, earnedStars - 1) * 25;
       pointsGain = Math.max(0, result.score);
 
       const targetMissionConfig = GAME_MISSIONS.find((m) => m.id === result.missionId);
       const missionTitle = targetMissionConfig?.title || `Misi ${result.missionId}`;
 
-      // Update missionProgress
       const existingMission = prev.missionProgress.find((m) => m.missionId === result.missionId);
       const bestStars = existingMission ? Math.max(existingMission.stars, earnedStars) : earnedStars;
       const bestScore = existingMission ? Math.max(existingMission.bestScore, result.score) : result.score;
@@ -393,7 +1180,6 @@ export function usePlayerStore() {
         return m;
       });
 
-      // Update unlock status for subsequent missions based on rules:
       const isM1Done = updatedMissions.some((m) => m.missionId === 1 && m.status === "completed");
       const isM2Done = updatedMissions.some((m) => m.missionId === 2 && m.status === "completed");
       const isM3Done = updatedMissions.some((m) => m.missionId === 3 && m.status === "completed");
@@ -408,14 +1194,11 @@ export function usePlayerStore() {
         return m;
       });
 
-      // Calculate city meter
       const newCityMeter = calculateCityCleanlinessMeter(updatedMissions);
 
-      // Check badges (PRD 8.3)
       const badgesToGrant: typeof prev.badges = [];
       const hasBadge = (id: string) => prev.badges.some((b) => b.id === id);
 
-      // Pemilah Cilik: Selesaikan Misi 1
       if (result.missionId === 1 && !hasBadge("pemilah-cilik")) {
         const b = ALL_BADGES.find((x) => x.id === "pemilah-cilik");
         if (b) {
@@ -424,7 +1207,6 @@ export function usePlayerStore() {
         }
       }
 
-      // Si Teliti: Akurasi >= 90%
       if (result.accuracy >= 90 && !hasBadge("si-teliti")) {
         const b = ALL_BADGES.find((x) => x.id === "si-teliti");
         if (b) {
@@ -433,7 +1215,6 @@ export function usePlayerStore() {
         }
       }
 
-      // Penjaga Sungai: Selesaikan Misi 3
       if (result.missionId === 3 && !hasBadge("penjaga-sungai")) {
         const b = ALL_BADGES.find((x) => x.id === "penjaga-sungai");
         if (b) {
@@ -442,7 +1223,6 @@ export function usePlayerStore() {
         }
       }
 
-      // Kota Bersih: Meter 100%
       if (newCityMeter >= 100 && !hasBadge("kota-bersih")) {
         const b = ALL_BADGES.find((x) => x.id === "kota-bersih");
         if (b) {
@@ -451,7 +1231,6 @@ export function usePlayerStore() {
         }
       }
 
-      // Raja Combo: Misi 6 dengan akurasi >= 85%
       if (result.missionId === 6 && result.accuracy >= 85 && !hasBadge("raja-combo")) {
         const b = ALL_BADGES.find((x) => x.id === "raja-combo");
         if (b) {
@@ -460,7 +1239,6 @@ export function usePlayerStore() {
         }
       }
 
-      // Activity log item
       const newActivity: ActivityItem = {
         id: "act-" + Date.now(),
         title: `Menyelesaikan ${missionTitle}`,
@@ -471,18 +1249,6 @@ export function usePlayerStore() {
         pointsEarned: pointsGain,
       };
 
-      // Daily missions progress for type "game"
-      const updatedDailyMissions = prev.dailyMissions.map((dm) => {
-        if (dm.type === "game" && !dm.claimed) {
-          return {
-            ...dm,
-            current: Math.min(dm.target, dm.current + (targetMissionConfig?.targetCount || 8)),
-          };
-        }
-        return dm;
-      });
-
-      // Update stats
       const itemsCount = targetMissionConfig?.targetCount || 8;
       const prevTotalSorted = prev.stats.trashSorted;
       const newTotalSorted = prevTotalSorted + itemsCount;
@@ -494,14 +1260,13 @@ export function usePlayerStore() {
             )
           : result.accuracy;
 
-      return {
+      let nextState: PlayerState = {
         ...prev,
         xp: prev.xp + xpGain,
         points: prev.points + pointsGain,
         missionProgress: updatedMissions,
         cityCleanlinessMeter: newCityMeter,
         badges: [...badgesToGrant, ...prev.badges],
-        dailyMissions: updatedDailyMissions,
         stats: {
           ...prev.stats,
           trashSorted: newTotalSorted,
@@ -509,6 +1274,17 @@ export function usePlayerStore() {
         },
         activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
       };
+
+      // Trigger gamification mission events
+      nextState = dispatchRecordEvent(nextState, "sampah_benar", { amount: itemsCount });
+      nextState = dispatchRecordEvent(nextState, "misi_game_dimulai");
+      if (result.missionId === 1) nextState = dispatchRecordEvent(nextState, "misi_game_selesai:taman");
+      if (result.missionId === 2) nextState = dispatchRecordEvent(nextState, "misi_game_selesai:pasar");
+      if (earnedStars >= 2) nextState = dispatchRecordEvent(nextState, "bintang_2_plus");
+      if (earnedStars >= 3) nextState = dispatchRecordEvent(nextState, "bintang_3");
+      nextState = dispatchRecordEvent(nextState, "meter_kota");
+
+      return nextState;
     });
 
     return {
@@ -540,14 +1316,88 @@ export function usePlayerStore() {
     }));
   };
 
-  const updateSettings = (newSettings: Partial<PlayerSettings>) => {
+  const updateSettings = (partial: Partial<PlayerSettings>) => {
     setPlayerState((prev) => ({
       ...prev,
       settings: {
         ...prev.settings,
-        ...newSettings,
+        ...partial,
       },
     }));
+  };
+
+  // Dev Tools helpers
+  const simulateEvent = (eventName: string, payload?: { amount?: number; id?: string }) => {
+    setPlayerState((prev) => dispatchRecordEvent(prev, eventName, payload));
+  };
+
+  const resetDailyMissions = () => {
+    setPlayerState((prev) => {
+      const currentDateKey = getLocalDateKey();
+      const dailyDefs = getDailyMissionsForDate(currentDateKey);
+      const progress: Record<string, number> = {};
+      const claimed: Record<string, boolean> = {};
+      dailyDefs.forEach((d) => {
+        progress[d.id] = 0;
+        claimed[d.id] = false;
+      });
+
+      const updatedMissionState: MissionState = {
+        ...prev.missionState,
+        harian: {
+          dateKey: currentDateKey,
+          missionIds: dailyDefs.map((d) => d.id),
+          progress,
+          claimed,
+          chestClaimed: false,
+        },
+      };
+
+      return {
+        ...prev,
+        missionState: updatedMissionState,
+        dailyMissions: syncDailyMissionsArray(updatedMissionState),
+      };
+    });
+  };
+
+  const resetWeeklyMissions = () => {
+    setPlayerState((prev) => {
+      const currentWeekKey = getLocalWeekKey();
+      const progress: Record<string, number> = {};
+      const claimed: Record<string, boolean> = {};
+      WEEKLY_MISSIONS.forEach((w) => {
+        progress[w.id] = 0;
+        claimed[w.id] = false;
+      });
+
+      const updatedMissionState: MissionState = {
+        ...prev.missionState,
+        mingguan: {
+          weekKey: currentWeekKey,
+          missionIds: WEEKLY_MISSIONS.map((w) => w.id),
+          progress,
+          claimed,
+          chestClaimed: false,
+        },
+      };
+
+      return {
+        ...prev,
+        missionState: updatedMissionState,
+      };
+    });
+  };
+
+  const advanceSimulatedDate = (days = 1) => {
+    setPlayerState((prev) => {
+      const nextOffset = (prev.simulatedDateOffsetDays || 0) + days;
+      const modified = {
+        ...prev,
+        simulatedDateOffsetDays: nextOffset,
+      };
+      return checkAndApplyResets(modified);
+    });
   };
 
   const seedSampleData = () => {
@@ -564,7 +1414,16 @@ export function usePlayerStore() {
     addXp,
     addPoints,
     updateStreak,
+    recordEvent,
+    ensureDailyWeeklyReset,
+    claimMission,
     claimDailyMission,
+    claimChest,
+    claimAllMissions,
+    simulateEvent,
+    resetDailyMissions,
+    resetWeeklyMissions,
+    advanceSimulatedDate,
     unlockBadge,
     setCharacter,
     purchaseUpgrade,
