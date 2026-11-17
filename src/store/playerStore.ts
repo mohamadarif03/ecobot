@@ -12,6 +12,9 @@ import type {
   TopicReadingProgress,
   QuizProgress,
   QuizHistoryItem,
+  AksiNyataState,
+  ChallengeDayRecord,
+  CalculatorHistoryItem,
 } from "../types/player.ts";
 import { DEFAULT_MISSIONS, ALL_BADGES, calculateLevel } from "../data/levels.ts";
 import { GAME_UPGRADES, type UpgradeId } from "../data/gameUpgrades.ts";
@@ -33,6 +36,8 @@ import {
 } from "../data/missions.ts";
 import { PUSTAKA_TOPICS } from "../data/pustaka/topics.ts";
 import { QUIZ_TOPICS } from "../data/kuis/topics.ts";
+import { CHALLENGE_TASKS } from "../data/aksiNyata/challenge.ts";
+import { getHabitLevel } from "../data/aksiNyata/calculator.ts";
 
 const STORAGE_KEY = "ecobot_player_state_v1";
 
@@ -65,6 +70,24 @@ export const DEFAULT_QUIZ_PROGRESS: QuizProgress = {
     perfectCount: 0,
   },
   duelBest: 0,
+};
+
+export const DEFAULT_AKSI_NYATA: AksiNyataState = {
+  challenge: {
+    rounds: 0,
+    current: {
+      startedAt: null,
+      days: {},
+      completedAt: null,
+      rewardClaimed: false,
+    },
+  },
+  calculator: {
+    lastDateKey: null,
+    rewardClaimedDateKey: null,
+    history: [],
+  },
+  ideas: {},
 };
 
 /**
@@ -264,6 +287,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = (() => {
     },
     contentProgress: {},
     quizProgress: DEFAULT_QUIZ_PROGRESS,
+    aksiNyata: DEFAULT_AKSI_NYATA,
     simulatedDateOffsetDays: 0,
     badges: [],
     activityLog: [],
@@ -420,6 +444,7 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
       },
       duelBest: 80,
     },
+    aksiNyata: DEFAULT_AKSI_NYATA,
     simulatedDateOffsetDays: 0,
     badges: [
       { ...ALL_BADGES[0], unlockedAt: "Hari ini" },
@@ -464,6 +489,7 @@ let globalState: PlayerState = (() => {
             uniqueSets: parsed.uniqueSets || { topicsRead: [], perfectQuizzes: [] },
             contentProgress: parsed.contentProgress || {},
             quizProgress: parsed.quizProgress || DEFAULT_QUIZ_PROGRESS,
+            aksiNyata: parsed.aksiNyata || DEFAULT_AKSI_NYATA,
             simulatedDateOffsetDays: parsed.simulatedDateOffsetDays || 0,
             upgrades: { ...DEFAULT_UPGRADES, ...(parsed.upgrades || {}) },
             character: { ...DEFAULT_CHARACTER, ...(parsed.character || {}) },
@@ -861,6 +887,71 @@ export function getNextUnreadTopic(state: PlayerState) {
       .map(([slug]) => slug)
   );
   return PUSTAKA_TOPICS.find((t) => !completedSlugs.has(t.slug)) || null;
+}
+
+// =========================================================================
+// SELECTORS AKSI NYATA
+// =========================================================================
+
+export function getChallengeStatus(state: PlayerState) {
+  const an = state.aksiNyata || DEFAULT_AKSI_NYATA;
+  const challenge = an.challenge;
+  const current = challenge.current;
+  const todayKey = getEffectiveDateKey(state);
+
+  const checkedDays = Object.keys(current.days || {}).map(Number).sort((a, b) => a - b);
+  const checkedDaysCount = checkedDays.length;
+  const highestCheckedDay = checkedDaysCount > 0 ? Math.max(...checkedDays) : 0;
+  const isCompleted = checkedDaysCount >= 7;
+
+  // Has today already been checked?
+  const isTodayChecked = Object.values(current.days || {}).some(
+    (d: ChallengeDayRecord) => d.dateKey === todayKey
+  );
+
+  const isStarted = Boolean(current.startedAt || checkedDaysCount > 0);
+  const currentDay = isCompleted ? 7 : Math.min(7, highestCheckedDay + 1);
+  const canCheckToday = isStarted && !isCompleted && !isTodayChecked;
+
+  return {
+    isStarted,
+    currentDay,
+    checkedDaysCount,
+    highestCheckedDay,
+    isTodayChecked,
+    isCompleted,
+    canCheckToday,
+    rounds: challenge.rounds || 0,
+    rewardClaimed: Boolean(current.rewardClaimed),
+    todayKey,
+    days: current.days || {},
+  };
+}
+
+export function getTodayTask(state: PlayerState) {
+  const status = getChallengeStatus(state);
+  return CHALLENGE_TASKS.find((t) => t.day === status.currentDay) || CHALLENGE_TASKS[0];
+}
+
+export function getAksiSummary(state: PlayerState) {
+  const an = state.aksiNyata || DEFAULT_AKSI_NYATA;
+  const status = getChallengeStatus(state);
+  const totalIdeasTried = Object.values(an.ideas || {}).filter((i) => i.tried).length;
+  const lastCalc = an.calculator?.history?.[0] || null;
+
+  return {
+    checkedDaysCount: status.checkedDaysCount,
+    roundsCompleted: status.rounds,
+    totalIdeasTried,
+    lastCalculatorScore: lastCalc ? lastCalc.score : null,
+    lastCalculatorLevel: lastCalc ? lastCalc.level : null,
+  };
+}
+
+export function isCalculatorRewardAvailable(state: PlayerState): boolean {
+  const an = state.aksiNyata || DEFAULT_AKSI_NYATA;
+  const todayKey = getEffectiveDateKey(state);
+  return an.calculator?.rewardClaimedDateKey !== todayKey;
 }
 
 // =========================================================================
@@ -1324,6 +1415,354 @@ export function usePlayerStore() {
         });
       }
 
+      return nextState;
+    });
+
+    return result;
+  };
+
+  // =========================================================================
+  // AKSI NYATA ACTIONS
+  // =========================================================================
+
+  const startChallenge = () => {
+    setPlayerState((prev) => {
+      const currentAn = prev.aksiNyata || DEFAULT_AKSI_NYATA;
+      if (currentAn.challenge.current.startedAt) return prev;
+
+      return {
+        ...prev,
+        aksiNyata: {
+          ...currentAn,
+          challenge: {
+            ...currentAn.challenge,
+            current: {
+              ...currentAn.challenge.current,
+              startedAt: new Date().toISOString(),
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const checkChallengeDay = (payload?: {
+    feeling?: "gampang" | "lumayan" | "susah";
+    parentConfirmed?: boolean;
+  }) => {
+    let result = {
+      success: false,
+      reason: "",
+      day: 1,
+      xpEarned: 0,
+      pointsEarned: 0,
+      completed: false,
+      badgeUnlocked: false,
+      leveledUp: false,
+      newLevel: 1,
+      newTitle: "",
+    };
+
+    setPlayerState((prev) => {
+      const todayKey = getEffectiveDateKey(prev);
+      const currentAn = prev.aksiNyata || DEFAULT_AKSI_NYATA;
+      const currentChallenge = currentAn.challenge.current;
+
+      const startedAt = currentChallenge.startedAt || new Date().toISOString();
+
+      // Check if today is already checked
+      const isTodayChecked = Object.values(currentChallenge.days || {}).some(
+        (d: ChallengeDayRecord) => d.dateKey === todayKey
+      );
+      if (isTodayChecked) {
+        result.reason = "already_checked_today";
+        return prev;
+      }
+
+      const checkedDays = Object.keys(currentChallenge.days || {}).map(Number).sort((a, b) => a - b);
+      const highestChecked = checkedDays.length > 0 ? Math.max(...checkedDays) : 0;
+      if (highestChecked >= 7) {
+        result.reason = "already_completed";
+        return prev;
+      }
+
+      const nextDay = highestChecked + 1;
+      const taskDef = CHALLENGE_TASKS.find((t) => t.day === nextDay);
+
+      // Daily task reward
+      const xpGain = 15;
+      const pointsGain = 5;
+      const isLastDay = nextDay === 7;
+      let completionBonusXp = 0;
+      let completionBonusPoints = 0;
+      let badgeGranted = false;
+
+      // Completion bonus (once per round / first time)
+      if (isLastDay && !currentChallenge.rewardClaimed) {
+        completionBonusXp = 150;
+        completionBonusPoints = 80;
+      }
+
+      const totalXpGain = xpGain + completionBonusXp;
+      const totalPointsGain = pointsGain + completionBonusPoints;
+
+      const oldLevelInfo = calculateLevel(prev.xp);
+      const newXp = prev.xp + totalXpGain;
+      const newPoints = prev.points + totalPointsGain;
+      const newLevelInfo = calculateLevel(newXp);
+      const leveledUp = newLevelInfo.level > oldLevelInfo.level;
+
+      // Badges
+      const badgesToGrant = [...prev.badges];
+      if (isLastDay && !badgesToGrant.some((b) => b.id === "pahlawan-nyata")) {
+        const badgeDef = ALL_BADGES.find((b) => b.id === "pahlawan-nyata");
+        if (badgeDef) {
+          badgesToGrant.push({ ...badgeDef, unlockedAt: "Hari ini" });
+          badgeGranted = true;
+        }
+      }
+
+      const updatedDays: Record<number, ChallengeDayRecord> = {
+        ...currentChallenge.days,
+        [nextDay]: {
+          dateKey: todayKey,
+          checkedAt: new Date().toISOString(),
+          feeling: payload?.feeling,
+          parentConfirmed: payload?.parentConfirmed,
+        },
+      };
+
+      const newActivity: ActivityItem = {
+        id: "act-" + Date.now(),
+        title: `Aksi Nyata Hari ${nextDay}: ${taskDef?.title || "Tugas Rumah"}`,
+        description: isLastDay
+          ? "Menyelesaikan seluruh Tantangan 7 Hari Aksi Nyata!"
+          : "Mencoba kebiasaan ramah lingkungan baru di rumah",
+        timestamp: "Baru saja",
+        type: "action",
+        xpEarned: totalXpGain,
+        pointsEarned: totalPointsGain,
+      };
+
+      result = {
+        success: true,
+        reason: "",
+        day: nextDay,
+        xpEarned: totalXpGain,
+        pointsEarned: totalPointsGain,
+        completed: isLastDay,
+        badgeUnlocked: badgeGranted,
+        leveledUp,
+        newLevel: newLevelInfo.level,
+        newTitle: newLevelInfo.title,
+      };
+
+      let nextState: PlayerState = {
+        ...prev,
+        xp: newXp,
+        points: newPoints,
+        badges: badgesToGrant,
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+        aksiNyata: {
+          ...currentAn,
+          challenge: {
+            ...currentAn.challenge,
+            current: {
+              ...currentChallenge,
+              startedAt,
+              days: updatedDays,
+              completedAt: isLastDay ? new Date().toISOString() : currentChallenge.completedAt,
+              rewardClaimed: isLastDay ? true : currentChallenge.rewardClaimed,
+            },
+          },
+        },
+      };
+
+      // Advance mission events
+      nextState = dispatchRecordEvent(nextState, "aksi_nyata_dicentang", { amount: 1 });
+      if (isLastDay) {
+        nextState = dispatchRecordEvent(nextState, "tantangan_7_selesai", { amount: 1 });
+      }
+
+      return nextState;
+    });
+
+    return result;
+  };
+
+  const startNewRound = () => {
+    setPlayerState((prev) => {
+      const currentAn = prev.aksiNyata || DEFAULT_AKSI_NYATA;
+      return {
+        ...prev,
+        aksiNyata: {
+          ...currentAn,
+          challenge: {
+            rounds: currentAn.challenge.rounds + 1,
+            current: {
+              startedAt: new Date().toISOString(),
+              days: {},
+              completedAt: null,
+              rewardClaimed: false,
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const resetCurrentChallenge = () => {
+    setPlayerState((prev) => {
+      const currentAn = prev.aksiNyata || DEFAULT_AKSI_NYATA;
+      return {
+        ...prev,
+        aksiNyata: {
+          ...currentAn,
+          challenge: {
+            ...currentAn.challenge,
+            current: {
+              startedAt: null,
+              days: {},
+              completedAt: null,
+              rewardClaimed: false,
+            },
+          },
+        },
+      };
+    });
+  };
+
+  const submitCalculator = (answers: number[]) => {
+    let result = {
+      score: 0,
+      level: "Pemula Peduli" as "Pemula Peduli" | "Penjaga Bumi" | "Pahlawan Bumi",
+      xpEarned: 0,
+      pointsEarned: 0,
+      leveledUp: false,
+      newLevel: 1,
+      newTitle: "",
+    };
+
+    setPlayerState((prev) => {
+      const todayKey = getEffectiveDateKey(prev);
+      const currentAn = prev.aksiNyata || DEFAULT_AKSI_NYATA;
+      const totalScore = answers.reduce((sum, val) => sum + val, 0);
+      const habitInfo = getHabitLevel(totalScore);
+
+      const isClaimedToday = currentAn.calculator.rewardClaimedDateKey === todayKey;
+      const xpGain = isClaimedToday ? 0 : 10;
+      const pointsGain = isClaimedToday ? 0 : 5;
+
+      const oldLevelInfo = calculateLevel(prev.xp);
+      const newXp = prev.xp + xpGain;
+      const newPoints = prev.points + pointsGain;
+      const newLevelInfo = calculateLevel(newXp);
+      const leveledUp = newLevelInfo.level > oldLevelInfo.level;
+
+      const newHistoryItem: CalculatorHistoryItem = {
+        score: totalScore,
+        level: habitInfo.name,
+        at: new Date().toISOString(),
+      };
+
+      const updatedHistory = [newHistoryItem, ...(currentAn.calculator.history || [])].slice(0, 10);
+
+      result = {
+        score: totalScore,
+        level: habitInfo.name,
+        xpEarned: xpGain,
+        pointsEarned: pointsGain,
+        leveledUp,
+        newLevel: newLevelInfo.level,
+        newTitle: newLevelInfo.title,
+      };
+
+      let nextState: PlayerState = {
+        ...prev,
+        xp: newXp,
+        points: newPoints,
+        aksiNyata: {
+          ...currentAn,
+          calculator: {
+            lastDateKey: todayKey,
+            rewardClaimedDateKey: isClaimedToday ? currentAn.calculator.rewardClaimedDateKey : todayKey,
+            history: updatedHistory,
+          },
+        },
+      };
+
+      nextState = dispatchRecordEvent(nextState, "kalkulator_selesai", { amount: 1 });
+      return nextState;
+    });
+
+    return result;
+  };
+
+  const markIdeaTried = (ideaId: string) => {
+    let result = {
+      success: false,
+      alreadyTried: false,
+      xpEarned: 0,
+      pointsEarned: 0,
+      leveledUp: false,
+      newLevel: 1,
+      newTitle: "",
+    };
+
+    setPlayerState((prev) => {
+      const currentAn = prev.aksiNyata || DEFAULT_AKSI_NYATA;
+      if (currentAn.ideas?.[ideaId]?.tried) {
+        result.alreadyTried = true;
+        return prev;
+      }
+
+      const xpGain = 20;
+      const pointsGain = 10;
+
+      const oldLevelInfo = calculateLevel(prev.xp);
+      const newXp = prev.xp + xpGain;
+      const newPoints = prev.points + pointsGain;
+      const newLevelInfo = calculateLevel(newXp);
+      const leveledUp = newLevelInfo.level > oldLevelInfo.level;
+
+      const newActivity: ActivityItem = {
+        id: "act-" + Date.now(),
+        title: "Mencoba Ide Daur Ulang",
+        description: "Mempraktikkan kreasi daur ulang di rumah",
+        timestamp: "Baru saja",
+        type: "action",
+        xpEarned: xpGain,
+        pointsEarned: pointsGain,
+      };
+
+      result = {
+        success: true,
+        alreadyTried: false,
+        xpEarned: xpGain,
+        pointsEarned: pointsGain,
+        leveledUp,
+        newLevel: newLevelInfo.level,
+        newTitle: newLevelInfo.title,
+      };
+
+      let nextState: PlayerState = {
+        ...prev,
+        xp: newXp,
+        points: newPoints,
+        activityLog: [newActivity, ...prev.activityLog].slice(0, 25),
+        aksiNyata: {
+          ...currentAn,
+          ideas: {
+            ...currentAn.ideas,
+            [ideaId]: {
+              tried: true,
+              at: new Date().toISOString(),
+            },
+          },
+        },
+      };
+
+      nextState = dispatchRecordEvent(nextState, "ide_dicoba", { amount: 1 });
       return nextState;
     });
 
@@ -2002,6 +2441,12 @@ export function usePlayerStore() {
     markCardViewed,
     completeTopic,
     submitQuizResult,
+    startChallenge,
+    checkChallengeDay,
+    startNewRound,
+    resetCurrentChallenge,
+    submitCalculator,
+    markIdeaTried,
     simulateEvent,
     resetDailyMissions,
     resetWeeklyMissions,

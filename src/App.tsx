@@ -9,9 +9,9 @@ import PrivasiPage from "./pages/PrivasiPage";
 import SumberPage from "./pages/SumberPage";
 import KuisPage from "./pages/KuisPage";
 import KuisPlayerPage from "./pages/KuisPlayerPage";
+import AksiNyataPage from "./pages/AksiNyataPage";
 import {
   PustakaPage,
-  AksiNyataPage,
   PencapaianPage,
   TokoPage,
   PapanPeringkatPage,

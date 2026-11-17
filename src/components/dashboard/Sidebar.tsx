@@ -11,7 +11,11 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { MENU_GROUPS } from "../../config/navigation";
-import { usePlayerStore, selectClaimableCount } from "../../store/playerStore";
+import {
+  usePlayerStore,
+  selectClaimableCount,
+  getChallengeStatus,
+} from "../../store/playerStore";
 import { calculateLevel } from "../../data/levels";
 import { EcobotMascot } from "../ecobot/EcobotMascot";
 
@@ -29,6 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false }) => {
   // Calculate badges for groups (single source of truth: all claimable missions and chests)
   const claimableMissionsCount = selectClaimableCount(state);
   const newBadgesCount = state.badges.length;
+  const challengeStatus = getChallengeStatus(state);
 
   // Track accordion open state per group - only open the group that owns the active route.
   // When on /beranda or any standalone page, all accordion groups remain collapsed.
@@ -265,6 +270,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false }) => {
                             >
                               {badgeText}
                             </span>
+                          ) : subItem.id === "aksi-nyata" && challengeStatus.canCheckToday ? (
+                            <span
+                              title="Tugas hari ini siap dikerjakan!"
+                              className={`w-2.5 h-2.5 rounded-full ${
+                                isActive ? "bg-white" : "bg-emerald-400"
+                              } animate-pulse shadow-xs`}
+                            />
                           ) : null}
                         </Link>
                       );

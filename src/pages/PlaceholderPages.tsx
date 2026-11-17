@@ -22,18 +22,6 @@ export function PustakaPage() {
   );
 }
 
-export function AksiNyataPage() {
-  return (
-    <PlaceholderPage
-      title="Aksi Nyata"
-      subtitle="Tantangan 7 hari kebiasaan ramah lingkungan di dunia nyata"
-      icon={<Leaf className="w-10 h-10 text-emerald-600" />}
-      moduleName="Tantangan 7 Hari Aksi Nyata"
-      description="Bawa botol minum sendiri, pilah sampah di rumah, dan matikan lampu kamar untuk membentuk kebiasaan hijau sehari-hari."
-    />
-  );
-}
-
 export function PencapaianPage() {
   return (
     <PlaceholderPage

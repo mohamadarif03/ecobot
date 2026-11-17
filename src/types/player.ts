@@ -34,7 +34,7 @@ export interface ActivityItem {
   title: string;
   description: string;
   timestamp: string;
-  type: "reading" | "quiz" | "game" | "badge" | "streak";
+  type: "reading" | "quiz" | "game" | "badge" | "streak" | "action";
   xpEarned: number;
   pointsEarned: number;
 }
@@ -150,6 +150,41 @@ export interface QuizProgress {
   duelBest?: number;
 }
 
+export interface ChallengeDayRecord {
+  dateKey: string;
+  checkedAt: string;
+  feeling?: "gampang" | "lumayan" | "susah";
+  parentConfirmed?: boolean;
+}
+
+export interface ChallengeState {
+  rounds: number;
+  current: {
+    startedAt: string | null;
+    days: Record<number, ChallengeDayRecord>;
+    completedAt: string | null;
+    rewardClaimed: boolean;
+  };
+}
+
+export interface CalculatorHistoryItem {
+  score: number;
+  level: "Pemula Peduli" | "Penjaga Bumi" | "Pahlawan Bumi";
+  at: string;
+}
+
+export interface CalculatorState {
+  lastDateKey: string | null;
+  rewardClaimedDateKey: string | null;
+  history: CalculatorHistoryItem[];
+}
+
+export interface AksiNyataState {
+  challenge: ChallengeState;
+  calculator: CalculatorState;
+  ideas: Record<string, { tried: boolean; at: string }>;
+}
+
 export interface PlayerState {
   nickname: string;
   avatar: string; // avatar identifier
@@ -168,6 +203,7 @@ export interface PlayerState {
   uniqueSets: UniqueEventSets;
   contentProgress: Record<string, TopicReadingProgress>;
   quizProgress: QuizProgress;
+  aksiNyata?: AksiNyataState;
   simulatedDateOffsetDays?: number;
   badges: Badge[];
   activityLog: ActivityItem[];

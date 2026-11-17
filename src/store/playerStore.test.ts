@@ -21,8 +21,13 @@ import {
   getMissionsWithStatus,
   INITIAL_PLAYER_STATE,
   DEFAULT_QUIZ_PROGRESS,
+  DEFAULT_AKSI_NYATA,
   getTodayQuizStatus,
   getQuizSummary,
+  getChallengeStatus,
+  getAksiSummary,
+  isCalculatorRewardAvailable,
+  getEffectiveDateKey,
 } from "./playerStore.ts";
 import {
   ALL_QUIZ_QUESTIONS,
@@ -31,6 +36,12 @@ import {
   validateQuizQuestions,
 } from "../data/kuis/questions.ts";
 import { QUIZ_TOPICS } from "../data/kuis/topics.ts";
+import { CHALLENGE_TASKS } from "../data/aksiNyata/challenge.ts";
+import {
+  CALCULATOR_QUESTIONS,
+  getHabitLevel,
+} from "../data/aksiNyata/calculator.ts";
+import { CREATIVE_IDEAS } from "../data/aksiNyata/ideas.ts";
 import type { MissionProgress } from "../types/player.ts";
 
 describe("Player Gamification Logic", () => {
@@ -320,4 +331,143 @@ describe("Quiz Center & Question Bank (PRD KQ)", () => {
     assert.equal(updatedStatus.score, 5);
   });
 });
+
+describe("Aksi Nyata & Eco-Habits System (PRD 6.6)", () => {
+  test("CHALLENGE_TASKS has exactly 7 days of safe, child-friendly tasks", () => {
+    assert.equal(CHALLENGE_TASKS.length, 7);
+    CHALLENGE_TASKS.forEach((task, idx) => {
+      assert.equal(task.day, idx + 1);
+      assert.ok(task.title.length > 0);
+      assert.ok(task.description.length > 0);
+      assert.ok(task.why.length > 0);
+      assert.ok(task.tips.length > 0);
+    });
+  });
+
+  test("CALCULATOR_QUESTIONS has 8 reflective questions and proper scoring", () => {
+    assert.equal(CALCULATOR_QUESTIONS.length, 8);
+    CALCULATOR_QUESTIONS.forEach((q) => {
+      assert.equal(q.options.length, 3);
+      assert.ok(q.strengthFeedback.length > 0);
+      assert.ok(q.suggestionFeedback.length > 0);
+    });
+
+    // Question 2 has inverted values
+    const q2 = CALCULATOR_QUESTIONS[1];
+    assert.equal(q2.options[0].points, 0); // Always asking for plastic bag
+    assert.equal(q2.options[2].points, 2); // Rarely or brings own bag
+  });
+
+  test("getHabitLevel maps scores correctly without negative labels", () => {
+    assert.equal(getHabitLevel(0).name, "Pemula Peduli");
+    assert.equal(getHabitLevel(5).name, "Pemula Peduli");
+    assert.equal(getHabitLevel(6).name, "Penjaga Bumi");
+    assert.equal(getHabitLevel(11).name, "Penjaga Bumi");
+    assert.equal(getHabitLevel(12).name, "Pahlawan Bumi");
+    assert.equal(getHabitLevel(16).name, "Pahlawan Bumi");
+  });
+
+  test("CREATIVE_IDEAS contains 4 safe ideas with materials and steps", () => {
+    assert.equal(CREATIVE_IDEAS.length, 4);
+    CREATIVE_IDEAS.forEach((idea) => {
+      assert.ok(idea.materials.length >= 3);
+      assert.ok(idea.steps.length >= 3);
+      assert.equal(idea.rewardXp, 20);
+      assert.equal(idea.rewardPoints, 10);
+    });
+  });
+
+  test("getChallengeStatus correctly identifies unstarted, active, and completed challenge", () => {
+    const state = {
+      ...INITIAL_PLAYER_STATE,
+      aksiNyata: { ...DEFAULT_AKSI_NYATA },
+    };
+    const s1 = getChallengeStatus(state);
+    assert.equal(s1.isStarted, false);
+    assert.equal(s1.currentDay, 1);
+    assert.equal(s1.checkedDaysCount, 0);
+    assert.equal(s1.canCheckToday, false);
+
+    // Active challenge with Day 1 checked yesterday
+    const activeState = {
+      ...state,
+      aksiNyata: {
+        ...DEFAULT_AKSI_NYATA,
+        challenge: {
+          rounds: 0,
+          current: {
+            startedAt: "2026-11-15T10:00:00.000Z",
+            days: {
+              1: {
+                dateKey: "2026-11-15",
+                checkedAt: "2026-11-15T10:00:00.000Z",
+                feeling: "gampang" as const,
+              },
+            },
+            completedAt: null,
+            rewardClaimed: false,
+          },
+        },
+      },
+    };
+
+    const s2 = getChallengeStatus(activeState);
+    assert.equal(s2.isStarted, true);
+    assert.equal(s2.currentDay, 2);
+    assert.equal(s2.checkedDaysCount, 1);
+    assert.equal(s2.isTodayChecked, false);
+    assert.equal(s2.canCheckToday, true);
+
+    // Same day already checked
+    const todayKey = getEffectiveDateKey(activeState);
+    const checkedTodayState = {
+      ...activeState,
+      aksiNyata: {
+        ...activeState.aksiNyata,
+        challenge: {
+          ...activeState.aksiNyata.challenge,
+          current: {
+            ...activeState.aksiNyata.challenge.current,
+            days: {
+              ...activeState.aksiNyata.challenge.current.days,
+              2: {
+                dateKey: todayKey,
+                checkedAt: new Date().toISOString(),
+                feeling: "lumayan" as const,
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const s3 = getChallengeStatus(checkedTodayState);
+    assert.equal(s3.isTodayChecked, true);
+    assert.equal(s3.canCheckToday, false);
+    assert.equal(s3.checkedDaysCount, 2);
+  });
+
+  test("isCalculatorRewardAvailable is true before submission and false after same-day submission", () => {
+    const state = {
+      ...INITIAL_PLAYER_STATE,
+      aksiNyata: { ...DEFAULT_AKSI_NYATA },
+    };
+    assert.equal(isCalculatorRewardAvailable(state), true);
+
+    const todayKey = getEffectiveDateKey(state);
+    const claimedState = {
+      ...state,
+      aksiNyata: {
+        ...DEFAULT_AKSI_NYATA,
+        calculator: {
+          lastDateKey: todayKey,
+          rewardClaimedDateKey: todayKey,
+          history: [],
+        },
+      },
+    };
+    assert.equal(isCalculatorRewardAvailable(claimedState), false);
+  });
+});
+
 
