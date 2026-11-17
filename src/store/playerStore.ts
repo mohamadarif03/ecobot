@@ -66,8 +66,26 @@ import type {
   LigaHistoryItem,
 } from "../types/player.ts";
 import type { LigaStatus, LigaTier } from "../data/peringkat/types.ts";
+import { audioService } from "../services/audio/index.ts";
+import { validateNickname } from "../data/pengaturan/profile.ts";
 
 const STORAGE_KEY = "ecobot_player_state_v1";
+
+export const DEFAULT_SETTINGS: PlayerSettings = {
+  musicVolume: 80,
+  sfxVolume: 80,
+  muted: false,
+  graphicsQuality: "medium",
+  batterySaver: false,
+  controlMode: "auto",
+  leftHanded: false,
+  joystickSize: "sedang",
+  reduceMotion: "ikuti",
+  textSize: "normal",
+  highContrast: false,
+  iconLabels: true,
+  language: "id",
+};
 
 export const DEFAULT_UPGRADES: PlayerUpgrades = {
   bag: 1,
@@ -410,13 +428,7 @@ export const INITIAL_PLAYER_STATE: PlayerState = (() => {
       topicsRead: 0,
       quizzesCompleted: 0,
     },
-    settings: {
-      musicVolume: 80,
-      sfxVolume: 80,
-      graphicsQuality: "medium",
-      language: "id",
-      controlMode: "auto",
-    },
+    settings: DEFAULT_SETTINGS,
   };
 })();
 
@@ -645,13 +657,7 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
       topicsRead: 3,
       quizzesCompleted: 4,
     },
-    settings: {
-      musicVolume: 80,
-      sfxVolume: 80,
-      graphicsQuality: "medium",
-      language: "id",
-      controlMode: "auto",
-    },
+    settings: DEFAULT_SETTINGS,
   };
 })();
 
@@ -853,7 +859,7 @@ let globalState: PlayerState = (() => {
             simulatedDateOffsetDays: parsed.simulatedDateOffsetDays || 0,
             upgrades: { ...DEFAULT_UPGRADES, ...(parsed.upgrades || {}) },
             character: { ...DEFAULT_CHARACTER, ...(parsed.character || {}) },
-            settings: { ...INITIAL_PLAYER_STATE.settings, ...(parsed.settings || {}) },
+            settings: { ...DEFAULT_SETTINGS, ...(parsed.settings || {}) },
             stats: { ...INITIAL_PLAYER_STATE.stats, ...(parsed.stats || {}) },
           });
 
@@ -2643,13 +2649,154 @@ export function usePlayerStore() {
   };
 
   const updateSettings = (partial: Partial<PlayerSettings>) => {
-    setPlayerState((prev) => ({
-      ...prev,
-      settings: {
-        ...prev.settings,
+    setPlayerState((prev) => {
+      const current = prev.settings || DEFAULT_SETTINGS;
+      const nextSettings: PlayerSettings = {
+        ...current,
         ...partial,
-      },
-    }));
+      };
+
+      if (typeof partial.musicVolume === "number") {
+        nextSettings.musicVolume = Math.max(0, Math.min(100, Math.round(partial.musicVolume)));
+      }
+      if (typeof partial.sfxVolume === "number") {
+        nextSettings.sfxVolume = Math.max(0, Math.min(100, Math.round(partial.sfxVolume)));
+      }
+
+      // Sync with AudioService
+      audioService.setVolumes({
+        musicVolume: nextSettings.musicVolume,
+        sfxVolume: nextSettings.sfxVolume,
+        muted: nextSettings.muted,
+      });
+
+      return {
+        ...prev,
+        settings: nextSettings,
+      };
+    });
+  };
+
+  const resetSettingsSection = (
+    section: "suara" | "grafis" | "kontrol" | "tampilan" | "privasi"
+  ) => {
+    setPlayerState((prev) => {
+      const cur = prev.settings || DEFAULT_SETTINGS;
+      const updatedSettings = { ...cur };
+      let updatedLb = prev.leaderboard;
+
+      if (section === "suara") {
+        updatedSettings.musicVolume = DEFAULT_SETTINGS.musicVolume;
+        updatedSettings.sfxVolume = DEFAULT_SETTINGS.sfxVolume;
+        updatedSettings.muted = DEFAULT_SETTINGS.muted;
+        audioService.setVolumes(updatedSettings);
+      } else if (section === "grafis") {
+        updatedSettings.graphicsQuality = DEFAULT_SETTINGS.graphicsQuality;
+        updatedSettings.batterySaver = DEFAULT_SETTINGS.batterySaver;
+      } else if (section === "kontrol") {
+        updatedSettings.controlMode = DEFAULT_SETTINGS.controlMode;
+        updatedSettings.leftHanded = DEFAULT_SETTINGS.leftHanded;
+        updatedSettings.joystickSize = DEFAULT_SETTINGS.joystickSize;
+      } else if (section === "tampilan") {
+        updatedSettings.reduceMotion = DEFAULT_SETTINGS.reduceMotion;
+        updatedSettings.textSize = DEFAULT_SETTINGS.textSize;
+        updatedSettings.highContrast = DEFAULT_SETTINGS.highContrast;
+        updatedSettings.iconLabels = DEFAULT_SETTINGS.iconLabels;
+        updatedSettings.language = DEFAULT_SETTINGS.language;
+      } else if (section === "privasi") {
+        if (updatedLb) {
+          updatedLb = { ...updatedLb, showOnBoard: true };
+        }
+      }
+
+      return {
+        ...prev,
+        settings: updatedSettings,
+        ...(updatedLb ? { leaderboard: updatedLb } : {}),
+      };
+    });
+  };
+
+  const updateProfile = ({ nickname, avatar }: { nickname?: string; avatar?: string }) => {
+    let validationError: string | undefined;
+
+    setPlayerState((prev) => {
+      let finalNickname = prev.nickname;
+      if (typeof nickname === "string") {
+        const res = validateNickname(nickname);
+        if (!res.valid) {
+          validationError = res.error;
+          return prev;
+        }
+        finalNickname = res.sanitized!;
+      }
+
+      const finalAvatar = avatar || prev.avatar;
+
+      return {
+        ...prev,
+        nickname: finalNickname,
+        avatar: finalAvatar,
+      };
+    });
+
+    if (validationError) {
+      throw new Error(validationError);
+    }
+  };
+
+  const resetAllData = () => {
+    try {
+      if (typeof localStorage !== "undefined") {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {
+      // ignore
+    }
+    setPlayerState(() => INITIAL_PLAYER_STATE);
+  };
+
+  const restoreBackupData = (sanitizedData: Partial<PlayerState>) => {
+    setPlayerState((prev) => {
+      try {
+        if (typeof window !== "undefined" && window.sessionStorage) {
+          sessionStorage.setItem("ecobot_previous_backup_restore", JSON.stringify(prev));
+        }
+      } catch {
+        // ignore
+      }
+
+      const restored: PlayerState = {
+        ...INITIAL_PLAYER_STATE,
+        ...sanitizedData,
+        settings: {
+          ...DEFAULT_SETTINGS,
+          ...(sanitizedData.settings || {}),
+        },
+      };
+
+      const withResets = checkAndApplyResets(restored);
+      return syncAchievements(withResets).nextState;
+    });
+  };
+
+  const undoRestoreBackup = (): boolean => {
+    try {
+      if (typeof window !== "undefined" && window.sessionStorage) {
+        const raw = sessionStorage.getItem("ecobot_previous_backup_restore");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") {
+            setPlayerState(() => parsed as PlayerState);
+            sessionStorage.removeItem("ecobot_previous_backup_restore");
+            return true;
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false;
   };
 
   // Dev Tools helpers
@@ -3199,6 +3346,11 @@ export function usePlayerStore() {
     completeMission,
     resetGameProgress,
     updateSettings,
+    resetSettingsSection,
+    updateProfile,
+    resetAllData,
+    restoreBackupData,
+    undoRestoreBackup,
     seedSampleData,
     resetData,
     // Toko & Inventory Actions & Selectors

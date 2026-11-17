@@ -48,6 +48,8 @@ import { LOADING_TIPS, getRandomLoadingTip, LoadingTip } from "../data/loadingTi
 import { CharacterPreview } from "../components/game/CharacterPreview";
 import { GameStage } from "../components/game/GameStage";
 
+import { detectRecommendedGraphicsQuality } from "../data/pengaturan/hardware.ts";
+
 export default function MainGamePage() {
   const navigate = useNavigate();
   const {
@@ -77,13 +79,7 @@ export default function MainGamePage() {
 
   // Auto-detect recommended graphics quality based on device memory and concurrency
   const recommendedQuality = useMemo<"low" | "medium" | "high">(() => {
-    if (typeof window === "undefined") return "medium";
-    const cores = navigator.hardwareConcurrency || 4;
-    // @ts-expect-error deviceMemory is supported in Chromium
-    const memory = navigator.deviceMemory || 4;
-    if (cores >= 8 && memory >= 6) return "high";
-    if (cores <= 2 || memory <= 2) return "low";
-    return "medium";
+    return detectRecommendedGraphicsQuality();
   }, []);
 
   // 1. Redirect to onboarding if no nickname

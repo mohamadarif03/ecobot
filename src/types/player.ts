@@ -39,12 +39,35 @@ export interface ActivityItem {
   pointsEarned: number;
 }
 
+export type GraphicsQuality = "low" | "medium" | "high" | "rendah" | "sedang" | "tinggi";
+export type ControlMode = "auto" | "touch" | "keyboard" | "otomatis" | "analog";
+export type JoystickSize = "kecil" | "sedang" | "besar";
+export type ReduceMotionSetting = "ikuti" | "ya" | "tidak";
+export type TextSizeSetting = "normal" | "besar" | "sangat-besar";
+
 export interface PlayerSettings {
+  // Suara
   musicVolume: number;
   sfxVolume: number;
-  graphicsQuality: "low" | "medium" | "high";
+  muted: boolean;
+
+  // Grafis
+  graphicsQuality: GraphicsQuality;
+  batterySaver: boolean;
+
+  // Kontrol
+  controlMode: ControlMode;
+  leftHanded: boolean;
+  joystickSize: JoystickSize;
+
+  // Tampilan & Aksesibilitas
+  reduceMotion: ReduceMotionSetting;
+  textSize: TextSizeSetting;
+  highContrast: boolean;
+  iconLabels: boolean;
+
+  // Bahasa
   language: "id" | "en";
-  controlMode: "auto" | "touch" | "keyboard";
 }
 
 export interface PlayerUpgrades {

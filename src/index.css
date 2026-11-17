@@ -145,3 +145,62 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+
+/* Accessibility & Comfort Global Modifiers */
+html[data-reduce-motion="true"] *,
+html[data-reduce-motion="true"] *::before,
+html[data-reduce-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+html[data-text-size="besar"] {
+  font-size: 110%;
+}
+
+html[data-text-size="sangat-besar"] {
+  font-size: 120%;
+}
+
+html[data-high-contrast="true"] {
+  --color-border: #94a3b8;
+  --border: #94a3b8;
+}
+
+html[data-high-contrast="true"] body {
+  color: #0f172a;
+}
+
+html[data-high-contrast="true"] .text-slate-500,
+html[data-high-contrast="true"] .text-slate-400 {
+  color: #334155 !important;
+}
+
+/* Print Stylesheet for Rapor Ringkasan Belajar */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  aside,
+  nav,
+  header,
+  footer,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-card {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    break-inside: avoid;
+  }
+}

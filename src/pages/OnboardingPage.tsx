@@ -3,13 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { usePlayerStore } from "../store/playerStore";
 import { EcobotMascot } from "../components/ecobot/EcobotMascot";
 import { Sparkles, ArrowRight } from "lucide-react";
-
-const AVATAR_OPTIONS = [
-  { id: "robot", icon: "🤖", label: "Robot Pintar" },
-  { id: "fox", icon: "🦊", label: "Rubah Ceria" },
-  { id: "girl", icon: "👧", label: "Petualang Cilik" },
-  { id: "boy", icon: "👦", label: "Penjaga Taman" },
-];
+import { AVATAR_OPTIONS, validateNickname } from "../data/pengaturan/profile.ts";
 
 export default function OnboardingPage() {
   const navigate = useNavigate();
@@ -20,12 +14,12 @@ export default function OnboardingPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanName = nameInput.trim();
-    if (!cleanName) {
-      setErrorMsg("Yuk tulis nama panggilanmu dulu!");
+    const res = validateNickname(nameInput);
+    if (!res.valid) {
+      setErrorMsg(res.error || "Yuk tulis nama panggilanmu dulu!");
       return;
     }
-    setNickname(cleanName, selectedAvatar);
+    setNickname(res.sanitized!, selectedAvatar);
     navigate("/beranda");
   };
 
@@ -65,7 +59,7 @@ export default function OnboardingPage() {
                 setErrorMsg("");
               }}
               placeholder="Contoh: Raka, Alya, Budi..."
-              maxLength={20}
+              maxLength={16}
               className="w-full bg-[#F3F9FF] border border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100/60 rounded-2xl px-4 py-3 text-[15px] font-bold text-slate-900 outline-none transition"
               autoFocus
             />

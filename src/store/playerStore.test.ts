@@ -44,10 +44,18 @@ import {
   getWeeklyXp,
   getLigaStatus,
   hasUnclaimedLigaReward,
+  DEFAULT_SETTINGS,
 } from "./playerStore.ts";
 import { leaderboardService, getSurroundingEntries } from "../services/leaderboard/index.ts";
 import { sanitizeNickname, hasProfanity } from "../data/peringkat/profanity.ts";
 import { LIGA_TIERS } from "../data/peringkat/liga.ts";
+import { validateNickname } from "../data/pengaturan/profile.ts";
+import {
+  generateBackupPayload,
+  validateAndSanitizeBackup,
+  CURRENT_SCHEMA_VERSION,
+} from "../data/pengaturan/backup.ts";
+import { detectRecommendedGraphicsQuality } from "../data/pengaturan/hardware.ts";
 import { ALL_SHOP_ITEMS } from "../data/toko/items.ts";
 import { BADGE_DEFINITIONS } from "../data/pencapaian/badges.ts";
 import { FACT_CARDS } from "../data/pencapaian/factCards.ts";
@@ -912,6 +920,114 @@ describe("Papan Peringkat & Liga Mingguan (PRD 6.8)", () => {
     assert.equal(topSlice.length, 0);
   });
 });
+
+describe("Pengaturan & Cadangan Progres (PRD 6.10, 9, 10)", () => {
+  test("validateNickname enforces 2-16 chars, allowed chars, and profanity filtering", () => {
+    // Length tests
+    assert.equal(validateNickname("").valid, false);
+    assert.equal(validateNickname("A").valid, false);
+    assert.equal(validateNickname("12345678901234567").valid, false); // 17 chars
+
+    // Disallowed symbols
+    assert.equal(validateNickname("Raka!").valid, false);
+    assert.equal(validateNickname("User@Home").valid, false);
+
+    // Profanity test
+    assert.equal(validateNickname("babi").valid, false);
+
+    // Valid Indonesian names
+    const r1 = validateNickname("Raka");
+    assert.equal(r1.valid, true);
+    assert.equal(r1.sanitized, "Raka");
+
+    const r2 = validateNickname("Siti-Alya 01");
+    assert.equal(r2.valid, true);
+    assert.equal(r2.sanitized, "Siti-Alya 01");
+  });
+
+  test("DEFAULT_SETTINGS contains all required settings fields with child-safe defaults", () => {
+    assert.equal(DEFAULT_SETTINGS.musicVolume, 80);
+    assert.equal(DEFAULT_SETTINGS.sfxVolume, 80);
+    assert.equal(DEFAULT_SETTINGS.muted, false);
+    assert.equal(DEFAULT_SETTINGS.graphicsQuality, "medium");
+    assert.equal(DEFAULT_SETTINGS.batterySaver, false);
+    assert.equal(DEFAULT_SETTINGS.controlMode, "auto");
+    assert.equal(DEFAULT_SETTINGS.leftHanded, false);
+    assert.equal(DEFAULT_SETTINGS.joystickSize, "sedang");
+    assert.equal(DEFAULT_SETTINGS.reduceMotion, "ikuti");
+    assert.equal(DEFAULT_SETTINGS.textSize, "normal");
+    assert.equal(DEFAULT_SETTINGS.highContrast, false);
+    assert.equal(DEFAULT_SETTINGS.language, "id");
+  });
+
+  test("hardware detection returns valid graphics tier", () => {
+    const q = detectRecommendedGraphicsQuality();
+    assert.ok(["low", "medium", "high"].includes(q));
+  });
+
+  test("generateBackupPayload generates a valid export file structure", () => {
+    const backup = generateBackupPayload(INITIAL_PLAYER_STATE);
+    assert.equal(backup.app, "ecobot");
+    assert.equal(backup.schemaVersion, CURRENT_SCHEMA_VERSION);
+    assert.ok(backup.exportedAt);
+    assert.equal(backup.data.nickname, INITIAL_PLAYER_STATE.nickname);
+    assert.equal(backup.data.xp, INITIAL_PLAYER_STATE.xp);
+  });
+
+  test("validateAndSanitizeBackup rejects invalid, corrupted, or dangerous payloads", () => {
+    // 1. Empty / non-string
+    assert.equal(validateAndSanitizeBackup("").valid, false);
+
+    // 2. Prototype pollution attempts
+    const prototypePollutionJson = '{"app":"ecobot","schemaVersion":2,"data":{"__proto__":{"isAdmin":true}}}';
+    assert.equal(validateAndSanitizeBackup(prototypePollutionJson).valid, false);
+
+    // 3. Not an ecobot backup
+    const otherAppJson = JSON.stringify({
+      app: "other_game",
+      schemaVersion: 2,
+      data: {},
+    });
+    assert.equal(validateAndSanitizeBackup(otherAppJson).valid, false);
+
+    // 4. Future schema version
+    const futureSchemaJson = JSON.stringify({
+      app: "ecobot",
+      schemaVersion: 99,
+      data: {},
+    });
+    assert.equal(validateAndSanitizeBackup(futureSchemaJson).valid, false);
+  });
+
+  test("validateAndSanitizeBackup successfully cleans and parses valid backup", () => {
+    const validJson = JSON.stringify({
+      app: "ecobot",
+      schemaVersion: 2,
+      exportedAt: "2026-11-17T15:00:00.000Z",
+      data: {
+        nickname: "  BumiLestari  ",
+        avatar: "🦊",
+        xp: 450,
+        points: 200,
+        streak: 7,
+      },
+    });
+
+    const res = validateAndSanitizeBackup(validJson);
+    assert.equal(res.valid, true);
+    assert.ok(res.sanitizedData);
+    assert.equal(res.sanitizedData.nickname, "BumiLestari"); // trimmed & sanitized
+    assert.equal(res.sanitizedData.avatar, "🦊");
+    assert.equal(res.sanitizedData.xp, 450);
+    assert.equal(res.sanitizedData.points, 200);
+
+    // Summary calculation
+    assert.ok(res.summary);
+    assert.equal(res.summary.nickname, "BumiLestari");
+    assert.equal(res.summary.level, 4); // 450 XP = level 4
+  });
+});
+
 
 
 

@@ -13,15 +13,17 @@ import AksiNyataPage from "./pages/AksiNyataPage";
 import PencapaianPage from "./pages/PencapaianPage";
 import TokoPage from "./pages/TokoPage";
 import PapanPeringkatPage from "./pages/PapanPeringkatPage";
+import PengaturanPage from "./pages/PengaturanPage";
+import { SettingsApplier } from "./components/settings/SettingsApplier";
 import {
   PustakaPage,
-  PengaturanPage,
   BantuanPage,
 } from "./pages/PlaceholderPages";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <SettingsApplier />
       <Routes>
         {/* Landing Page */}
         <Route path="/" element={<LandingPage />} />

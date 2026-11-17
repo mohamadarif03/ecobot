@@ -682,42 +682,69 @@ export const GameStage: React.FC<GameStageProps> = ({
       </div>
 
       {/* ==================== BOTTOM CONTROLS HUD ==================== */}
-      <footer className="relative z-20 flex items-end justify-between p-6 sm:p-8 pointer-events-none">
-        {/* Bottom Left: Touch Joystick OR Keyboard Guide */}
-        <div className="pointer-events-auto">
-          {isTouchDevice || state.settings.controlMode === "touch" ? (
-            <VirtualJoystick onMove={handleJoystickMove} size={136} />
-          ) : (
-            <div className="bg-slate-900/80 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-xs font-bold text-slate-300 space-y-1.5 shadow-xl">
-              <div className="flex items-center gap-1.5">
-                <kbd className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-white font-mono text-[11px]">
-                  W A S D
-                </kbd>
-                <span>untuk bergerak</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <kbd className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-white font-mono text-[11px]">
-                  E / Spasi
-                </kbd>
-                <span>ambil / buang</span>
-              </div>
-            </div>
-          )}
-        </div>
+      {(() => {
+        const isLeftHanded = Boolean(state.settings.leftHanded);
+        const joystickPixelSize =
+          state.settings.joystickSize === "kecil"
+            ? 110
+            : state.settings.joystickSize === "besar"
+            ? 165
+            : 136;
 
-        {/* Bottom Right: Big Round Action Button */}
-        <div className="pointer-events-auto">
-          <button
-            type="button"
-            onClick={handleActionButton}
-            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm tracking-tight flex flex-col items-center justify-center shadow-[0_8px_32px_rgba(16,185,129,0.4)] border-2 border-emerald-200 transition cursor-pointer select-none"
+        const isAnalogActive =
+          state.settings.controlMode === "touch" ||
+          state.settings.controlMode === "analog" ||
+          ((state.settings.controlMode === "auto" || state.settings.controlMode === "otomatis") &&
+            isTouchDevice);
+
+        const joystickElement = (
+          <div className="pointer-events-auto">
+            {isAnalogActive ? (
+              <VirtualJoystick onMove={handleJoystickMove} size={joystickPixelSize} />
+            ) : (
+              <div className="bg-slate-900/80 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-xs font-bold text-slate-300 space-y-1.5 shadow-xl">
+                <div className="flex items-center gap-1.5">
+                  <kbd className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-white font-mono text-[11px]">
+                    W A S D
+                  </kbd>
+                  <span>untuk bergerak</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <kbd className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-white font-mono text-[11px]">
+                    E / Spasi
+                  </kbd>
+                  <span>ambil / buang</span>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
+        const actionButtonElement = (
+          <div className="pointer-events-auto">
+            <button
+              type="button"
+              onClick={handleActionButton}
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm tracking-tight flex flex-col items-center justify-center shadow-[0_8px_32px_rgba(16,185,129,0.4)] border-2 border-emerald-200 transition cursor-pointer select-none"
+            >
+              <span className="text-base sm:text-lg">♻️</span>
+              <span>AMBIL</span>
+              <span className="text-[10px] font-bold text-slate-800 opacity-90">/ BUANG</span>
+            </button>
+          </div>
+        );
+
+        return (
+          <footer
+            className={`relative z-20 flex items-end justify-between p-6 sm:p-8 pointer-events-none ${
+              isLeftHanded ? "flex-row-reverse" : "flex-row"
+            }`}
           >
-            <span className="text-base sm:text-lg">♻️</span>
-            <span>AMBIL</span>
-            <span className="text-[10px] font-bold text-slate-800 opacity-90">/ BUANG</span>
-          </button>
-        </div>
-      </footer>
+            {joystickElement}
+            {actionButtonElement}
+          </footer>
+        );
+      })()}
 
       {/* ==================== PAUSE MODAL ==================== */}
       {phase === "paused" && (

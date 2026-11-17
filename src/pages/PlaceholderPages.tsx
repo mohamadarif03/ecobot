@@ -22,18 +22,6 @@ export function PustakaPage() {
   );
 }
 
-export function PengaturanPage() {
-  return (
-    <PlaceholderPage
-      title="Pengaturan"
-      subtitle="Atur volume suara, kualitas visual grafis, dan kontrol game"
-      icon={<Settings className="w-10 h-10 text-slate-600" />}
-      moduleName="Pengaturan Game & Dashboard"
-      description="Sesuaikan kontrol sentuh analog di ponsel atau tombol WASD di laptop, audio musik latar, dan kualitas grafis 3D."
-    />
-  );
-}
-
 export function BantuanPage() {
   return (
     <PlaceholderPage
