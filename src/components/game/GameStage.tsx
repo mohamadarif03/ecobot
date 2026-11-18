@@ -193,9 +193,19 @@ export const GameStage: React.FC<GameStageProps> = ({
           setLoadingProgress(pct);
         }, 60);
 
-        // Mount canvas in container
-        if (canvasMountRef.current) {
-          const bridge = new RealBabylonGameBridge({
+        // Wait for canvas mount container to be ready
+        let retries = 0;
+        while (!canvasMountRef.current && retries < 25) {
+          await new Promise((r) => setTimeout(r, 40));
+          retries++;
+          if (isCancelled) return;
+        }
+
+        if (!canvasMountRef.current) {
+          throw new Error("Game container canvasMountRef not mounted");
+        }
+
+        const bridge = new RealBabylonGameBridge({
             onScore: (data: ScoreEventPayload) => {
               setScore((prev) => Math.max(0, prev + data.points));
               setScoreFloating({
@@ -270,7 +280,6 @@ export const GameStage: React.FC<GameStageProps> = ({
               setPhase("playing");
             }
           }, 350);
-        }
       } catch (err) {
         console.error("[ECOBOT-GAME] Failed to load 3D engine:", err);
         setPhase("unsupported");
@@ -287,9 +296,22 @@ export const GameStage: React.FC<GameStageProps> = ({
     };
   }, [missionId]);
 
-  // Keyboard handlers for playing
+  // Keyboard handlers for playing (with full keyup release tracking to prevent continuous running)
   useEffect(() => {
     if (phase !== "playing") return;
+
+    const pressedKeys = new Set<string>();
+
+    const updateMovement = () => {
+      let vx = 0;
+      let vy = 0;
+      if (pressedKeys.has("w") || pressedKeys.has("arrowup")) vy += 1;
+      if (pressedKeys.has("s") || pressedKeys.has("arrowdown")) vy -= 1;
+      if (pressedKeys.has("a") || pressedKeys.has("arrowleft")) vx -= 1;
+      if (pressedKeys.has("d") || pressedKeys.has("arrowright")) vx += 1;
+
+      engineRef.current?.onMove({ x: vx, y: vy });
+    };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -305,21 +327,41 @@ export const GameStage: React.FC<GameStageProps> = ({
         return;
       }
 
-      // Movement keys
-      let vx = 0;
-      let vy = 0;
-      if (e.key === "w" || e.key === "W" || e.key === "ArrowUp") vy += 1;
-      if (e.key === "s" || e.key === "S" || e.key === "ArrowDown") vy -= 1;
-      if (e.key === "a" || e.key === "A" || e.key === "ArrowLeft") vx -= 1;
-      if (e.key === "d" || e.key === "D" || e.key === "ArrowRight") vx += 1;
-
-      if (vx !== 0 || vy !== 0) {
-        engineRef.current?.onMove({ x: vx, y: vy });
+      // Movement keys (normalized to lowercase)
+      const k = e.key.toLowerCase();
+      if (k === "w" || k === "s" || k === "a" || k === "d" || k.startsWith("arrow")) {
+        pressedKeys.add(k);
+        updateMovement();
       }
     };
 
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase();
+      if (k === "w" || k === "s" || k === "a" || k === "d" || k.startsWith("arrow")) {
+        pressedKeys.delete(k);
+        updateMovement();
+      }
+    };
+
+    const stopAllMovement = () => {
+      pressedKeys.clear();
+      engineRef.current?.onMove({ x: 0, y: 0 });
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", stopAllMovement);
+    window.addEventListener("pointerup", stopAllMovement);
+    window.addEventListener("mouseup", stopAllMovement);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", stopAllMovement);
+      window.removeEventListener("pointerup", stopAllMovement);
+      window.removeEventListener("mouseup", stopAllMovement);
+      engineRef.current?.onMove({ x: 0, y: 0 });
+    };
   }, [phase]);
 
   const handleJoystickMove = useCallback((vector: MoveVector) => {
@@ -713,39 +755,7 @@ export const GameStage: React.FC<GameStageProps> = ({
         )}
       </div>
 
-      {/* ==================== DEV SIMULATION TOOLBAR ==================== */}
-      <div className="relative z-20 flex items-center justify-center gap-2 p-2 pointer-events-auto">
-        <div className="bg-slate-950/80 backdrop-blur-md border border-slate-700/80 rounded-full px-3 py-1.5 flex flex-wrap items-center justify-center gap-2 text-[11px] font-bold text-slate-300">
-          <span className="text-yellow-400">Dev Tools:</span>
-          <button
-            type="button"
-            onClick={() => engineRef.current?.devTeleportToBin?.()}
-            className="px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 hover:bg-sky-500 hover:text-white border border-sky-500/30 transition cursor-pointer"
-          >
-            Teleport Tong
-          </button>
-          <button
-            type="button"
-            onClick={() => engineRef.current?.devTeleportToTrash?.()}
-            className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-white border border-amber-500/30 transition cursor-pointer"
-          >
-            Teleport Sampah
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              if (engineRef.current?.devFinishMission) {
-                engineRef.current.devFinishMission();
-              } else {
-                (engineRef.current as MockGameBridge)?.simulateFinishMission();
-              }
-            }}
-            className="px-2.5 py-0.5 rounded-full bg-emerald-600/30 text-emerald-300 hover:bg-emerald-600 hover:text-white border border-emerald-500/40 transition cursor-pointer"
-          >
-            Selesaikan Misi
-          </button>
-        </div>
-      </div>
+
 
       {/* ==================== BOTTOM CONTROLS & BAG HUD ==================== */}
       {(() => {

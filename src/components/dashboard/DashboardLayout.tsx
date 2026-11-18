@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Bell, HelpCircle, PanelLeft, Sparkles, RotateCcw } from "lucide-react";
+import { Bell, HelpCircle, PanelLeft } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { MobileBottomNav } from "./MobileBottomNav";
-import { usePlayerStore, onNewAchievementUnlocked } from "../../store/playerStore";
+import { onNewAchievementUnlocked } from "../../store/playerStore";
 
 interface DashboardLayoutProps {
   title: string;
@@ -20,7 +20,6 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const { seedSampleData, resetData } = usePlayerStore();
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
@@ -78,36 +77,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </div>
           </div>
 
-          {/* Right Action Circular Buttons + Dev Seed Tools */}
+          {/* Right Action Circular Buttons */}
           <div className="flex items-center gap-2">
-            {/* Dev toolbar buttons */}
-            <div className="hidden lg:flex items-center gap-1.5 mr-2 bg-white/80 border border-emerald-100/80 rounded-full p-1 shadow-2xs">
-              <button
-                type="button"
-                onClick={() => {
-                  seedSampleData();
-                  triggerToast("✨ Data contoh berhasil dimuat!");
-                }}
-                className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100/90 hover:bg-emerald-200 px-2.5 py-1 rounded-full transition cursor-pointer"
-                title="Isi data contoh untuk simulasi penilaian lomba"
-              >
-                <Sparkles className="w-3 h-3 text-emerald-600" />
-                <span>Isi data contoh</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  resetData();
-                  triggerToast("🔄 Data progres di-reset ke baru!");
-                }}
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-full transition cursor-pointer"
-                title="Reset data ke profil baru"
-              >
-                <RotateCcw className="w-3 h-3" />
-                <span>Reset data</span>
-              </button>
-            </div>
-
             {rightAction}
 
             <Link

@@ -15,19 +15,36 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [knobPos, setKnobPos] = useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = useState(false);
+  const isInteractingRef = useRef(false);
+  isInteractingRef.current = isInteracting;
+  const onMoveRef = useRef(onMove);
+  onMoveRef.current = onMove;
+
   const radius = size / 2;
   const maxDistance = radius * 0.72;
+
+  const resetJoystick = useCallback(() => {
+    setIsInteracting(false);
+    isInteractingRef.current = false;
+    setKnobPos({ x: 0, y: 0 });
+    onMoveRef.current({ x: 0, y: 0 });
+  }, []);
 
   const handlePointerStart = (e: React.PointerEvent) => {
     e.preventDefault();
     setIsInteracting(true);
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    isInteractingRef.current = true;
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
     handlePointerMove(e);
   };
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent | PointerEvent) => {
-      if (!isInteracting || !containerRef.current) return;
+      if (!isInteractingRef.current || !containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -54,33 +71,41 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
         normY = 0;
       }
 
-      onMove({ x: parseFloat(normX.toFixed(3)), y: parseFloat((-normY).toFixed(3)) });
+      onMoveRef.current({ x: parseFloat(normX.toFixed(3)), y: parseFloat((-normY).toFixed(3)) });
     },
-    [isInteracting, maxDistance, deadZone, onMove]
+    [maxDistance, deadZone]
   );
 
   const handlePointerEnd = (e: React.PointerEvent) => {
-    setIsInteracting(false);
-    setKnobPos({ x: 0, y: 0 });
-    onMove({ x: 0, y: 0 });
+    resetJoystick();
     try {
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {
       // Ignore if pointer capture already lost
     }
   };
 
   useEffect(() => {
-    const handleGlobalPointerUp = () => {
-      if (isInteracting) {
-        setIsInteracting(false);
-        setKnobPos({ x: 0, y: 0 });
-        onMove({ x: 0, y: 0 });
+    const handleGlobalRelease = () => {
+      if (isInteractingRef.current) {
+        resetJoystick();
       }
     };
-    window.addEventListener("pointerup", handleGlobalPointerUp);
-    return () => window.removeEventListener("pointerup", handleGlobalPointerUp);
-  }, [isInteracting, onMove]);
+    window.addEventListener("pointerup", handleGlobalRelease);
+    window.addEventListener("mouseup", handleGlobalRelease);
+    window.addEventListener("touchend", handleGlobalRelease);
+    window.addEventListener("pointercancel", handleGlobalRelease);
+    window.addEventListener("touchcancel", handleGlobalRelease);
+    window.addEventListener("blur", handleGlobalRelease);
+    return () => {
+      window.removeEventListener("pointerup", handleGlobalRelease);
+      window.removeEventListener("mouseup", handleGlobalRelease);
+      window.removeEventListener("touchend", handleGlobalRelease);
+      window.removeEventListener("pointercancel", handleGlobalRelease);
+      window.removeEventListener("touchcancel", handleGlobalRelease);
+      window.removeEventListener("blur", handleGlobalRelease);
+    };
+  }, [resetJoystick]);
 
   return (
     <div

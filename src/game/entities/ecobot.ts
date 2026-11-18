@@ -111,6 +111,13 @@ export class EcobotEntity {
     this.shadowMesh.material = shadowMat;
   }
 
+  public setVisible(visible: boolean) {
+    this.root.setEnabled(visible);
+    if (this.shadowMesh) {
+      this.shadowMesh.setEnabled(visible);
+    }
+  }
+
   public update(dt: number, playerPos: Vector3, playerRotY: number) {
     this.floatTime += dt * 3.2;
 

@@ -23,7 +23,6 @@ import { ChestCard } from "../components/missions/ChestCard";
 import { RewardsSummaryPanel } from "../components/missions/RewardsSummaryPanel";
 import { LevelUpModal } from "../components/missions/LevelUpModal";
 import { DailyCountdown, WeeklyCountdown } from "../components/missions/CountdownTimers";
-import { MissionsDevBar } from "../components/missions/MissionsDevBar";
 import type { MissionType } from "../data/missions";
 
 export default function MisiPage() {
@@ -40,10 +39,6 @@ export default function MisiPage() {
     claimMission,
     claimChest,
     claimAllMissions,
-    simulateEvent,
-    resetDailyMissions,
-    resetWeeklyMissions,
-    advanceSimulatedDate,
   } = usePlayerStore();
 
   // Redirect to onboarding if nickname is empty
@@ -213,16 +208,7 @@ export default function MisiPage() {
         )}
       </div>
 
-      {/* Dev Tools Bar in Dev Mode */}
-      <MissionsDevBar
-        onSimulateEvent={(name: string, amount: number, id?: string) =>
-          simulateEvent(name, { amount, id })
-        }
-        onResetDaily={resetDailyMissions}
-        onResetWeekly={resetWeeklyMissions}
-        onAdvanceDay={() => advanceSimulatedDate(1)}
-        simulatedOffsetDays={state.simulatedDateOffsetDays}
-      />
+
 
       {/* ==================== HERO BANNER ==================== */}
       <section className="rounded-[26px] bg-gradient-to-r from-[#4ADE80] via-[#22C55E] to-[#16A34A] px-6 sm:px-8 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between mb-6">

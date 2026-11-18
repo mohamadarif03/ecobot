@@ -93,6 +93,8 @@ export class TamanKotaScene implements MissionModule {
     );
 
     this.ecobot = new EcobotEntity(this.scene, reduceMotion);
+    // Sembunyikan model 3D maskot/hewan agar tidak melayang di dekat pemain (dialog HUD tetap aktif)
+    this.ecobot.setVisible(false);
 
     // 5. Bins System
     this.binsSystem = new TrashBinsSystem(this.scene);
@@ -431,9 +433,9 @@ export class TamanKotaScene implements MissionModule {
       this.flowersRoot.setEnabled(true);
     }
 
-    // Blocky kid NPCs appear when sorted >= 4
-    if (sortedCount >= 4 && !this.npcKidsRoot.isEnabled()) {
-      this.npcKidsRoot.setEnabled(true);
+    // Blocky kid NPCs disabled per user request
+    if (this.npcKidsRoot.isEnabled()) {
+      this.npcKidsRoot.setEnabled(false);
     }
 
     // Animate fountain water if started
