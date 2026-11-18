@@ -24,13 +24,17 @@ import { LOADING_TIPS, getRandomLoadingTip } from "../../data/loadingTips";
 import { EcobotMascot } from "../ecobot/EcobotMascot";
 import { VirtualJoystick } from "./VirtualJoystick";
 import {
+  RealBabylonGameBridge,
   MockGameBridge,
   IGameEngine,
   ScoreEventPayload,
   MissionProgressPayload,
   MissionCompletePayload,
   MoveVector,
+  BagChangePayload,
 } from "../../game/gameBridge";
+import type { ActionPromptState } from "../../game/engine/types";
+import { normalizeGraphicsQuality } from "../../game/engine/types";
 import { usePlayerStore } from "../../store/playerStore";
 import { calculateLevel } from "../../data/levels";
 
@@ -71,11 +75,29 @@ export const GameStage: React.FC<GameStageProps> = ({
   const [score, setScore] = useState(0);
   const [itemsSorted, setItemsSorted] = useState(0);
   const [targetCount, setTargetCount] = useState(missionConfig.targetCount);
+  const [cityMeter, setCityMeter] = useState(state.cityCleanlinessMeter);
   const [ecobotBubble, setEcobotBubble] = useState<string | null>(
     "Ayo mulai! Perhatikan warna tong sampahnya ya!"
   );
   const [scoreFloating, setScoreFloating] = useState<{ text: string; positive: boolean } | null>(
     null
+  );
+
+  // Bag and Action Prompt Live State
+  const [bagState, setBagState] = useState<BagChangePayload>({
+    items: [],
+    capacity: 3,
+    selectedIndex: 0,
+  });
+
+  const [actionPrompt, setActionPrompt] = useState<ActionPromptState>({
+    visible: false,
+    type: "none",
+    label: "AMBIL / BUANG",
+  });
+
+  const [factHighlight, setFactHighlight] = useState<string>(
+    "Kulit pisang membutuhkan waktu 2 hingga 5 minggu untuk terurai alami di dalam tanah."
   );
 
   // Result state
@@ -92,9 +114,10 @@ export const GameStage: React.FC<GameStageProps> = ({
   // Pause menu subview
   const [pauseView, setPauseView] = useState<"menu" | "settings" | "mission">("menu");
 
-  // Game Engine Reference
+  // Game Engine & Canvas References
   const engineRef = useRef<IGameEngine | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasMountRef = useRef<HTMLDivElement>(null);
 
   // Device detection for default input HUD
   const isTouchDevice =
@@ -129,7 +152,7 @@ export const GameStage: React.FC<GameStageProps> = ({
     };
   }, [phase]);
 
-  // 3. Initialize Game Engine & Simulated Loading
+  // 3. Initialize Real 3D Game Engine (Babylon.js via dynamic import)
   useEffect(() => {
     // Check WebGL first
     if (!checkWebGLSupport()) {
@@ -145,68 +168,116 @@ export const GameStage: React.FC<GameStageProps> = ({
       setCurrentTip(getRandomLoadingTip());
     }, 3000);
 
-    // Simulate 2.5s asset loading (TODO: Replace with dynamic import of Babylon.js / Three.js engine)
-    const startTime = Date.now();
-    const duration = 2400;
+    let isCancelled = false;
 
-    const progressInterval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const pct = Math.min(100, Math.round((elapsed / duration) * 100));
-      setLoadingProgress(pct);
+    // Async engine loader
+    const initEngine = async () => {
+      try {
+        // Smooth simulated loading animation
+        const startTime = Date.now();
+        const duration = 1800;
 
-      if (pct >= 100) {
-        clearInterval(progressInterval);
-        clearInterval(tipInterval);
+        const progressInterval = setInterval(() => {
+          if (isCancelled) {
+            clearInterval(progressInterval);
+            return;
+          }
+          const elapsed = Date.now() - startTime;
+          const pct = Math.min(95, Math.round((elapsed / duration) * 95));
+          setLoadingProgress(pct);
+        }, 60);
 
-        // Instantiate Mock Engine Bridge
-        const bridge = new MockGameBridge({
-          onScore: (data: ScoreEventPayload) => {
-            setScore((prev) => Math.max(0, prev + data.points));
-            setScoreFloating({
-              text: data.points > 0 ? `+${data.points}` : `${data.points}`,
-              positive: data.points > 0,
-            });
-            setTimeout(() => setScoreFloating(null), 1200);
-          },
-          onMissionProgress: (data: MissionProgressPayload) => {
-            setItemsSorted(data.current);
-            setTargetCount(data.target);
-          },
-          onMissionComplete: (data: MissionCompletePayload) => {
-            const completed = completeMission({
-              missionId: data.missionId,
-              accuracy: data.accuracy,
-              timeSeconds: data.timeSeconds,
-              score: data.score,
-            });
+        // Mount canvas in container
+        if (canvasMountRef.current) {
+          const bridge = new RealBabylonGameBridge({
+            onScore: (data: ScoreEventPayload) => {
+              setScore((prev) => Math.max(0, prev + data.points));
+              setScoreFloating({
+                text: data.points > 0 ? `+${data.points}` : `${data.points}`,
+                positive: data.points > 0,
+              });
+              setTimeout(() => setScoreFloating(null), 1200);
+            },
+            onMissionProgress: (data: MissionProgressPayload) => {
+              setItemsSorted(data.current);
+              setTargetCount(data.target);
+            },
+            onCityMeter: (pct: number) => {
+              setCityMeter(pct);
+            },
+            onBagChange: (data: BagChangePayload) => {
+              setBagState(data);
+            },
+            onActionPromptChange: (prompt: ActionPromptState) => {
+              setActionPrompt(prompt);
+            },
+            onMissionComplete: (data: MissionCompletePayload) => {
+              const completed = completeMission({
+                missionId: data.missionId,
+                accuracy: data.accuracy,
+                timeSeconds: data.timeSeconds,
+                score: data.score,
+              });
 
-            setResultData({
-              stars: completed.stars,
-              score: data.score,
-              accuracy: data.accuracy,
-              timeSeconds: data.timeSeconds,
-              xpEarned: completed.xpEarned,
-              pointsEarned: completed.pointsEarned,
-              newBadges: completed.newBadges,
-            });
+              if (data.factHighlight) {
+                setFactHighlight(data.factHighlight);
+              }
 
-            setPhase("result");
-          },
-          onEcobotReaction: (_reaction, text) => {
-            setEcobotBubble(text);
-          },
-        });
+              setResultData({
+                stars: completed.stars,
+                score: data.score,
+                accuracy: data.accuracy,
+                timeSeconds: data.timeSeconds,
+                xpEarned: completed.xpEarned,
+                pointsEarned: completed.pointsEarned,
+                newBadges: completed.newBadges,
+              });
 
-        engineRef.current = bridge;
-        bridge.startMission(missionId);
-        setPhase("playing");
+              setPhase("result");
+            },
+            onEcobotReaction: (_reaction, text) => {
+              setEcobotBubble(text);
+            },
+            onError: (_err) => {
+              setPhase("unsupported");
+            },
+          }, state);
+
+          await bridge.init(canvasMountRef.current, {
+            quality: normalizeGraphicsQuality(state.settings.graphicsQuality),
+            isMuted: state.settings.muted,
+            playerState: state,
+          });
+
+          if (isCancelled) {
+            bridge.destroy();
+            return;
+          }
+
+          engineRef.current = bridge;
+          clearInterval(progressInterval);
+          setLoadingProgress(100);
+
+          setTimeout(() => {
+            if (!isCancelled) {
+              bridge.startMission(missionId);
+              setPhase("playing");
+            }
+          }, 350);
+        }
+      } catch (err) {
+        console.error("[ECOBOT-GAME] Failed to load 3D engine:", err);
+        setPhase("unsupported");
       }
-    }, 80);
+    };
+
+    initEngine();
 
     return () => {
+      isCancelled = true;
       clearInterval(tipInterval);
-      clearInterval(progressInterval);
       engineRef.current?.destroy();
+      engineRef.current = null;
     };
   }, [missionId, completeMission]);
 
@@ -307,71 +378,7 @@ export const GameStage: React.FC<GameStageProps> = ({
     );
   }
 
-  // ==================== 2. LOADING SCREEN ====================
-  if (phase === "loading") {
-    return (
-      <div className="fixed inset-0 z-50 bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 text-white flex flex-col items-center justify-between p-8 sm:p-12 select-none">
-        {/* Top Header */}
-        <div className="w-full max-w-xl flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-emerald-950 bg-white/80 px-3.5 py-1 rounded-full shadow-2xs">
-              {missionConfig.subtitle}
-            </span>
-          </div>
-          <span className="text-xs font-bold text-emerald-100">
-            {missionConfig.location}
-          </span>
-        </div>
-
-        {/* Center Mascot & Mission Info */}
-        <div className="flex flex-col items-center text-center my-auto">
-          <div className="w-44 h-44 sm:w-56 sm:h-56 animate-[bounce_3s_ease-in-out_infinite] motion-reduce:animate-none filter drop-shadow-2xl mb-4">
-            <EcobotMascot size="hero" className="w-full h-full" />
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
-            Memuat {missionConfig.title}...
-          </h2>
-          <p className="text-sm text-emerald-950/80 font-bold max-w-md mt-2">
-            {missionConfig.description}
-          </p>
-        </div>
-
-        {/* Bottom Loading Progress & Rotating Tip */}
-        <div className="w-full max-w-xl space-y-4">
-          {/* Tip Box */}
-          <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-white/40 text-slate-900 shadow-md flex items-start gap-3">
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-emerald-600" />
-            </div>
-            <div className="text-left">
-              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 block">
-                Tips Lingkungan dari Ecobot
-              </span>
-              <p className="text-xs sm:text-sm font-medium text-slate-800 mt-0.5 leading-relaxed">
-                "{currentTip.tip}"
-              </p>
-            </div>
-          </div>
-
-          {/* Progress Bar */}
-          <div>
-            <div className="flex items-center justify-between text-xs font-black text-slate-950 mb-1.5 px-1">
-              <span>Menyiapkan Kota Harapan...</span>
-              <span>{loadingProgress}%</span>
-            </div>
-            <div className="w-full h-4 rounded-full bg-sky-950/20 p-0.5 shadow-inner">
-              <div
-                style={{ width: `${loadingProgress}%` }}
-                className="h-full rounded-full bg-gradient-to-r from-emerald-300 to-emerald-400 transition-all duration-150 shadow-sm"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ==================== 3. RESULT SCREEN ====================
+  // ==================== 2. RESULT SCREEN ====================
   if (phase === "result" && resultData) {
     const nextMissionIndex = GAME_MISSIONS.findIndex((m) => m.id === missionId) + 1;
     const nextMissionItem =
@@ -455,8 +462,8 @@ export const GameStage: React.FC<GameStageProps> = ({
 
           {/* Ecobot Final Fact */}
           <div className="p-3.5 rounded-2xl bg-sky-950/60 border border-sky-800 text-left text-xs text-emerald-200 mb-4">
-            <strong className="text-emerald-300 block mb-0.5">Catatan Ecobot:</strong>
-            Setiap sampah yang kamu buang ke tong yang tepat membuat Kota Harapan semakin bersih dan asri!
+            <strong className="text-emerald-300 block mb-0.5">Catatan Fakta dari Ecobot:</strong>
+            {factHighlight || "Setiap sampah yang kamu buang ke tong yang tepat membuat Kota Harapan semakin bersih dan asri!"}
           </div>
 
           {/* Daily Mission Progress Notification (PRD Bagian D) */}
@@ -519,62 +526,89 @@ export const GameStage: React.FC<GameStageProps> = ({
     );
   }
 
-  // ==================== 4. PLAYING & PAUSE VIEWS ====================
+  // ==================== 3. 3D STAGE & LIVE HUD ====================
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 z-50 bg-slate-950 text-white flex flex-col justify-between overflow-hidden select-none"
     >
-      {/* 3D ENGINE ROOT CANVAS CONTAINER (Background Placeholder) */}
-      <div id="game-root" className="absolute inset-0 z-0 overflow-hidden">
-        {/* Blocky Low-Poly City Silhouette & Sky Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-400 via-sky-200 to-emerald-400" />
+      {/* REAL 3D ENGINE CANVAS MOUNT CONTAINER - ALWAYS MOUNTED IN DOM */}
+      <div ref={canvasMountRef} id="game-root" className="absolute inset-0 z-0 overflow-hidden bg-slate-950" />
 
-        {/* City Buildings Skyline SVG Silhouette */}
-        <div className="absolute inset-x-0 bottom-0 h-72 sm:h-96 pointer-events-none opacity-80">
-          <svg viewBox="0 0 1000 300" preserveAspectRatio="none" className="w-full h-full fill-emerald-600/70">
-            {/* Background blocky hills & houses */}
-            <rect x="20" y="140" width="80" height="160" rx="4" fill="#047857" />
-            <rect x="120" y="110" width="100" height="190" rx="4" fill="#065F46" />
-            <rect x="240" y="160" width="70" height="140" rx="4" fill="#047857" />
-            <rect x="330" y="80" width="120" height="220" rx="4" fill="#064E3B" />
-            <rect x="470" y="130" width="90" height="170" rx="4" fill="#047857" />
-            <rect x="580" y="100" width="110" height="200" rx="4" fill="#065F46" />
-            <rect x="710" y="150" width="80" height="150" rx="4" fill="#047857" />
-            <rect x="810" y="90" width="130" height="210" rx="4" fill="#064E3B" />
-            {/* Ground Grass Plane */}
-            <rect x="0" y="240" width="1000" height="60" fill="#15803D" />
-          </svg>
-        </div>
-
-        {/* Center Stage Mockup Notice */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-6 text-center">
-          <div className="bg-slate-900/80 backdrop-blur-md border border-white/20 p-6 rounded-3xl max-w-md shadow-2xl">
-            <span className="text-xs font-black uppercase tracking-wider text-emerald-400 bg-sky-950/80 px-3 py-1 rounded-full border border-sky-800">
-              Dunia 3D Engine Ready
+      {/* LOADING OVERLAY SCREEN (Shown when phase === 'loading') */}
+      {phase === "loading" && (
+        <div className="absolute inset-0 z-50 bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 text-white flex flex-col items-center justify-between p-8 sm:p-12 select-none">
+          {/* Top Header */}
+          <div className="w-full max-w-xl flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black uppercase tracking-widest text-emerald-950 bg-white/80 px-3.5 py-1 rounded-full shadow-2xs">
+                {missionConfig.subtitle}
+              </span>
+            </div>
+            <span className="text-xs font-bold text-emerald-100">
+              {missionConfig.location}
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-white mt-2">
-              Zona {missionId}: {missionConfig.title}
-            </h3>
-            <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-              Wadah canvas 3D siap dihubungkan dengan engine Babylon.js / Three.js. Gunakan kontrol di bawah atau tombol dev untuk menguji gameplay!
+          </div>
+
+          {/* Center Mascot & Mission Info */}
+          <div className="flex flex-col items-center text-center my-auto">
+            <div className="w-44 h-44 sm:w-56 sm:h-56 animate-[bounce_3s_ease-in-out_infinite] motion-reduce:animate-none filter drop-shadow-2xl mb-4">
+              <EcobotMascot size="hero" className="w-full h-full" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
+              Memuat {missionConfig.title}...
+            </h2>
+            <p className="text-sm text-emerald-950/80 font-bold max-w-md mt-2">
+              {missionConfig.description}
             </p>
           </div>
-        </div>
 
-        {/* Floating Score Animation */}
-        {scoreFloating && (
-          <div
-            className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl font-black px-4 py-2 rounded-2xl shadow-2xl backdrop-blur-md animate-[bounce_0.6s_ease-out] ${
-              scoreFloating.positive
-                ? "bg-emerald-500/90 text-white border-2 border-emerald-300"
-                : "bg-rose-500/90 text-white border-2 border-rose-300"
-            }`}
-          >
-            {scoreFloating.text} Poin!
+          {/* Bottom Loading Progress & Rotating Tip */}
+          <div className="w-full max-w-xl space-y-4">
+            {/* Tip Box */}
+            <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-white/40 text-slate-900 shadow-md flex items-start gap-3">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                <Sparkles className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div className="text-left">
+                <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 block">
+                  Tips Lingkungan dari Ecobot
+                </span>
+                <p className="text-xs sm:text-sm font-medium text-slate-800 mt-0.5 leading-relaxed">
+                  "{currentTip.tip}"
+                </p>
+              </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div>
+              <div className="flex items-center justify-between text-xs font-black text-slate-950 mb-1.5 px-1">
+                <span>Menyiapkan Kota Harapan...</span>
+                <span>{loadingProgress}%</span>
+              </div>
+              <div className="w-full h-4 rounded-full bg-sky-950/20 p-0.5 shadow-inner">
+                <div
+                  style={{ width: `${loadingProgress}%` }}
+                  className="h-full rounded-full bg-gradient-to-r from-emerald-300 to-emerald-400 transition-all duration-150 shadow-sm"
+                />
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Floating Score Animation Overlay */}
+      {scoreFloating && (
+        <div
+          className={`absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 text-3xl font-black px-5 py-2.5 rounded-2xl shadow-2xl backdrop-blur-md pointer-events-none animate-[bounce_0.6s_ease-out] ${
+            scoreFloating.positive
+              ? "bg-emerald-500/90 text-white border-2 border-emerald-300"
+              : "bg-rose-500/90 text-white border-2 border-rose-300"
+          }`}
+        >
+          {scoreFloating.text} Poin!
+        </div>
+      )}
 
       {/* ==================== TOP HUD OVERLAY ==================== */}
       <header className="relative z-20 flex items-center justify-between p-4 sm:p-6 pointer-events-auto">
@@ -610,12 +644,28 @@ export const GameStage: React.FC<GameStageProps> = ({
           </div>
         </div>
 
-        {/* Top Right: City Cleanliness & Pause Button */}
+        {/* Top Right: City Cleanliness, Ecobot Hint & Pause Button */}
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex bg-slate-900/85 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full shadow-lg items-center gap-1.5 text-xs font-black text-emerald-400">
-            <span>Kota:</span>
-            <span>{state.cityCleanlinessMeter}%</span>
+            <span>Taman:</span>
+            <span>{cityMeter}%</span>
           </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (engineRef.current?.requestHint) {
+                engineRef.current.requestHint();
+              } else {
+                setEcobotBubble("Ayo cari sampah yang berkilau di sekitar bangku dan jalur!");
+              }
+            }}
+            className="w-10 h-10 rounded-full bg-emerald-500/80 hover:bg-emerald-400 text-slate-950 backdrop-blur-md border border-emerald-300 flex items-center justify-center shadow-lg active:scale-95 transition cursor-pointer"
+            title="Minta Bantuan / Petunjuk Ecobot"
+            aria-label="Petunjuk Arah"
+          >
+            <HelpCircle className="w-5 h-5 text-slate-950" />
+          </button>
 
           <button
             type="button"
@@ -635,11 +685,15 @@ export const GameStage: React.FC<GameStageProps> = ({
       <div className="relative z-20 px-4 sm:px-6 flex items-start gap-3 pointer-events-auto max-w-xl">
         <button
           type="button"
-          onClick={() =>
-            setEcobotBubble((prev) =>
-              prev ? null : "Ayo perhatikan jenis sampahnya sebelum memasukkan ke tong!"
-            )
-          }
+          onClick={() => {
+            if (engineRef.current?.requestHint) {
+              engineRef.current.requestHint();
+            } else {
+              setEcobotBubble((prev) =>
+                prev ? null : "Ayo perhatikan jenis sampahnya sebelum memasukkan ke tong!"
+              );
+            }
+          }}
           className="w-12 h-12 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 flex items-center justify-center shadow-lg shrink-0 transition"
           title="Petunjuk dari Ecobot"
         >
@@ -655,33 +709,39 @@ export const GameStage: React.FC<GameStageProps> = ({
 
       {/* ==================== DEV SIMULATION TOOLBAR ==================== */}
       <div className="relative z-20 flex items-center justify-center gap-2 p-2 pointer-events-auto">
-        <div className="bg-slate-950/80 backdrop-blur-md border border-slate-700/80 rounded-full px-3 py-1.5 flex items-center gap-2 text-[11px] font-bold text-slate-300">
-          <span className="text-yellow-400">Dev Sim:</span>
+        <div className="bg-slate-950/80 backdrop-blur-md border border-slate-700/80 rounded-full px-3 py-1.5 flex flex-wrap items-center justify-center gap-2 text-[11px] font-bold text-slate-300">
+          <span className="text-yellow-400">Dev Tools:</span>
           <button
             type="button"
-            onClick={() => (engineRef.current as MockGameBridge)?.simulateCorrectSort()}
-            className="px-2.5 py-0.5 rounded-full bg-emerald-500/30 text-emerald-300 hover:bg-emerald-500 hover:text-white border border-emerald-500/40 transition"
+            onClick={() => engineRef.current?.devTeleportToBin?.()}
+            className="px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 hover:bg-sky-500 hover:text-white border border-sky-500/30 transition cursor-pointer"
           >
-            +10 Benar
+            Teleport Tong
           </button>
           <button
             type="button"
-            onClick={() => (engineRef.current as MockGameBridge)?.simulateWrongSort()}
-            className="px-2.5 py-0.5 rounded-full bg-rose-500/30 text-rose-300 hover:bg-rose-500 hover:text-white border border-rose-500/40 transition"
+            onClick={() => engineRef.current?.devTeleportToTrash?.()}
+            className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-white border border-amber-500/30 transition cursor-pointer"
           >
-            -2 Salah
+            Teleport Sampah
           </button>
           <button
             type="button"
-            onClick={() => (engineRef.current as MockGameBridge)?.simulateFinishMission()}
-            className="px-2.5 py-0.5 rounded-full bg-emerald-600/30 text-emerald-300 hover:bg-emerald-600 hover:text-white border border-emerald-500/40 transition"
+            onClick={() => {
+              if (engineRef.current?.devFinishMission) {
+                engineRef.current.devFinishMission();
+              } else {
+                (engineRef.current as MockGameBridge)?.simulateFinishMission();
+              }
+            }}
+            className="px-2.5 py-0.5 rounded-full bg-emerald-600/30 text-emerald-300 hover:bg-emerald-600 hover:text-white border border-emerald-500/40 transition cursor-pointer"
           >
             Selesaikan Misi
           </button>
         </div>
       </div>
 
-      {/* ==================== BOTTOM CONTROLS HUD ==================== */}
+      {/* ==================== BOTTOM CONTROLS & BAG HUD ==================== */}
       {(() => {
         const isLeftHanded = Boolean(state.settings.leftHanded);
         const joystickPixelSize =
@@ -720,27 +780,90 @@ export const GameStage: React.FC<GameStageProps> = ({
           </div>
         );
 
+        // Bag Slots Center Display
+        const bagSlotsElement = (
+          <div className="pointer-events-auto flex flex-col items-center gap-1">
+            <div className="bg-slate-900/90 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-2xl shadow-xl flex items-center gap-1.5">
+              <span className="text-[11px] font-black text-slate-300 pr-1">
+                🎒 Tas ({bagState.items.length}/{bagState.capacity}):
+              </span>
+              {Array.from({ length: bagState.capacity }).map((_, idx) => {
+                const item = bagState.items[idx];
+                const isSelected = idx === bagState.selectedIndex;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      if (item) {
+                        setBagState((prev) => ({ ...prev, selectedIndex: idx }));
+                        engineRef.current?.selectBagSlot?.(idx);
+                      }
+                    }}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-sm sm:text-base font-bold transition cursor-pointer relative ${
+                      item
+                        ? isSelected
+                          ? "bg-emerald-500/40 border-2 border-emerald-400 text-white shadow-md scale-105"
+                          : "bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700"
+                        : "bg-slate-950/40 border border-dashed border-slate-700/80 text-slate-600"
+                    }`}
+                    title={item ? `${item.name} (${item.category})` : "Slot Kosong"}
+                  >
+                    {item ? item.icon : "·"}
+                    {isSelected && item && (
+                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-950" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            {actionPrompt.subLabel && (
+              <span className="text-[11px] font-bold text-emerald-300 bg-slate-950/70 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
+                {actionPrompt.subLabel}
+              </span>
+            )}
+          </div>
+        );
+
+        // Dynamic Action Button (Changes label & styling based on proximity)
+        const isActionActive = actionPrompt.visible && actionPrompt.type !== "none";
         const actionButtonElement = (
           <div className="pointer-events-auto">
             <button
               type="button"
               onClick={handleActionButton}
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 active:scale-95 text-slate-950 font-black text-xs sm:text-sm tracking-tight flex flex-col items-center justify-center shadow-[0_8px_32px_rgba(16,185,129,0.4)] border-2 border-emerald-200 transition cursor-pointer select-none"
+              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full active:scale-95 text-slate-950 font-black text-xs sm:text-sm tracking-tight flex flex-col items-center justify-center shadow-[0_8px_32px_rgba(16,185,129,0.4)] border-2 transition cursor-pointer select-none ${
+                actionPrompt.type === "bin"
+                  ? "bg-gradient-to-tr from-amber-400 to-yellow-300 border-amber-200 hover:from-amber-300 hover:to-yellow-200"
+                  : actionPrompt.type === "full"
+                  ? "bg-gradient-to-tr from-slate-600 to-slate-500 border-slate-400 text-slate-200 opacity-80"
+                  : "bg-gradient-to-tr from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 border-emerald-200"
+              }`}
             >
-              <span className="text-base sm:text-lg">♻️</span>
-              <span>AMBIL</span>
-              <span className="text-[10px] font-bold text-slate-800 opacity-90">/ BUANG</span>
+              <span className="text-base sm:text-lg">
+                {actionPrompt.type === "bin" ? "🗑️" : actionPrompt.type === "pickup" ? "✨" : "♻️"}
+              </span>
+              <span>
+                {actionPrompt.type === "bin"
+                  ? "BUANG"
+                  : actionPrompt.type === "pickup"
+                  ? "AMBIL"
+                  : actionPrompt.type === "full"
+                  ? "PENUH"
+                  : "AKSI"}
+              </span>
             </button>
           </div>
         );
 
         return (
           <footer
-            className={`relative z-20 flex items-end justify-between p-6 sm:p-8 pointer-events-none ${
+            className={`relative z-20 flex flex-wrap items-end justify-between p-4 sm:p-6 gap-3 pointer-events-none ${
               isLeftHanded ? "flex-row-reverse" : "flex-row"
             }`}
           >
             {joystickElement}
+            {bagSlotsElement}
             {actionButtonElement}
           </footer>
         );

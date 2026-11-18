@@ -1,10 +1,14 @@
 /**
  * ECOBOT 3D Game Engine Bridge
  * 
- * Interface kontrak antara antarmuka React dan 3D Game Engine (Babylon.js / Three.js).
- * Saat engine 3D sesungguhnya diintegrasikan, engine mengimplementasikan IGameEngine
- * dan mendaftarkan callbacks IGameEngineEvents ke UI React.
+ * Interface kontrak antara antarmuka React dan 3D Game Engine (Babylon.js).
+ * Mendukung pemuatan dinamis (dynamic import) engine 3D sesungguhnya
+ * agar landing page & dashboard tetap ringan.
  */
+
+import type { PlayerState } from "../types/player";
+import { GAME_MISSIONS, type GameMissionConfig } from "../data/gameMissions";
+import type { IGameInstance, ActionPromptState } from "./engine/types";
 
 export type GraphicsQuality = "low" | "medium" | "high";
 
@@ -18,7 +22,7 @@ export interface ScoreEventPayload {
   xp: number;
   reason: string;
   isCorrect: boolean;
-  itemType?: "Organik" | "Anorganik" | "B3";
+  itemType?: "Organik" | "Anorganik" | "B3" | string;
 }
 
 export interface MissionProgressPayload {
@@ -33,6 +37,18 @@ export interface MissionCompletePayload {
   timeSeconds: number;
   stars: number; // 1 - 3
   score: number;
+  stats?: {
+    correctCount: number;
+    wrongCount: number;
+    hintsUsed: number;
+  };
+  factHighlight?: string;
+}
+
+export interface BagChangePayload {
+  items: Array<{ id: string; name: string; category: string; icon: string; colorHex: string }>;
+  capacity: number;
+  selectedIndex: number;
 }
 
 export interface IGameEngineEvents {
@@ -41,10 +57,13 @@ export interface IGameEngineEvents {
   onMissionComplete?: (data: MissionCompletePayload) => void;
   onCityMeter?: (percent: number) => void;
   onEcobotReaction?: (reaction: "happy" | "encourage" | "cheer" | "shock", text: string) => void;
+  onBagChange?: (data: BagChangePayload) => void;
+  onActionPromptChange?: (data: ActionPromptState) => void;
+  onError?: (data: { code: string; message: string }) => void;
 }
 
 export interface IGameEngine {
-  init(container: HTMLElement, options?: { quality?: GraphicsQuality; isMuted?: boolean }): Promise<void>;
+  init(container: HTMLElement, options?: { quality?: GraphicsQuality; isMuted?: boolean; playerState?: PlayerState }): Promise<void>;
   startMission(missionId: number): void;
   pause(): void;
   resume(): void;
@@ -52,12 +71,160 @@ export interface IGameEngine {
   setMuted(muted: boolean): void;
   onMove(vector: MoveVector): void;
   onAction(): void;
+  selectBagSlot?(index: number): void;
+  requestHint?(): void;
+  devTeleportToBin?(): void;
+  devTeleportToTrash?(): void;
+  devFinishMission?(): void;
   destroy(): void;
 }
 
 /**
- * Mock Game Engine Bridge untuk ruang persiapan sebelum engine 3D resmi di-mount.
- * Memungkinkan pengujian HUD, Virtual Joystick, Tombol Aksi, Skor, dan Layar Hasil.
+ * Real 3D Engine Bridge backed by Babylon.js with dynamic import()
+ */
+export class RealBabylonGameBridge implements IGameEngine {
+  private events: IGameEngineEvents = {};
+  private gameInstance: IGameInstance | null = null;
+  private canvas: HTMLCanvasElement | null = null;
+  private activeMissionId = 1;
+  private playerState?: PlayerState;
+  private quality: GraphicsQuality = "medium";
+  private isMuted = false;
+
+  constructor(events: IGameEngineEvents = {}, playerState?: PlayerState) {
+    this.events = events;
+    this.playerState = playerState;
+  }
+
+  setEvents(events: IGameEngineEvents) {
+    this.events = events;
+  }
+
+  async init(
+    container: HTMLElement,
+    options?: { quality?: GraphicsQuality; isMuted?: boolean; playerState?: PlayerState }
+  ): Promise<void> {
+    if (options?.quality) this.quality = options.quality;
+    if (options?.isMuted !== undefined) this.isMuted = options.isMuted;
+    if (options?.playerState) this.playerState = options.playerState;
+
+    // Create Canvas inside container
+    this.canvas = document.createElement("canvas");
+    this.canvas.id = "babylon-game-canvas";
+    this.canvas.className = "w-full h-full block outline-none select-none touch-none";
+    this.canvas.style.display = "block";
+    this.canvas.style.width = "100%";
+    this.canvas.style.height = "100%";
+
+    container.innerHTML = "";
+    container.appendChild(this.canvas);
+
+    // Dynamic import() so Babylon.js is loaded ONLY on demand
+    const { createGame } = await import("./engine/createGame");
+
+    const missionConfig: GameMissionConfig =
+      GAME_MISSIONS.find((m) => m.id === this.activeMissionId) || GAME_MISSIONS[0];
+
+    this.gameInstance = await createGame({
+      canvas: this.canvas,
+      mission: missionConfig,
+      nickname: this.playerState?.nickname,
+      settings: this.playerState?.settings || ({} as any),
+      character: this.playerState?.character || ({} as any),
+      inventory: this.playerState?.inventory || ({} as any),
+      upgrades: this.playerState?.upgrades || ({} as any),
+      callbacks: {
+        onScore: this.events.onScore,
+        onMissionProgress: this.events.onMissionProgress,
+        onMissionComplete: this.events.onMissionComplete,
+        onCityMeter: this.events.onCityMeter,
+        onEcobotReaction: this.events.onEcobotReaction,
+        onBagChange: (data) => {
+          this.events.onBagChange?.({
+            items: data.items.map((i) => ({
+              id: i.id,
+              name: i.name,
+              category: i.category,
+              icon: i.icon,
+              colorHex: i.colorHex,
+            })),
+            capacity: data.capacity,
+            selectedIndex: data.selectedIndex,
+          });
+        },
+        onActionPromptChange: this.events.onActionPromptChange,
+        onError: this.events.onError,
+      },
+    });
+  }
+
+  startMission(missionId: number): void {
+    this.activeMissionId = missionId;
+    if (this.gameInstance) {
+      this.gameInstance.start();
+    }
+  }
+
+  pause(): void {
+    this.gameInstance?.pause();
+  }
+
+  resume(): void {
+    this.gameInstance?.resume();
+  }
+
+  setQuality(level: GraphicsQuality): void {
+    this.quality = level;
+    this.gameInstance?.setQuality(level);
+  }
+
+  setMuted(muted: boolean): void {
+    this.isMuted = muted;
+    this.gameInstance?.setMuted(muted);
+  }
+
+  onMove(vector: MoveVector): void {
+    this.gameInstance?.setInput(vector);
+  }
+
+  onAction(): void {
+    this.gameInstance?.pressAction();
+  }
+
+  selectBagSlot(index: number): void {
+    this.gameInstance?.selectBagSlot(index);
+  }
+
+  requestHint(): void {
+    this.gameInstance?.requestHint();
+  }
+
+  devTeleportToBin(): void {
+    this.gameInstance?.devTeleportToBin();
+  }
+
+  devTeleportToTrash(): void {
+    this.gameInstance?.devTeleportToTrash();
+  }
+
+  devFinishMission(): void {
+    this.gameInstance?.devFinishMission();
+  }
+
+  destroy(): void {
+    this.gameInstance?.dispose();
+    this.gameInstance = null;
+    if (this.canvas) {
+      this.canvas.remove();
+      this.canvas = null;
+    }
+    this.events = {};
+  }
+}
+
+/**
+ * Mock Game Engine Bridge untuk ruang persiapan sebelum engine 3D resmi di-mount
+ * atau pengujian dev cepat.
  */
 export class MockGameBridge implements IGameEngine {
   private events: IGameEngineEvents = {};
@@ -95,7 +262,6 @@ export class MockGameBridge implements IGameEngine {
     this.startTime = Date.now();
     this.isPaused = false;
 
-    // Set target count per mission
     const targetMap: Record<number, number> = { 1: 8, 2: 12, 3: 10, 4: 3, 5: 3, 6: 30 };
     this.targetCount = targetMap[missionId] || 8;
 
@@ -124,18 +290,15 @@ export class MockGameBridge implements IGameEngine {
     this.isMuted = muted;
   }
 
-  onMove(vector: MoveVector): void {
-    // In real engine: translates player movement velocity
+  onMove(_vector: MoveVector): void {
     if (this.isPaused) return;
   }
 
   onAction(): void {
-    // In real engine: triggers pick-up or throw trash
     if (this.isPaused) return;
     this.simulateCorrectSort();
   }
 
-  // Developer & Simulation Methods
   simulateCorrectSort(): void {
     if (this.isPaused) return;
     this.totalAttempts++;
@@ -148,6 +311,7 @@ export class MockGameBridge implements IGameEngine {
       xp: 5,
       reason: "Sampah berhasil dipilah dengan benar!",
       isCorrect: true,
+      itemType: "Organik",
     });
 
     this.events.onMissionProgress?.({
@@ -172,6 +336,7 @@ export class MockGameBridge implements IGameEngine {
       xp: 0,
       reason: "Kurang tepat! Tong sampah tidak sesuai.",
       isCorrect: false,
+      itemType: "Anorganik",
     });
 
     this.events.onEcobotReaction?.(
@@ -203,6 +368,7 @@ export class MockGameBridge implements IGameEngine {
       timeSeconds,
       stars,
       score: this.score,
+      factHighlight: "Kulit pisang membutuhkan waktu 2 hingga 5 minggu untuk terurai alami di dalam tanah.",
     });
   }
 
