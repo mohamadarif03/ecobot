@@ -119,6 +119,12 @@ export const GameStage: React.FC<GameStageProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasMountRef = useRef<HTMLDivElement>(null);
 
+  // Keep latest completeMission & state in refs to avoid re-triggering engine mount
+  const completeMissionRef = useRef(completeMission);
+  completeMissionRef.current = completeMission;
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   // Device detection for default input HUD
   const isTouchDevice =
     typeof window !== "undefined" &&
@@ -212,7 +218,7 @@ export const GameStage: React.FC<GameStageProps> = ({
               setActionPrompt(prompt);
             },
             onMissionComplete: (data: MissionCompletePayload) => {
-              const completed = completeMission({
+              const completed = completeMissionRef.current({
                 missionId: data.missionId,
                 accuracy: data.accuracy,
                 timeSeconds: data.timeSeconds,
@@ -241,12 +247,12 @@ export const GameStage: React.FC<GameStageProps> = ({
             onError: (_err) => {
               setPhase("unsupported");
             },
-          }, state);
+          }, stateRef.current);
 
           await bridge.init(canvasMountRef.current, {
-            quality: normalizeGraphicsQuality(state.settings.graphicsQuality),
-            isMuted: state.settings.muted,
-            playerState: state,
+            quality: normalizeGraphicsQuality(stateRef.current.settings.graphicsQuality),
+            isMuted: stateRef.current.settings.muted,
+            playerState: stateRef.current,
           });
 
           if (isCancelled) {
@@ -279,7 +285,7 @@ export const GameStage: React.FC<GameStageProps> = ({
       engineRef.current?.destroy();
       engineRef.current = null;
     };
-  }, [missionId, completeMission]);
+  }, [missionId]);
 
   // Keyboard handlers for playing
   useEffect(() => {
