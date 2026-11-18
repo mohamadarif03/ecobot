@@ -932,7 +932,7 @@ export function dispatchRecordEvent(
   const currentStreak = stateWithReset.streak;
   const currentMeter = stateWithReset.cityCleanlinessMeter;
 
-  const ms = stateWithReset.missionState;
+  const ms = stateWithReset.missionState || createDefaultMissionState();
 
   // 2. Update Harian
   const newHarianProgress = { ...ms.harian.progress };

@@ -228,25 +228,40 @@ export const GameStage: React.FC<GameStageProps> = ({
               setActionPrompt(prompt);
             },
             onMissionComplete: (data: MissionCompletePayload) => {
-              const completed = completeMissionRef.current({
-                missionId: data.missionId,
-                accuracy: data.accuracy,
-                timeSeconds: data.timeSeconds,
-                score: data.score,
-              });
+              let stars = data.stars || 3;
+              let xpEarned = 50;
+              let pointsEarned = data.score || 80;
+              let newBadges: string[] = [];
+
+              try {
+                const completed = completeMissionRef.current({
+                  missionId: data.missionId,
+                  accuracy: data.accuracy,
+                  timeSeconds: data.timeSeconds,
+                  score: data.score,
+                });
+                if (completed) {
+                  stars = completed.stars;
+                  xpEarned = completed.xpEarned;
+                  pointsEarned = completed.pointsEarned;
+                  newBadges = completed.newBadges || [];
+                }
+              } catch (err) {
+                console.error("[ECOBOT-GAME] completeMissionRef error:", err);
+              }
 
               if (data.factHighlight) {
                 setFactHighlight(data.factHighlight);
               }
 
               setResultData({
-                stars: completed.stars,
+                stars,
                 score: data.score,
                 accuracy: data.accuracy,
                 timeSeconds: data.timeSeconds,
-                xpEarned: completed.xpEarned,
-                pointsEarned: completed.pointsEarned,
-                newBadges: completed.newBadges,
+                xpEarned,
+                pointsEarned,
+                newBadges,
               });
 
               setPhase("result");
@@ -427,14 +442,23 @@ export const GameStage: React.FC<GameStageProps> = ({
   }
 
   // ==================== 2. RESULT SCREEN ====================
-  if (phase === "result" && resultData) {
+  if (phase === "result") {
+    const finalResult = resultData || {
+      stars: 3,
+      score: score || 80,
+      accuracy: 100,
+      timeSeconds: 30,
+      xpEarned: 50,
+      pointsEarned: score || 80,
+      newBadges: [],
+    };
     const nextMissionIndex = GAME_MISSIONS.findIndex((m) => m.id === missionId) + 1;
     const nextMissionItem =
       nextMissionIndex < GAME_MISSIONS.length ? GAME_MISSIONS[nextMissionIndex] : null;
 
     return (
-      <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl text-white flex flex-col items-center justify-center p-4 sm:p-8 overflow-y-auto select-none">
-        <div className="relative w-full max-w-lg bg-gradient-to-b from-slate-900 to-slate-950 border border-emerald-500/30 rounded-[36px] p-6 sm:p-8 shadow-2xl text-center">
+      <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl text-white overflow-y-auto p-4 sm:p-6 flex items-start justify-center select-none">
+        <div className="relative w-full max-w-lg my-auto bg-gradient-to-b from-slate-900 to-slate-950 border border-emerald-500/30 rounded-[32px] p-6 sm:p-8 shadow-2xl text-center">
           {/* Confetti Accent / Glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 w-44 h-44 rounded-full bg-emerald-600/20 blur-3xl pointer-events-none" />
 
@@ -453,7 +477,7 @@ export const GameStage: React.FC<GameStageProps> = ({
           {/* Animated 3 Stars */}
           <div className="flex items-center justify-center gap-3 my-6">
             {[1, 2, 3].map((starNum) => {
-              const isEarned = starNum <= resultData.stars;
+              const isEarned = starNum <= finalResult.stars;
               return (
                 <div
                   key={starNum}
@@ -478,33 +502,33 @@ export const GameStage: React.FC<GameStageProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-6 text-left">
             <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
               <span className="text-[11px] font-bold text-slate-400 block">Skor</span>
-              <span className="text-lg font-black text-white">{resultData.score}</span>
+              <span className="text-lg font-black text-white">{finalResult.score}</span>
             </div>
             <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
               <span className="text-[11px] font-bold text-slate-400 block">Akurasi</span>
               <span className="text-lg font-black text-emerald-400">
-                {resultData.accuracy}%
+                {finalResult.accuracy}%
               </span>
             </div>
             <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
               <span className="text-[11px] font-bold text-slate-400 block">Waktu</span>
               <span className="text-lg font-black text-emerald-400">
-                {resultData.timeSeconds}s
+                {finalResult.timeSeconds}s
               </span>
             </div>
             <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
               <span className="text-[11px] font-bold text-slate-400 block">Hadiah</span>
               <span className="text-xs font-black text-yellow-300 leading-tight block mt-1">
-                +{resultData.xpEarned} XP · +{resultData.pointsEarned} Poin
+                +{finalResult.xpEarned} XP · +{finalResult.pointsEarned} Poin
               </span>
             </div>
           </div>
 
           {/* New Badge Celebration (If any) */}
-          {resultData.newBadges.length > 0 && (
+          {finalResult.newBadges.length > 0 && (
             <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-amber-500/40 text-amber-200 text-xs font-bold flex items-center justify-center gap-2 mb-4">
               <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>Selamat! Kamu membuka {resultData.newBadges.length} Badge Baru!</span>
+              <span>Selamat! Kamu membuka {finalResult.newBadges.length} Badge Baru!</span>
             </div>
           )}
 
