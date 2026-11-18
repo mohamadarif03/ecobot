@@ -35,8 +35,8 @@ export const QuizReportPanel: React.FC = () => {
       {/* 1. Rapor Kuis Card */}
       <div className="rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
         <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-          <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
-            <Trophy className="w-5 h-5 text-sky-600" />
+          <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+            <Trophy className="w-5 h-5 text-emerald-600" />
           </div>
           <div>
             <h3 className="text-base font-black text-slate-900 leading-none">
@@ -52,7 +52,7 @@ export const QuizReportPanel: React.FC = () => {
         <div className="grid grid-cols-2 gap-2.5">
           <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100/80">
             <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-bold">
-              <Brain className="w-3.5 h-3.5 text-sky-500" />
+              <Brain className="w-3.5 h-3.5 text-emerald-600" />
               <span>Selesai</span>
             </div>
             <p className="text-xl font-black text-slate-900 mt-1">
@@ -98,7 +98,7 @@ export const QuizReportPanel: React.FC = () => {
         <div className="pt-2 border-t border-slate-100 space-y-2">
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-1.5">
-              <span className="w-5 h-5 rounded-full bg-sky-500 text-white font-black text-[10px] flex items-center justify-center">
+              <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-black text-[10px] flex items-center justify-center">
                 {levelInfo.level}
               </span>
               <span className="font-black text-slate-800">{levelInfo.title}</span>
@@ -110,7 +110,7 @@ export const QuizReportPanel: React.FC = () => {
 
           <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-500"
               style={{ width: `${levelProgressPercent}%` }}
             />
           </div>
@@ -139,7 +139,7 @@ export const QuizReportPanel: React.FC = () => {
               return (
                 <div
                   key={topic.id}
-                  className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-2.5 hover:border-sky-200 transition"
+                  className="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-2.5 hover:border-emerald-200 transition"
                 >
                   <div className="min-w-0">
                     <p className="text-[12.5px] font-black text-slate-800 truncate">
@@ -152,7 +152,7 @@ export const QuizReportPanel: React.FC = () => {
 
                   <Link
                     to={`/kuis/main?mode=topik&topik=${topic.id}&jumlah=5`}
-                    className="h-8 px-3 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-black border border-sky-200 flex items-center gap-1 shrink-0 transition"
+                    className="h-8 px-3 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-black border border-emerald-200 flex items-center gap-1 shrink-0 transition"
                   >
                     <span>Latihan</span>
                     <ArrowRight className="w-3 h-3" />
@@ -169,7 +169,7 @@ export const QuizReportPanel: React.FC = () => {
       </div>
 
       {/* 3. Promo Pustaka Banner */}
-      <div className="rounded-[24px] border border-blue-100 bg-gradient-to-br from-blue-500 to-sky-600 p-5 text-white shadow-sm space-y-3 relative overflow-hidden">
+      <div className="rounded-[24px] border border-blue-100 bg-gradient-to-br from-blue-500 to-emerald-600 p-5 text-white shadow-sm space-y-3 relative overflow-hidden">
         <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none" />
 
         <div className="flex items-center gap-2">

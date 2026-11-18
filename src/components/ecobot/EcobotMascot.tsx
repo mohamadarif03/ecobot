@@ -53,7 +53,7 @@ export const EcobotMascot: React.FC<EcobotMascotProps> = ({
   // Body color based on equipped color
   const colorId = equippedOverrides?.warna || "ecobot-warna-biru";
   const bodyColorMap: Record<string, { main: string; dark: string; light: string }> = {
-    "ecobot-warna-biru": { main: "#38BDF8", dark: "#0284C7", light: "#BAE6FD" },
+    "ecobot-warna-biru": { main: "#4ADE80", dark: "#15803D", light: "#BAE6FD" },
     "ecobot-warna-mint": { main: "#34D399", dark: "#059669", light: "#A7F3D0" },
     "ecobot-warna-kuning": { main: "#FBBF24", dark: "#D97706", light: "#FDE68A" },
     "ecobot-warna-pink": { main: "#F472B6", dark: "#DB2777", light: "#FBCFE8" },
@@ -231,8 +231,8 @@ export const EcobotMascot: React.FC<EcobotMascotProps> = ({
             <rect x="44" y="74" width="32" height="20" rx="5" fill="#0F172A" stroke="#334155" strokeWidth="2.5" />
             <rect x="84" y="74" width="32" height="20" rx="5" fill="#0F172A" stroke="#334155" strokeWidth="2.5" />
             <line x1="76" y1="84" x2="84" y2="84" stroke="#0F172A" strokeWidth="3" />
-            <line x1="48" y1="78" x2="64" y2="90" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" />
-            <line x1="88" y1="78" x2="104" y2="90" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" />
+            <line x1="48" y1="78" x2="64" y2="90" stroke="#4ADE80" strokeWidth="2" strokeLinecap="round" />
+            <line x1="88" y1="78" x2="104" y2="90" stroke="#4ADE80" strokeWidth="2" strokeLinecap="round" />
           </g>
         )}
 
@@ -262,8 +262,8 @@ export const EcobotMascot: React.FC<EcobotMascotProps> = ({
         {/* ACCESSORY: Syal Biru */}
         {activeSyal === "ecobot-syal-biru" && (
           <g>
-            <path d="M42 120C42 120 80 134 118 120C122 130 114 140 96 142C76 142 56 138 42 128V120Z" fill="#0284C7" stroke="#0369A1" strokeWidth="3" />
-            <path d="M92 134V154C92 158 104 158 104 154V130" fill="#38BDF8" stroke="#0369A1" strokeWidth="2.5" />
+            <path d="M42 120C42 120 80 134 118 120C122 130 114 140 96 142C76 142 56 138 42 128V120Z" fill="#15803D" stroke="#0369A1" strokeWidth="3" />
+            <path d="M92 134V154C92 158 104 158 104 154V130" fill="#4ADE80" stroke="#0369A1" strokeWidth="2.5" />
           </g>
         )}
       </svg>

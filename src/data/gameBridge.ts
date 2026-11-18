@@ -14,7 +14,7 @@ export interface Game3DCharacterAppearance {
  */
 export function get3DCharacterAppearance(state: PlayerState): Game3DCharacterAppearance {
   const equipped = state.inventory?.equipped?.character || {};
-  const outfitColor = state.character?.outfitColor || "#38BDF8";
+  const outfitColor = state.character?.outfitColor || "#4ADE80";
 
   return {
     skin: state.character?.skin || "adventurer",

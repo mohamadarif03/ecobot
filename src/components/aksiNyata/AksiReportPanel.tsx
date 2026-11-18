@@ -88,7 +88,7 @@ export const AksiReportPanel: React.FC = () => {
               if (isChecked) {
                 circleStyle = "bg-emerald-500 text-white border-emerald-500 shadow-2xs";
               } else if (isCurrent) {
-                circleStyle = "bg-sky-100 text-sky-800 border-sky-400 ring-2 ring-sky-200 animate-pulse";
+                circleStyle = "bg-emerald-100 text-emerald-800 border-emerald-400 ring-2 ring-sky-200 animate-pulse";
               }
 
               return (
@@ -112,7 +112,7 @@ export const AksiReportPanel: React.FC = () => {
         <div className="pt-2 border-t border-slate-100 space-y-2">
           <div className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-1.5">
-              <span className="w-5 h-5 rounded-full bg-sky-500 text-white font-black text-[10px] flex items-center justify-center">
+              <span className="w-5 h-5 rounded-full bg-emerald-600 text-white font-black text-[10px] flex items-center justify-center">
                 {levelInfo.level}
               </span>
               <span className="font-black text-slate-800">{levelInfo.title}</span>
@@ -124,7 +124,7 @@ export const AksiReportPanel: React.FC = () => {
 
           <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-emerald-400 to-sky-500 rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-500"
               style={{ width: `${levelProgressPercent}%` }}
             />
           </div>
@@ -202,12 +202,12 @@ export const AksiReportPanel: React.FC = () => {
       </div>
 
       {/* 4. Tips Ecobot Card */}
-      <div className="rounded-[24px] border border-sky-100 bg-sky-50/70 p-5 space-y-2.5">
+      <div className="rounded-[24px] border border-emerald-100 bg-emerald-50/70 p-5 space-y-2.5">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
+          <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
             <Lightbulb className="w-4 h-4" />
           </div>
-          <span className="text-xs font-black text-sky-900">Tips dari Ecobot</span>
+          <span className="text-xs font-black text-emerald-900">Tips dari Ecobot</span>
         </div>
         <p className="text-[12.5px] text-slate-700 leading-relaxed font-semibold">
           &quot;{randomTip}&quot;

@@ -73,12 +73,12 @@ export const GuidedTourModal: React.FC<GuidedTourModalProps> = ({
       aria-labelledby="tour-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in"
     >
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border-4 border-sky-400 overflow-hidden transform transition-all">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border-4 border-emerald-400 overflow-hidden transform transition-all">
         {/* Header Ribbon */}
-        <div className="bg-gradient-to-r from-sky-500 via-sky-600 to-indigo-600 px-6 py-4 text-white flex items-center justify-between">
+        <div className="bg-gradient-to-r from-emerald-500 via-emerald-600 to-indigo-600 px-6 py-4 text-white flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-xl">🧭</span>
-            <span className="text-xs font-black tracking-wider uppercase text-sky-100">
+            <span className="text-xs font-black tracking-wider uppercase text-emerald-100">
               Tur Panduan ECOBOT
             </span>
           </div>
@@ -122,7 +122,7 @@ export const GuidedTourModal: React.FC<GuidedTourModalProps> = ({
             </div>
 
             <div>
-              <span className="text-xs font-bold text-sky-600 uppercase tracking-wider">
+              <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
                 Langkah {currentStep.stepNumber}
               </span>
               <h3 id="tour-modal-title" className="text-xl font-extrabold text-slate-800 leading-tight">
@@ -149,7 +149,7 @@ export const GuidedTourModal: React.FC<GuidedTourModalProps> = ({
               <Link
                 to={currentStep.quickAction.path}
                 onClick={onComplete}
-                className="text-xs font-bold text-sky-600 hover:text-sky-800 underline inline-flex items-center gap-1"
+                className="text-xs font-bold text-emerald-600 hover:text-emerald-800 underline inline-flex items-center gap-1"
               >
                 <span>Coba langsung: {currentStep.quickAction.label}</span>
                 <span>↗</span>
@@ -182,7 +182,7 @@ export const GuidedTourModal: React.FC<GuidedTourModalProps> = ({
             <button
               type="button"
               onClick={handleNext}
-              className="px-5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 active:scale-95 text-white text-xs font-bold shadow-md shadow-sky-600/20 transition-all flex items-center gap-1.5"
+              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-600 active:scale-95 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1.5"
             >
               <span>{isLast ? "Selesai! 🎉" : "Lanjut →"}</span>
             </button>

@@ -105,7 +105,7 @@ export const TokoCatalogTab: React.FC<TokoCatalogTabProps> = ({
               onClick={() => setSubFilter(s.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 subFilter === s.id
-                  ? "bg-sky-500 text-white shadow-md shadow-sky-500/20"
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200/70"
               }`}
             >

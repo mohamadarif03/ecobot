@@ -33,10 +33,10 @@ const REFERENSI_LIST = [
 export default function SumberPage() {
   return (
     <div className="min-h-screen bg-[#F0F9FF] text-slate-800 p-6 sm:p-12">
-      <div className="max-w-3xl mx-auto bg-white rounded-[32px] p-8 sm:p-12 shadow-lg border border-sky-100">
+      <div className="max-w-3xl mx-auto bg-white rounded-[32px] p-8 sm:p-12 shadow-lg border border-emerald-100">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-700 hover:text-black mb-6 bg-sky-50 px-3.5 py-1.5 rounded-full border border-sky-200"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-black mb-6 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Kembali ke Halaman Utama</span>
@@ -64,10 +64,10 @@ export default function SumberPage() {
           {REFERENSI_LIST.map((ref, idx) => (
             <div
               key={idx}
-              className="p-4 sm:p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 hover:border-sky-300 transition"
+              className="p-4 sm:p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 hover:border-emerald-300 transition"
             >
               <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-[10.5px] font-black uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
+                <span className="text-[10.5px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                   {ref.kategori}
                 </span>
                 <ExternalLink className="w-4 h-4 text-slate-400" />
@@ -84,7 +84,7 @@ export default function SumberPage() {
 
         <div className="mt-10 pt-6 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400">
           <span>© 2026 ECOBOT Indonesia</span>
-          <Link to="/" className="font-bold text-sky-600 hover:underline">
+          <Link to="/" className="font-bold text-emerald-600 hover:underline">
             Tutup & Kembali
           </Link>
         </div>

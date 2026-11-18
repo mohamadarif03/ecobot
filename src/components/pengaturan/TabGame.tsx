@@ -195,7 +195,7 @@ export const TabGame: React.FC<TabGameProps> = ({
       <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-sm">
         <div className="flex items-center justify-between mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 flex items-center justify-center font-bold">
+            <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-sky-950/60 dark:text-emerald-300 flex items-center justify-center font-bold">
               <Eye className="w-5 h-5" />
             </div>
             <div>
@@ -229,7 +229,7 @@ export const TabGame: React.FC<TabGameProps> = ({
               type="button"
               onClick={handleRedetectHardware}
               disabled={isDetecting}
-              className="text-[11px] text-sky-600 hover:text-sky-700 dark:text-sky-400 font-semibold flex items-center gap-1 cursor-pointer"
+              className="text-[11px] text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1 cursor-pointer"
             >
               <RefreshCw className={`w-3 h-3 ${isDetecting ? "animate-spin" : ""}`} />
               <span>{isDetecting ? "Mengecek..." : "Deteksi Ulang"}</span>
@@ -262,7 +262,7 @@ export const TabGame: React.FC<TabGameProps> = ({
                   }}
                   className={`relative py-3 px-2 rounded-xl text-center transition cursor-pointer ${
                     isSelected
-                      ? "bg-sky-500 text-white shadow-md font-black"
+                      ? "bg-emerald-600 text-white shadow-md font-black"
                       : "text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-700/60 font-bold"
                   }`}
                 >

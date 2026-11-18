@@ -20,7 +20,7 @@ export const BantuanHero: React.FC<BantuanHeroProps> = ({
   totalResultsCount,
 }) => {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-500 via-sky-600 to-indigo-700 text-white p-6 sm:p-8 shadow-xl shadow-sky-500/20 mb-8">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-indigo-700 text-white p-6 sm:p-8 shadow-xl shadow-emerald-500/20 mb-8">
       {/* Decorative background glows and shapes */}
       <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/3 -mb-12 w-48 h-48 bg-emerald-400/20 rounded-full blur-xl pointer-events-none" />
@@ -36,13 +36,13 @@ export const BantuanHero: React.FC<BantuanHeroProps> = ({
             />
           </div>
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-sky-100 uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-emerald-100 uppercase tracking-wider mb-2">
               <span>🌟</span> Pusat Bantuan & Panduan
             </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
               Halo, {nickname || "Pahlawan Lingkungan"}!
             </h1>
-            <p className="mt-1 text-sm sm:text-base text-sky-100 max-w-xl">
+            <p className="mt-1 text-sm sm:text-base text-emerald-100 max-w-xl">
               Ada yang membingungkan? Tenang, Ecobot siap membantumu memahami cara bermain,
               kontrol, tips 3 bintang, dan solusi cepat!
             </p>
@@ -77,7 +77,7 @@ export const BantuanHero: React.FC<BantuanHeroProps> = ({
           Cari bantuan, pertanyaan, atau panduan
         </label>
         <div className="relative flex items-center">
-          <span className="absolute left-4 text-sky-400 text-lg pointer-events-none">
+          <span className="absolute left-4 text-emerald-400 text-lg pointer-events-none">
             🔍
           </span>
           <input
@@ -109,7 +109,7 @@ export const BantuanHero: React.FC<BantuanHeroProps> = ({
 
         {/* Quick status bar when searching */}
         {searchQuery.trim().length >= 2 && typeof totalResultsCount === "number" && (
-          <div className="mt-2 flex items-center justify-between text-xs text-sky-100 px-2">
+          <div className="mt-2 flex items-center justify-between text-xs text-emerald-100 px-2">
             <span>
               Ditemukan <strong>{totalResultsCount}</strong> hasil untuk &ldquo;{searchQuery}&rdquo;
             </span>

@@ -29,12 +29,12 @@ export const TokoPurchaseConfirmModal: React.FC<TokoPurchaseConfirmModalProps> =
     <Modal isOpen={isOpen} onClose={onClose} title="Konfirmasi Pembelian">
       <div className="space-y-6 pt-1 text-center">
         {/* Item Big Preview */}
-        <div className="w-24 h-24 mx-auto rounded-3xl bg-sky-50 border-2 border-sky-100 flex items-center justify-center p-3 shadow-inner">
+        <div className="w-24 h-24 mx-auto rounded-3xl bg-emerald-50 border-2 border-emerald-100 flex items-center justify-center p-3 shadow-inner">
           <ItemArt itemId={item.id} className="w-full h-full" />
         </div>
 
         <div>
-          <div className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-sky-100 text-sky-800 mb-1.5">
+          <div className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 mb-1.5">
             {item.kategori} &bull; {item.sub}
           </div>
           <h3 className="text-xl font-extrabold text-slate-800">{item.nama}</h3>

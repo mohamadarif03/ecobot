@@ -48,12 +48,12 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({
       aria-labelledby="idea-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto"
     >
-      <div className="w-full max-w-lg bg-white rounded-[32px] p-6 sm:p-7 shadow-2xl border border-sky-100 relative my-8 space-y-5">
+      <div className="w-full max-w-lg bg-white rounded-[32px] p-6 sm:p-7 shadow-2xl border border-emerald-100 relative my-8 space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-100">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800">
+              <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                 {idea.difficulty} · {idea.estimatedTime}
               </span>
               {isTried && (
@@ -94,13 +94,13 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({
         {/* Materials List */}
         <div className="space-y-2">
           <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-sky-500" />
+            <Layers className="w-3.5 h-3.5 text-emerald-600" />
             <span>Alat & Bahan</span>
           </h4>
           <ul className="text-xs text-slate-700 font-semibold space-y-1.5 bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
             {idea.materials.map((mat, idx) => (
               <li key={idx} className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 mt-1.5 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0" />
                 <span>{mat}</span>
               </li>
             ))}
@@ -118,7 +118,7 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({
                 key={idx}
                 className="flex items-start gap-3 p-3 rounded-xl bg-white border border-slate-100 shadow-2xs"
               >
-                <span className="w-6 h-6 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-lg bg-emerald-600 text-white font-black text-xs flex items-center justify-center shrink-0">
                   {idx + 1}
                 </span>
                 <span className="leading-relaxed mt-0.5">{step}</span>
@@ -129,8 +129,8 @@ export const IdeaDetailModal: React.FC<IdeaDetailModalProps> = ({
 
         {/* Tips */}
         {idea.tips && (
-          <div className="flex items-start gap-2 p-3 rounded-2xl bg-sky-50/70 border border-sky-100 text-xs text-sky-900 font-semibold">
-            <Lightbulb className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+          <div className="flex items-start gap-2 p-3 rounded-2xl bg-emerald-50/70 border border-emerald-100 text-xs text-emerald-900 font-semibold">
+            <Lightbulb className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <p>
               <strong className="font-black">Tips Keren: </strong>
               {idea.tips}

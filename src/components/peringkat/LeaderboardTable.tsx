@@ -112,7 +112,7 @@ export const LeaderboardTable: React.FC<LeaderboardTableProps> = ({
 
         {/* Level */}
         <td className="py-3.5 px-3 sm:px-4 text-center hidden sm:table-cell">
-          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300">
+          <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-lg bg-emerald-50 dark:bg-sky-950/40 text-emerald-700 dark:text-emerald-300">
             <Award className="w-3 h-3" />
             Lv.{entry.level}
           </span>

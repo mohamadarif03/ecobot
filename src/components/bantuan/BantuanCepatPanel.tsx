@@ -37,9 +37,9 @@ export const BantuanCepatPanel: React.FC = () => {
         <div className="space-y-2">
           <Link
             to="/bantuan?tab=cara-bermain#section-alur-harian"
-            className="group block p-3 rounded-2xl bg-slate-50 hover:bg-sky-50 border border-slate-100 hover:border-sky-200 transition-all"
+            className="group block p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50 border border-slate-100 hover:border-emerald-200 transition-all"
           >
-            <div className="flex items-center justify-between text-xs font-bold text-slate-800 group-hover:text-sky-700">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800 group-hover:text-emerald-700">
               <span>Lupa harus ke mana?</span>
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </div>
@@ -153,7 +153,7 @@ export const BantuanCepatPanel: React.FC = () => {
         <div className="pt-2 flex items-center justify-between">
           <Link
             to="/privasi"
-            className="text-xs font-bold text-sky-600 hover:text-sky-700 underline"
+            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 underline"
           >
             Kebijakan Privasi
           </Link>

@@ -22,9 +22,9 @@ export const HonestyBanner: React.FC = () => {
   if (dismissed) return null;
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-r from-sky-50 via-emerald-50 to-amber-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 border-2 border-sky-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5 shadow-sm transition-all">
+    <div className="relative overflow-hidden bg-gradient-to-r from-sky-50 via-emerald-50 to-amber-50 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 border-2 border-emerald-200 dark:border-slate-700 rounded-3xl p-4 sm:p-5 shadow-sm transition-all">
       <div className="flex items-start gap-3 sm:gap-4">
-        <div className="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-md">
+        <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-md">
           <Sparkles className="w-5 h-5 animate-pulse" />
         </div>
 
@@ -33,7 +33,7 @@ export const HonestyBanner: React.FC = () => {
             <h4 className="text-sm sm:text-base font-bold text-slate-800 dark:text-white">
               Ruang Belajar Bersama Ecobot
             </h4>
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-sky-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-sky-800">
               <Info className="w-3 h-3" /> Info Ramah
             </span>
           </div>

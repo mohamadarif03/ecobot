@@ -10,10 +10,10 @@
     --card-foreground: #000000;
     --popover: #ffffff;
     --popover-foreground: #000000;
-    --primary: #5BC0EB;
+    --primary: #22C55E;
     --primary-foreground: #020617;
-    --ecobot-sky: #5BC0EB;
-    --ecobot-sky-dark: #0284C7;
+    --ecobot-sky: #22C55E;
+    --ecobot-sky-dark: #15803D;
     --ecobot-green: #22C55E;
     --ecobot-yellow: #EAB308;
     --secondary: #f4f4f5;
@@ -110,8 +110,8 @@
 
 @theme inline {
   --color-skyBg: #EAF4FC;
-  --color-skyPrimary: #38BDF8;
-  --color-skyDeep: #0284C7;
+  --color-skyPrimary: #4ADE80;
+  --color-skyDeep: #15803D;
   --color-skySoft: #F2F9FF;
   --color-skyCardTint: #E6F4FE;
   --color-background: var(--background);
@@ -203,4 +203,23 @@ html[data-high-contrast="true"] .text-slate-400 {
     border: 1px solid #cbd5e1 !important;
     break-inside: avoid;
   }
+}
+
+/* Custom Slim Scrollbar for Independent Sidebar Navigation */
+.custom-sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.25);
+  border-radius: 9999px;
+}
+.custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.5);
+}
+.custom-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(16, 185, 129, 0.25) transparent;
 }

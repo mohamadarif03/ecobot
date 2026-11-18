@@ -38,11 +38,11 @@ export function HeroSection({ onBeginJourney }: HeroSectionProps) {
         Main game 3D seru, pilah sampah, dan belajar kenapa bumi butuh bantuanmu.
       </p>
 
-      {/* CTA Button in Sky Blue (#5BC0EB) */}
+      {/* CTA Button in Sky Blue (#22C55E) */}
       <button
         type="button"
         onClick={handleStartAdventure}
-        className="rounded-full px-12 py-4 sm:py-5 text-base sm:text-lg font-black mt-10 bg-[#5BC0EB] hover:bg-[#38BDF8] text-slate-950 hover:scale-[1.04] shadow-lg transition-all duration-200 animate-fade-rise-delay-2 whitespace-nowrap cursor-pointer flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#5BC0EB]"
+        className="rounded-full px-12 py-4 sm:py-5 text-base sm:text-lg font-black mt-10 bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 hover:scale-[1.04] shadow-lg transition-all duration-200 animate-fade-rise-delay-2 whitespace-nowrap cursor-pointer flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#22C55E]"
       >
         <span>Mulai Petualangan</span>
         <ArrowRight className="w-5 h-5" />

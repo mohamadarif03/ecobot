@@ -96,7 +96,7 @@ export const DEFAULT_UPGRADES: PlayerUpgrades = {
 
 export const DEFAULT_CHARACTER: CharacterCustomization = {
   skin: "adventurer",
-  outfitColor: "#38BDF8",
+  outfitColor: "#4ADE80",
   accessory: "none",
 };
 
@@ -480,7 +480,7 @@ export const SAMPLE_PLAYER_STATE: PlayerState = (() => {
     },
     character: {
       skin: "adventurer",
-      outfitColor: "#38BDF8",
+      outfitColor: "#4ADE80",
       accessory: "leaf_hat",
     },
     missionState: sampleMissionState,
@@ -3193,7 +3193,7 @@ export function usePlayerStore() {
         ...prev,
         character: {
           ...prev.character,
-          outfitColor: "#38BDF8",
+          outfitColor: "#4ADE80",
           accessory: "none",
         },
         inventory: {

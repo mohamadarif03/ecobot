@@ -75,7 +75,7 @@ export const KoleksikuTab: React.FC<KoleksikuTabProps> = ({
               onClick={() => setActiveCategory(c.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeCategory === c.id
-                  ? "bg-sky-500 text-white shadow-md shadow-sky-500/20"
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200/70"
               }`}
             >
@@ -98,7 +98,7 @@ export const KoleksikuTab: React.FC<KoleksikuTabProps> = ({
       {/* Grid of Owned Items */}
       {filteredItems.length === 0 ? (
         <Card className="p-8 text-center border-dashed border-2 border-slate-200">
-          <div className="w-16 h-16 mx-auto rounded-3xl bg-sky-50 text-sky-500 flex items-center justify-center text-3xl mb-3 shadow-inner">
+          <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl mb-3 shadow-inner">
             🛍️
           </div>
           <h3 className="font-bold text-slate-800 text-base mb-1">

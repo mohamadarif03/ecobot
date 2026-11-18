@@ -309,7 +309,7 @@ export default function KuisPlayerPage() {
           </p>
           <Link
             to="/kuis"
-            className="inline-block px-6 py-2.5 rounded-full bg-sky-500 text-white font-black text-xs"
+            className="inline-block px-6 py-2.5 rounded-full bg-emerald-600 text-white font-black text-xs"
           >
             Kembali ke Pusat Kuis
           </Link>
@@ -354,7 +354,7 @@ export default function KuisPlayerPage() {
 
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Main Result Card */}
-          <section className="rounded-[32px] border border-sky-100 bg-white p-6 sm:p-8 text-center shadow-[0_8px_30px_rgba(14,165,233,0.08)] relative overflow-hidden">
+          <section className="rounded-[32px] border border-emerald-100 bg-white p-6 sm:p-8 text-center shadow-[0_8px_30px_rgba(14,165,233,0.08)] relative overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-24 bg-gradient-to-b from-sky-200/50 to-transparent blur-2xl pointer-events-none" />
 
             {/* Mascot */}
@@ -366,7 +366,7 @@ export default function KuisPlayerPage() {
               />
             </div>
 
-            <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-sky-800">
+            <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
               {quizTitle}
             </span>
 
@@ -440,7 +440,7 @@ export default function KuisPlayerPage() {
 
               <Link
                 to="/kuis"
-                className="h-11 px-6 rounded-full bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-slate-950 font-black text-xs flex items-center gap-2 shadow-2xs hover:scale-105 transition"
+                className="h-11 px-6 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-slate-950 font-black text-xs flex items-center gap-2 shadow-2xs hover:scale-105 transition"
               >
                 <span>Pilih Kuis Lain</span>
                 <ArrowRight className="w-4 h-4" />
@@ -451,7 +451,7 @@ export default function KuisPlayerPage() {
           {/* Review Answers Accordion */}
           <section className="rounded-[28px] border border-slate-100 bg-white p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
             <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-              <BookOpen className="w-5 h-5 text-sky-600" />
+              <BookOpen className="w-5 h-5 text-emerald-600" />
               <h2 className="text-base font-black text-slate-900">
                 Tinjauan Jawaban
               </h2>
@@ -529,7 +529,7 @@ export default function KuisPlayerPage() {
                       <div className="mt-3 pt-2 border-t border-rose-100/60 flex justify-end">
                         <Link
                           to={`/pustaka/${item.question.materiSlug}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-black text-sky-700 hover:text-sky-800 bg-sky-50 hover:bg-sky-100 px-3 py-1.5 rounded-full border border-sky-200 transition"
+                          className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-full border border-emerald-200 transition"
                         >
                           <BookOpen className="w-3.5 h-3.5" />
                           <span>Baca Materi Terkait</span>
@@ -661,7 +661,7 @@ export default function KuisPlayerPage() {
 
           <div className="w-full h-2.5 rounded-full bg-slate-200/80 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full transition-all duration-300"
+              className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -670,11 +670,11 @@ export default function KuisPlayerPage() {
 
       {/* ==================== CENTER: QUESTION CARD ==================== */}
       <section className="max-w-2xl w-full mx-auto my-6 space-y-5">
-        <article className="rounded-[30px] border border-sky-100 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)] space-y-6">
+        <article className="rounded-[30px] border border-emerald-100 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)] space-y-6">
           {/* Question Text */}
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1 text-[10.5px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700">
-              <Sparkles className="w-3 h-3 text-sky-500" />
+            <div className="inline-flex items-center gap-1 text-[10.5px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
+              <Sparkles className="w-3 h-3 text-emerald-600" />
               <span>Pertanyaan</span>
             </div>
             <h2 className="text-lg sm:text-xl font-black text-slate-900 leading-snug">
@@ -694,7 +694,7 @@ export default function KuisPlayerPage() {
               const isCorrectAnswer = option.id === currentQuestion?.benarId;
 
               let optionStyle =
-                "bg-slate-50 border-slate-200 text-slate-800 hover:bg-sky-50/50 hover:border-sky-300";
+                "bg-slate-50 border-slate-200 text-slate-800 hover:bg-emerald-50/50 hover:border-emerald-300";
 
               if (isHidden) {
                 optionStyle = "opacity-30 pointer-events-none bg-slate-100 border-slate-200 text-slate-400";
@@ -707,7 +707,7 @@ export default function KuisPlayerPage() {
                   optionStyle = "opacity-50 bg-slate-50 border-slate-200 text-slate-500";
                 }
               } else if (isSelected) {
-                optionStyle = "bg-sky-100 border-sky-500 text-sky-950 font-black ring-2 ring-sky-200";
+                optionStyle = "bg-emerald-100 border-emerald-500 text-emerald-950 font-black ring-2 ring-sky-200";
               }
 
               const letterLabel = ["A", "B", "C", "D"][optIndex] || `${optIndex + 1}`;
@@ -730,7 +730,7 @@ export default function KuisPlayerPage() {
                           : isAnswerSubmitted && isSelected
                           ? "bg-rose-500 text-white"
                           : isSelected
-                          ? "bg-sky-500 text-white"
+                          ? "bg-emerald-600 text-white"
                           : "bg-white border border-slate-200 text-slate-600"
                       }`}
                     >
@@ -801,7 +801,7 @@ export default function KuisPlayerPage() {
                 ? "Lanjut Soal Berikutnya"
                 : "Lihat Hasil Akhir"}
             </span>
-            <ArrowRight className="w-4 h-4 text-sky-400" />
+            <ArrowRight className="w-4 h-4 text-emerald-400" />
           </button>
         )}
       </footer>

@@ -65,9 +65,9 @@ export const LevelUpModal: React.FC<LevelUpModalProps> = ({
           Level {newLevel} Tercapai!
         </h2>
 
-        <div className="my-3 py-2 px-4 rounded-2xl bg-gradient-to-r from-sky-50 via-emerald-50 to-sky-50 border border-sky-100 inline-block">
+        <div className="my-3 py-2 px-4 rounded-2xl bg-gradient-to-r from-sky-50 via-emerald-50 to-sky-50 border border-emerald-100 inline-block">
           <p className="text-[13px] font-extrabold text-slate-500">Gelar Barumu:</p>
-          <p className="text-[18px] font-black text-sky-800 flex items-center justify-center gap-1.5">
+          <p className="text-[18px] font-black text-emerald-800 flex items-center justify-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-500" />
             <span>{newTitle}</span>
             <Sparkles className="w-4 h-4 text-amber-500" />
@@ -82,7 +82,7 @@ export const LevelUpModal: React.FC<LevelUpModalProps> = ({
           ref={buttonRef}
           type="button"
           onClick={onClose}
-          className="w-full h-12 rounded-full bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 hover:from-sky-500 hover:to-sky-700 text-slate-950 font-black text-[14px] flex items-center justify-center gap-2 shadow-lg shadow-sky-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
+          className="w-full h-12 rounded-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 hover:from-emerald-500 hover:to-sky-700 text-slate-950 font-black text-[14px] flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 transition transform hover:scale-105 active:scale-95 cursor-pointer"
         >
           <span>Lanjutkan Petualangan</span>
           <ArrowRight className="w-4 h-4" />

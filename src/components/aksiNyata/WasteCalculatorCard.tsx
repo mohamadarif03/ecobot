@@ -94,8 +94,8 @@ export const WasteCalculatorCard: React.FC = () => {
 
     return (
       <div className="space-y-6">
-        <article className="rounded-[28px] border border-sky-100 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(14,165,233,0.06)] text-center space-y-5">
-          <div className="w-16 h-16 rounded-3xl bg-sky-50 text-sky-600 mx-auto flex items-center justify-center text-3xl shadow-xs">
+        <article className="rounded-[28px] border border-emerald-100 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(14,165,233,0.06)] text-center space-y-5">
+          <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center text-3xl shadow-xs">
             {habitInfo.badge}
           </div>
 
@@ -163,9 +163,9 @@ export const WasteCalculatorCard: React.FC = () => {
                       </div>
                       <Link
                         to={`/pustaka/${s.pustakaSlug}`}
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-sky-700 hover:text-sky-800 hover:underline pl-3"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline pl-3"
                       >
-                        <BookOpen className="w-3 h-3 text-sky-600" />
+                        <BookOpen className="w-3 h-3 text-emerald-600" />
                         <span>Pelajari di materi &quot;{s.pustakaTitle}&quot;</span>
                       </Link>
                     </li>
@@ -192,7 +192,7 @@ export const WasteCalculatorCard: React.FC = () => {
 
             <Link
               to="/aksi-nyata?tab=tantangan"
-              className="h-11 px-6 rounded-full bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-slate-950 font-black text-xs flex items-center gap-2 shadow-2xs hover:scale-105 transition"
+              className="h-11 px-6 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-slate-950 font-black text-xs flex items-center gap-2 shadow-2xs hover:scale-105 transition"
             >
               <span>Lakukan Tantangan 7 Hari</span>
               <ArrowRight className="w-4 h-4" />
@@ -204,7 +204,7 @@ export const WasteCalculatorCard: React.FC = () => {
         {state.aksiNyata?.calculator?.history && state.aksiNyata.calculator.history.length > 0 && (
           <div className="rounded-[24px] border border-slate-100 bg-white p-5 space-y-3">
             <div className="flex items-center gap-2 text-slate-900 font-black text-xs">
-              <History className="w-4 h-4 text-sky-500" />
+              <History className="w-4 h-4 text-emerald-600" />
               <span>Riwayat Refleksi Terakhir</span>
             </div>
 
@@ -215,7 +215,7 @@ export const WasteCalculatorCard: React.FC = () => {
                   className="flex items-center justify-between p-3 rounded-xl bg-slate-50 text-xs font-bold"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center text-[11px] font-black">
+                    <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-[11px] font-black">
                       #{idx + 1}
                     </span>
                     <span className="text-slate-800">{item.level}</span>
@@ -245,11 +245,11 @@ export const WasteCalculatorCard: React.FC = () => {
   );
 
   return (
-    <article className="rounded-[28px] border border-sky-100 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(14,165,233,0.06)] space-y-6">
+    <article className="rounded-[28px] border border-emerald-100 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(14,165,233,0.06)] space-y-6">
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
         <div>
-          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800">
+          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
             Refleksi Kebiasaan Rumah
           </span>
           <h3 className="text-lg font-black text-slate-900 mt-1">
@@ -281,7 +281,7 @@ export const WasteCalculatorCard: React.FC = () => {
 
         <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-sky-400 to-sky-500 rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -304,7 +304,7 @@ export const WasteCalculatorCard: React.FC = () => {
                 onClick={() => handleSelectOption(opt.points)}
                 className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between gap-3 transition cursor-pointer ${
                   isSelected
-                    ? "bg-sky-50 border-sky-400 ring-2 ring-sky-200 font-black text-slate-900"
+                    ? "bg-emerald-50 border-emerald-400 ring-2 ring-sky-200 font-black text-slate-900"
                     : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100/70"
                 }`}
               >
@@ -312,7 +312,7 @@ export const WasteCalculatorCard: React.FC = () => {
                   <span
                     className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
                       isSelected
-                        ? "bg-sky-500 text-white"
+                        ? "bg-emerald-600 text-white"
                         : "bg-white border border-slate-200 text-slate-600"
                     }`}
                   >
@@ -324,7 +324,7 @@ export const WasteCalculatorCard: React.FC = () => {
                 </div>
 
                 {isSelected && (
-                  <CheckCircle2 className="w-5 h-5 text-sky-500 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 )}
               </button>
             );
@@ -363,7 +363,7 @@ export const WasteCalculatorCard: React.FC = () => {
               ? "Lanjut"
               : "Lihat Hasil Refleksi"}
           </span>
-          <ChevronRight className="w-4 h-4 text-sky-400" />
+          <ChevronRight className="w-4 h-4 text-emerald-400" />
         </button>
       </div>
     </article>

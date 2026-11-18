@@ -166,7 +166,7 @@ export const LEARNING_FLOW_STAGES = [
     icon: "📖",
     description: "Baca fakta lingkungan di Pustaka Edukasi dan uji pemahaman di Pusat Kuis.",
     actionUrl: "/pustaka",
-    color: "from-sky-500 to-blue-600",
+    color: "from-emerald-500 to-blue-600",
   },
   {
     stage: 2,

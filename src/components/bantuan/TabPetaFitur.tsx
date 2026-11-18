@@ -12,13 +12,13 @@ export const TabPetaFitur: React.FC = () => {
       {/* 1. Learning Flow Diagram */}
       <section className="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-sky-200 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-emerald-200 text-xs font-bold uppercase tracking-wider mb-2">
             <span>🔄</span> Lingkaran Edukasi Interaktif
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-white">
             Alur Pembelajaran Gamifikasi ECOBOT
           </h2>
-          <p className="text-sm text-sky-100 mt-1 max-w-2xl">
+          <p className="text-sm text-emerald-100 mt-1 max-w-2xl">
             Dari pemahaman konsep di layar hingga aksi nyata di rumahmu, inilah 4 siklus kebiasaan
             baik yang dibangun ECOBOT:
           </p>
@@ -37,7 +37,7 @@ export const TabPetaFitur: React.FC = () => {
                   <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors">
                     {stg.title}
                   </h3>
-                  <p className="text-xs text-sky-100 mt-2 leading-relaxed">{stg.description}</p>
+                  <p className="text-xs text-emerald-100 mt-2 leading-relaxed">{stg.description}</p>
                 </div>
 
                 <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-300">
@@ -53,7 +53,7 @@ export const TabPetaFitur: React.FC = () => {
       {/* 2. Full Sidebar Menus Grid */}
       <section className="space-y-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
             <span>🗺️</span> Peta Navigasi Lengkap
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-800">
@@ -70,7 +70,7 @@ export const TabPetaFitur: React.FC = () => {
             <div
               key={item.id}
               id={`feature-card-${item.id}`}
-              className="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-sm hover:border-sky-300 hover:shadow-md transition-all flex flex-col justify-between"
+              className="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-sm hover:border-emerald-300 hover:shadow-md transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -94,7 +94,7 @@ export const TabPetaFitur: React.FC = () => {
                   </span>
                   {item.highlights.map((hl, i) => (
                     <div key={i} className="text-xs text-slate-700 flex items-start gap-1.5">
-                      <span className="text-sky-500 font-bold">•</span>
+                      <span className="text-emerald-600 font-bold">•</span>
                       <span>{hl}</span>
                     </div>
                   ))}
@@ -107,7 +107,7 @@ export const TabPetaFitur: React.FC = () => {
                 </span>
                 <Link
                   to={item.path}
-                  className="px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold transition-colors"
+                  className="px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors"
                 >
                   Buka Ruangan ↗
                 </Link>

@@ -54,7 +54,7 @@ export const PeringkatHero: React.FC<PeringkatHeroProps> = ({
   const activeLigaDef = currentLigaTier ? LIGA_TIERS[currentLigaTier] : null;
 
   return (
-    <Card className="relative overflow-hidden bg-gradient-to-br from-sky-400 via-sky-500 to-emerald-500 text-white border-0 shadow-lg p-6 sm:p-8">
+    <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-500 text-white border-0 shadow-lg p-6 sm:p-8">
       {/* Decorative background shapes */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
       <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none" />
@@ -75,7 +75,7 @@ export const PeringkatHero: React.FC<PeringkatHeroProps> = ({
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
               Halo, {nickname}! 🌟
             </h1>
-            <p className="mt-2 text-sm sm:text-base text-sky-50/90 leading-relaxed">
+            <p className="mt-2 text-sm sm:text-base text-emerald-50/90 leading-relaxed">
               Kumpulkan XP dari memilah sampah di game, membaca pustaka, kuis, dan aksi nyata untuk memanjat peringkat sekaligus menjaga bumi kita!
             </p>
           </div>
@@ -120,7 +120,7 @@ export const PeringkatHero: React.FC<PeringkatHeroProps> = ({
             {/* Countdown Badge */}
             {period === "mingguan" && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-black/20 backdrop-blur-md border border-white/10 text-xs font-medium text-white/90">
-                <Clock className="w-3.5 h-3.5 text-sky-200" />
+                <Clock className="w-3.5 h-3.5 text-emerald-200" />
                 <span>
                   Reset: {timeLeft.days}h {timeLeft.hours}j {timeLeft.minutes}m
                 </span>

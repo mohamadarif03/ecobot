@@ -120,7 +120,7 @@ export const WasteRailSection: React.FC = () => {
 
       <div className="relative max-w-7xl mx-auto flex flex-col items-center text-center">
         {/* Eyebrow */}
-        <span className="text-xs font-black uppercase tracking-[0.2em] text-[#0284C7] bg-sky-50 border border-sky-200/80 px-4 py-1.5 rounded-full shadow-2xs mb-3">
+        <span className="text-xs font-black uppercase tracking-[0.2em] text-[#15803D] bg-emerald-50 border border-emerald-200/80 px-4 py-1.5 rounded-full shadow-2xs mb-3">
           DINDING WAKTU · LAMA TERURAI
         </span>
 
@@ -193,7 +193,7 @@ export const WasteRailSection: React.FC = () => {
                   <div
                     className={`relative w-full rounded-[22px] p-3 transition-all duration-300 ${
                       isFront
-                        ? "bg-sky-50/80 shadow-[0_12px_28px_rgba(14,165,233,0.18)] ring-2 ring-sky-300"
+                        ? "bg-emerald-50/80 shadow-[0_12px_28px_rgba(14,165,233,0.18)] ring-2 ring-sky-300"
                         : "bg-white/70 hover:bg-white shadow-sm border border-slate-100"
                     } ${isSpotlight ? "h-[250px] sm:h-[275px]" : "h-[220px] sm:h-[240px]"}`}
                   >
@@ -215,7 +215,7 @@ export const WasteRailSection: React.FC = () => {
                   <div className="mt-3 text-center">
                     <p
                       className={`text-[13.5px] font-bold tracking-tight transition-colors ${
-                        isFront ? "text-[#0284C7] font-black" : "text-slate-800"
+                        isFront ? "text-[#15803D] font-black" : "text-slate-800"
                       }`}
                     >
                       {item.nama}
@@ -263,7 +263,7 @@ export const WasteRailSection: React.FC = () => {
           <button
             type="button"
             onClick={handlePlayGameClick}
-            className="rounded-full px-10 py-4 text-sm sm:text-base font-black bg-[#5BC0EB] hover:bg-[#38BDF8] text-slate-950 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 cursor-pointer flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-500"
+            className="rounded-full px-10 py-4 text-sm sm:text-base font-black bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 cursor-pointer flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-500"
           >
             <Gamepad2 className="w-5 h-5 text-slate-950" />
             <span>Coba Pilah di Game</span>
@@ -288,7 +288,7 @@ export const WasteRailSection: React.FC = () => {
         >
           <div
             ref={modalRef}
-            className="w-full max-w-2xl bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-sky-100 text-left relative overflow-hidden flex flex-col max-h-[90vh]"
+            className="w-full max-w-2xl bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-emerald-100 text-left relative overflow-hidden flex flex-col max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Close Button */}
@@ -307,7 +307,7 @@ export const WasteRailSection: React.FC = () => {
             <div className="overflow-y-auto pr-1 space-y-5">
               <div className="flex flex-col sm:flex-row items-center gap-6">
                 {/* Waste Illustration */}
-                <div className="w-36 h-48 sm:w-44 sm:h-56 bg-sky-50 rounded-3xl p-4 flex items-center justify-center shrink-0 border border-sky-100 shadow-inner">
+                <div className="w-36 h-48 sm:w-44 sm:h-56 bg-emerald-50 rounded-3xl p-4 flex items-center justify-center shrink-0 border border-emerald-100 shadow-inner">
                   <WasteIllustration
                     id={modalItem.id}
                     alt={modalItem.nama}
@@ -380,15 +380,15 @@ export const WasteRailSection: React.FC = () => {
               </div>
 
               {/* Balon Reaksi Ecobot */}
-              <div className="p-4 rounded-2xl bg-[#E0F2FE] border border-sky-200 flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-sky-200/80 text-sky-700 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-4 h-4 text-sky-600" />
+              <div className="p-4 rounded-2xl bg-[#DCFCE7] border border-emerald-200 flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-emerald-200/80 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4 text-emerald-600" />
                 </div>
                 <div>
-                  <span className="text-[11px] font-black uppercase tracking-wider text-sky-900">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-emerald-900">
                     Komentar Ecobot
                   </span>
-                  <p className="text-sm font-black text-sky-950 mt-0.5">
+                  <p className="text-sm font-black text-emerald-950 mt-0.5">
                     "{modalItem.ecobot}"
                   </p>
                 </div>
@@ -419,7 +419,7 @@ export const WasteRailSection: React.FC = () => {
               <button
                 type="button"
                 onClick={handlePlayGameClick}
-                className="bg-[#5BC0EB] hover:bg-[#38BDF8] text-slate-950 font-black text-xs px-5 py-2.5 rounded-full flex items-center gap-1.5 shadow-sm transition hover:scale-105 cursor-pointer"
+                className="bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 font-black text-xs px-5 py-2.5 rounded-full flex items-center gap-1.5 shadow-sm transition hover:scale-105 cursor-pointer"
               >
                 <Gamepad2 className="w-4 h-4" />
                 <span>Coba Pilah di Game</span>

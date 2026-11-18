@@ -33,7 +33,7 @@ export const TabCaraBermain: React.FC = () => {
             <div
               key={step.step}
               id={`guide-step-${step.step}`}
-              className="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-sm hover:border-sky-300 hover:shadow-md transition-all flex flex-col justify-between"
+              className="bg-white rounded-3xl p-6 border-2 border-slate-100 shadow-sm hover:border-emerald-300 hover:shadow-md transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -48,7 +48,7 @@ export const TabCaraBermain: React.FC = () => {
                 </div>
 
                 <h3 className="text-lg font-bold text-slate-800">{step.title}</h3>
-                <p className="text-xs font-semibold text-sky-600 mt-0.5">{step.subtitle}</p>
+                <p className="text-xs font-semibold text-emerald-600 mt-0.5">{step.subtitle}</p>
 
                 <p className="text-xs sm:text-sm text-slate-600 mt-3 leading-relaxed">
                   {step.description}
@@ -94,7 +94,7 @@ export const TabCaraBermain: React.FC = () => {
               </div>
 
               <div className="mt-4 pt-3 border-t border-slate-200/60">
-                <div className="p-2.5 rounded-xl bg-sky-50/70 border border-sky-200/60 text-xs text-sky-900 flex items-start gap-2">
+                <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200/60 text-xs text-emerald-900 flex items-start gap-2">
                   <span className="text-sm flex-shrink-0">💡</span>
                   <span className="leading-snug">{step.tips}</span>
                 </div>
@@ -308,7 +308,7 @@ export const TabCaraBermain: React.FC = () => {
       {/* 6. Alur Satu Hari yang Seru */}
       <section id="section-alur-harian" className="space-y-6 pt-6 border-t border-slate-200">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
             <span>☀️</span> Rutinitas Seru
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-800">
@@ -324,19 +324,19 @@ export const TabCaraBermain: React.FC = () => {
             <Link
               key={flow.step}
               to={flow.href}
-              className="group bg-white rounded-2xl p-5 border-2 border-slate-100 hover:border-sky-400 hover:shadow-md transition-all flex flex-col justify-between"
+              className="group bg-white rounded-2xl p-5 border-2 border-slate-100 hover:border-emerald-400 hover:shadow-md transition-all flex flex-col justify-between"
             >
               <div>
-                <span className="px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 text-[11px] font-extrabold border border-sky-200">
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-extrabold border border-emerald-200">
                   {flow.badge}
                 </span>
-                <h3 className="text-sm font-bold text-slate-800 group-hover:text-sky-600 transition-colors mt-3">
+                <h3 className="text-sm font-bold text-slate-800 group-hover:text-emerald-600 transition-colors mt-3">
                   {flow.title}
                 </h3>
                 <p className="text-xs text-slate-600 mt-2 leading-relaxed">{flow.description}</p>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-sky-600">
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-600">
                 <span>Buka</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </div>

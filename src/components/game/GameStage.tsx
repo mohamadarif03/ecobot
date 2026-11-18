@@ -290,7 +290,7 @@ export const GameStage: React.FC<GameStageProps> = ({
           <Link
             to="/pustaka"
             onClick={onExit}
-            className="px-6 py-3 rounded-full bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-sm flex items-center gap-2 shadow-lg"
+            className="px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center gap-2 shadow-lg"
           >
             <BookOpen className="w-4 h-4" />
             <span>Buka Pustaka Edukasi</span>
@@ -310,15 +310,15 @@ export const GameStage: React.FC<GameStageProps> = ({
   // ==================== 2. LOADING SCREEN ====================
   if (phase === "loading") {
     return (
-      <div className="fixed inset-0 z-50 bg-gradient-to-br from-sky-400 via-sky-500 to-sky-600 text-white flex flex-col items-center justify-between p-8 sm:p-12 select-none">
+      <div className="fixed inset-0 z-50 bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 text-white flex flex-col items-center justify-between p-8 sm:p-12 select-none">
         {/* Top Header */}
         <div className="w-full max-w-xl flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-sky-950 bg-white/80 px-3.5 py-1 rounded-full shadow-2xs">
+            <span className="text-xs font-black uppercase tracking-widest text-emerald-950 bg-white/80 px-3.5 py-1 rounded-full shadow-2xs">
               {missionConfig.subtitle}
             </span>
           </div>
-          <span className="text-xs font-bold text-sky-100">
+          <span className="text-xs font-bold text-emerald-100">
             {missionConfig.location}
           </span>
         </div>
@@ -331,7 +331,7 @@ export const GameStage: React.FC<GameStageProps> = ({
           <h2 className="text-3xl sm:text-4xl font-black text-slate-950 tracking-tight">
             Memuat {missionConfig.title}...
           </h2>
-          <p className="text-sm text-sky-950/80 font-bold max-w-md mt-2">
+          <p className="text-sm text-emerald-950/80 font-bold max-w-md mt-2">
             {missionConfig.description}
           </p>
         </div>
@@ -340,11 +340,11 @@ export const GameStage: React.FC<GameStageProps> = ({
         <div className="w-full max-w-xl space-y-4">
           {/* Tip Box */}
           <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-white/40 text-slate-900 shadow-md flex items-start gap-3">
-            <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-sky-600" />
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
             </div>
             <div className="text-left">
-              <span className="text-[11px] font-black uppercase tracking-wider text-sky-700 block">
+              <span className="text-[11px] font-black uppercase tracking-wider text-emerald-700 block">
                 Tips Lingkungan dari Ecobot
               </span>
               <p className="text-xs sm:text-sm font-medium text-slate-800 mt-0.5 leading-relaxed">
@@ -379,16 +379,16 @@ export const GameStage: React.FC<GameStageProps> = ({
 
     return (
       <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl text-white flex flex-col items-center justify-center p-4 sm:p-8 overflow-y-auto select-none">
-        <div className="relative w-full max-w-lg bg-gradient-to-b from-slate-900 to-slate-950 border border-sky-500/30 rounded-[36px] p-6 sm:p-8 shadow-2xl text-center">
+        <div className="relative w-full max-w-lg bg-gradient-to-b from-slate-900 to-slate-950 border border-emerald-500/30 rounded-[36px] p-6 sm:p-8 shadow-2xl text-center">
           {/* Confetti Accent / Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 w-44 h-44 rounded-full bg-sky-500/20 blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 w-44 h-44 rounded-full bg-emerald-600/20 blur-3xl pointer-events-none" />
 
           {/* Trophy Header */}
           <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-slate-950 flex items-center justify-center mx-auto mb-4 shadow-xl">
             <Trophy className="w-8 h-8" />
           </div>
 
-          <span className="text-xs font-black uppercase tracking-widest text-sky-400 bg-sky-950/80 px-3 py-1 rounded-full border border-sky-800">
+          <span className="text-xs font-black uppercase tracking-widest text-emerald-400 bg-sky-950/80 px-3 py-1 rounded-full border border-sky-800">
             Misi Selesai!
           </span>
           <h2 className="text-2xl sm:text-3xl font-black mt-2 text-white">
@@ -433,7 +433,7 @@ export const GameStage: React.FC<GameStageProps> = ({
             </div>
             <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
               <span className="text-[11px] font-bold text-slate-400 block">Waktu</span>
-              <span className="text-lg font-black text-sky-400">
+              <span className="text-lg font-black text-emerald-400">
                 {resultData.timeSeconds}s
               </span>
             </div>
@@ -454,8 +454,8 @@ export const GameStage: React.FC<GameStageProps> = ({
           )}
 
           {/* Ecobot Final Fact */}
-          <div className="p-3.5 rounded-2xl bg-sky-950/60 border border-sky-800 text-left text-xs text-sky-200 mb-4">
-            <strong className="text-sky-300 block mb-0.5">Catatan Ecobot:</strong>
+          <div className="p-3.5 rounded-2xl bg-sky-950/60 border border-sky-800 text-left text-xs text-emerald-200 mb-4">
+            <strong className="text-emerald-300 block mb-0.5">Catatan Ecobot:</strong>
             Setiap sampah yang kamu buang ke tong yang tepat membuat Kota Harapan semakin bersih dan asri!
           </div>
 
@@ -490,7 +490,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                     onMissionSelect(nextMissionItem.id);
                   }
                 }}
-                className="w-full py-3.5 rounded-full bg-[#5BC0EB] hover:bg-[#38BDF8] text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition"
+                className="w-full py-3.5 rounded-full bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition"
               >
                 <span>Misi Berikutnya: {nextMissionItem.title}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -528,7 +528,7 @@ export const GameStage: React.FC<GameStageProps> = ({
       {/* 3D ENGINE ROOT CANVAS CONTAINER (Background Placeholder) */}
       <div id="game-root" className="absolute inset-0 z-0 overflow-hidden">
         {/* Blocky Low-Poly City Silhouette & Sky Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-400" />
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-400 via-sky-200 to-emerald-400" />
 
         {/* City Buildings Skyline SVG Silhouette */}
         <div className="absolute inset-x-0 bottom-0 h-72 sm:h-96 pointer-events-none opacity-80">
@@ -550,7 +550,7 @@ export const GameStage: React.FC<GameStageProps> = ({
         {/* Center Stage Mockup Notice */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-6 text-center">
           <div className="bg-slate-900/80 backdrop-blur-md border border-white/20 p-6 rounded-3xl max-w-md shadow-2xl">
-            <span className="text-xs font-black uppercase tracking-wider text-sky-400 bg-sky-950/80 px-3 py-1 rounded-full border border-sky-800">
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-400 bg-sky-950/80 px-3 py-1 rounded-full border border-sky-800">
               Dunia 3D Engine Ready
             </span>
             <h3 className="text-xl sm:text-2xl font-black text-white mt-2">
@@ -581,7 +581,7 @@ export const GameStage: React.FC<GameStageProps> = ({
         {/* Top Left: Level & Points */}
         <div className="flex items-center gap-2">
           <div className="bg-slate-900/85 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full shadow-lg flex items-center gap-2">
-            <span className="text-xs font-black text-sky-400">
+            <span className="text-xs font-black text-emerald-400">
               Level {levelInfo.level}
             </span>
             <span className="text-xs font-black text-yellow-300">
@@ -640,14 +640,14 @@ export const GameStage: React.FC<GameStageProps> = ({
               prev ? null : "Ayo perhatikan jenis sampahnya sebelum memasukkan ke tong!"
             )
           }
-          className="w-12 h-12 rounded-2xl bg-sky-400 hover:bg-sky-300 text-slate-950 flex items-center justify-center shadow-lg shrink-0 transition"
+          className="w-12 h-12 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 flex items-center justify-center shadow-lg shrink-0 transition"
           title="Petunjuk dari Ecobot"
         >
           <EcobotMascot size="mini" className="w-8 h-8" />
         </button>
 
         {ecobotBubble && (
-          <div className="p-3 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-sky-400/40 text-xs sm:text-sm text-sky-200 shadow-xl relative animate-fade-rise">
+          <div className="p-3 rounded-2xl bg-slate-900/90 backdrop-blur-md border border-emerald-400/40 text-xs sm:text-sm text-emerald-200 shadow-xl relative animate-fade-rise">
             <p className="font-bold">{ecobotBubble}</p>
           </div>
         )}
@@ -674,7 +674,7 @@ export const GameStage: React.FC<GameStageProps> = ({
           <button
             type="button"
             onClick={() => (engineRef.current as MockGameBridge)?.simulateFinishMission()}
-            className="px-2.5 py-0.5 rounded-full bg-sky-500/30 text-sky-300 hover:bg-sky-500 hover:text-white border border-sky-500/40 transition"
+            className="px-2.5 py-0.5 rounded-full bg-emerald-600/30 text-emerald-300 hover:bg-emerald-600 hover:text-white border border-emerald-500/40 transition"
           >
             Selesaikan Misi
           </button>
@@ -749,7 +749,7 @@ export const GameStage: React.FC<GameStageProps> = ({
       {/* ==================== PAUSE MODAL ==================== */}
       {phase === "paused" && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-slate-900 border border-sky-500/30 rounded-[32px] p-6 sm:p-8 shadow-2xl text-white text-center">
+          <div className="w-full max-w-md bg-slate-900 border border-emerald-500/30 rounded-[32px] p-6 sm:p-8 shadow-2xl text-white text-center">
             {pauseView === "menu" && (
               <>
                 <h3 className="text-2xl font-black text-white mb-2">Permainan Dijeda</h3>
@@ -761,7 +761,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                   <button
                     type="button"
                     onClick={handleResume}
-                    className="w-full py-3.5 rounded-full bg-[#5BC0EB] hover:bg-[#38BDF8] text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-md transition"
+                    className="w-full py-3.5 rounded-full bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-md transition"
                   >
                     <Play className="w-4 h-4" />
                     <span>Lanjutkan Bermain</span>
@@ -788,7 +788,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                     href="/bantuan?tab=kontrol"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-2.5 rounded-full bg-sky-500/15 hover:bg-sky-500/25 text-sky-300 border border-sky-500/30 font-bold text-xs flex items-center justify-center gap-2 transition"
+                    className="w-full py-2.5 rounded-full bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 font-bold text-xs flex items-center justify-center gap-2 transition"
                     title="Buka panduan kontrol dan tata letak layar di tab baru"
                   >
                     <HelpCircle className="w-4 h-4" />
@@ -810,7 +810,7 @@ export const GameStage: React.FC<GameStageProps> = ({
             {pauseView === "mission" && (
               <>
                 <h3 className="text-xl font-black text-white mb-2">Target Misi</h3>
-                <p className="text-sm text-sky-400 font-bold mb-4">{missionConfig.title}</p>
+                <p className="text-sm text-emerald-400 font-bold mb-4">{missionConfig.title}</p>
                 <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-left text-xs text-slate-300 space-y-2 mb-6">
                   <p>
                     <strong className="text-white">Deskripsi:</strong> {missionConfig.description}
@@ -866,7 +866,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                           }}
                           className={`py-2 rounded-xl text-xs font-black uppercase transition ${
                             state.settings.graphicsQuality === q
-                              ? "bg-sky-500 text-slate-950"
+                              ? "bg-emerald-600 text-slate-950"
                               : "bg-slate-800 text-slate-300 hover:bg-slate-700"
                           }`}
                         >

@@ -23,7 +23,7 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
         <svg viewBox="0 0 80 80" className={className} fill="none">
           <ellipse cx="40" cy="52" rx="34" ry="12" fill="#FDE047" stroke="#CA8A04" strokeWidth="2.5" />
           <path d="M22 50C22 34 30 24 40 24C50 24 58 34 58 50Z" fill="#FEF08A" stroke="#CA8A04" strokeWidth="2.5" />
-          <rect x="23" y="46" width="34" height="6" fill="#0284C7" />
+          <rect x="23" y="46" width="34" height="6" fill="#15803D" />
           <circle cx="34" cy="34" r="2" fill="#FFFFFF" />
         </svg>
       );
@@ -31,8 +31,8 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "topi-pelindung":
       return (
         <svg viewBox="0 0 80 80" className={className} fill="none">
-          <path d="M16 52C16 32 26 22 40 22C54 22 64 32 64 52H16Z" fill="#0284C7" stroke="#0369A1" strokeWidth="2.5" />
-          <path d="M12 52H68C72 52 74 56 68 60H12C6 56 8 52 12 52Z" fill="#38BDF8" stroke="#0369A1" strokeWidth="2" />
+          <path d="M16 52C16 32 26 22 40 22C54 22 64 32 64 52H16Z" fill="#15803D" stroke="#0369A1" strokeWidth="2.5" />
+          <path d="M12 52H68C72 52 74 56 68 60H12C6 56 8 52 12 52Z" fill="#4ADE80" stroke="#0369A1" strokeWidth="2" />
           <circle cx="40" cy="38" r="8" fill="#22C55E" />
           <path d="M38 38L40 40L43 36" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -53,8 +53,8 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "kacamata-bulat":
       return (
         <svg viewBox="0 0 80 80" className={className} fill="none">
-          <circle cx="28" cy="42" r="14" fill="#E0F2FE" stroke="#0F172A" strokeWidth="3" />
-          <circle cx="52" cy="42" r="14" fill="#E0F2FE" stroke="#0F172A" strokeWidth="3" />
+          <circle cx="28" cy="42" r="14" fill="#DCFCE7" stroke="#0F172A" strokeWidth="3" />
+          <circle cx="52" cy="42" r="14" fill="#DCFCE7" stroke="#0F172A" strokeWidth="3" />
           <path d="M42 42H38" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
           <path d="M14 42H10" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
           <path d="M66 42H70" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
@@ -79,7 +79,7 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "kacamata-pelindung":
       return (
         <svg viewBox="0 0 80 80" className={className} fill="none">
-          <rect x="10" y="30" width="60" height="24" rx="8" fill="#38BDF8" stroke="#0284C7" strokeWidth="3" fillOpacity="0.8" />
+          <rect x="10" y="30" width="60" height="24" rx="8" fill="#4ADE80" stroke="#15803D" strokeWidth="3" fillOpacity="0.8" />
           <line x1="14" y1="36" x2="28" y2="48" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
           <line x1="42" y1="36" x2="56" y2="48" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
           <rect x="6" y="38" width="6" height="8" rx="2" fill="#0F172A" />
@@ -126,8 +126,8 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "tas-daur-ulang":
       return (
         <svg viewBox="0 0 80 80" className={className} fill="none">
-          <rect x="20" y="22" width="40" height="46" rx="8" fill="#0284C7" stroke="#0369A1" strokeWidth="2.5" />
-          <rect x="26" y="38" width="28" height="24" rx="4" fill="#38BDF8" stroke="#0369A1" strokeWidth="2" />
+          <rect x="20" y="22" width="40" height="46" rx="8" fill="#15803D" stroke="#0369A1" strokeWidth="2.5" />
+          <rect x="26" y="38" width="28" height="24" rx="4" fill="#4ADE80" stroke="#0369A1" strokeWidth="2" />
           <path d="M34 22V16H46V22" stroke="#0369A1" strokeWidth="3" fill="none" />
           <path d="M37 46L40 43L43 46" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M40 43V53" stroke="white" strokeWidth="2" strokeLinecap="round" />
@@ -142,14 +142,14 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "warna-baju-ungu":
     case "warna-baju-toska": {
       const colorMap: Record<string, string> = {
-        "warna-baju-biru": "#38BDF8",
+        "warna-baju-biru": "#4ADE80",
         "warna-baju-hijau": "#22C55E",
         "warna-baju-kuning": "#F59E0B",
         "warna-baju-pink": "#EC4899",
         "warna-baju-ungu": "#8B5CF6",
         "warna-baju-toska": "#14B8A6",
       };
-      const hex = colorMap[itemId] || "#38BDF8";
+      const hex = colorMap[itemId] || "#4ADE80";
       return (
         <svg viewBox="0 0 80 80" className={className} fill="none">
           <path d="M26 22L14 36L22 42L28 34V64H52V34L58 42L66 36L54 22H26Z" fill={hex} stroke="#0F172A" strokeWidth="2.5" strokeLinejoin="round" />
@@ -186,16 +186,16 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
           <rect x="14" y="32" width="24" height="18" rx="4" fill="#0F172A" stroke="#334155" strokeWidth="2.5" />
           <rect x="42" y="32" width="24" height="18" rx="4" fill="#0F172A" stroke="#334155" strokeWidth="2.5" />
           <line x1="38" y1="40" x2="42" y2="40" stroke="#0F172A" strokeWidth="3" />
-          <line x1="18" y1="36" x2="30" y2="46" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" />
-          <line x1="46" y1="36" x2="58" y2="46" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" />
+          <line x1="18" y1="36" x2="30" y2="46" stroke="#4ADE80" strokeWidth="2" strokeLinecap="round" />
+          <line x1="46" y1="36" x2="58" y2="46" stroke="#4ADE80" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
 
     case "ecobot-syal-biru":
       return (
         <svg viewBox="0 0 80 80" className={className} fill="none">
-          <path d="M22 36C22 36 40 44 58 36C60 42 58 50 48 52C38 52 30 50 22 42V36Z" fill="#0284C7" stroke="#0369A1" strokeWidth="2.5" />
-          <path d="M46 46V64C46 66 54 66 54 64V44" fill="#38BDF8" stroke="#0369A1" strokeWidth="2" />
+          <path d="M22 36C22 36 40 44 58 36C60 42 58 50 48 52C38 52 30 50 22 42V36Z" fill="#15803D" stroke="#0369A1" strokeWidth="2.5" />
+          <path d="M46 46V64C46 66 54 66 54 64V44" fill="#4ADE80" stroke="#0369A1" strokeWidth="2" />
         </svg>
       );
 
@@ -218,13 +218,13 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "ecobot-warna-pink":
     case "ecobot-emas": {
       const colorMap: Record<string, string> = {
-        "ecobot-warna-biru": "#38BDF8",
+        "ecobot-warna-biru": "#4ADE80",
         "ecobot-warna-mint": "#34D399",
         "ecobot-warna-kuning": "#FBBF24",
         "ecobot-warna-pink": "#F472B6",
         "ecobot-emas": "#F59E0B",
       };
-      const hex = colorMap[itemId] || "#38BDF8";
+      const hex = colorMap[itemId] || "#4ADE80";
       return (
         <svg viewBox="0 0 80 80" className={className} fill="none">
           <rect x="22" y="24" width="36" height="32" rx="10" fill={hex} stroke="#0F172A" strokeWidth="2.5" />
@@ -284,7 +284,7 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "stiker-penyu":
       return (
         <svg viewBox="0 0 60 60" className={className} fill="none">
-          <circle cx="30" cy="30" r="24" fill="#E0F2FE" />
+          <circle cx="30" cy="30" r="24" fill="#DCFCE7" />
           <ellipse cx="30" cy="32" rx="14" ry="11" fill="#16A34A" stroke="#14532D" strokeWidth="2" />
           <circle cx="30" cy="18" r="5" fill="#22C55E" />
           <circle cx="18" cy="24" r="3.5" fill="#22C55E" />
@@ -297,7 +297,7 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
     case "stiker-bumi":
       return (
         <svg viewBox="0 0 60 60" className={className} fill="none">
-          <circle cx="30" cy="30" r="22" fill="#38BDF8" stroke="#0284C7" strokeWidth="2" />
+          <circle cx="30" cy="30" r="22" fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
           <path d="M22 22C24 18 30 18 34 22C36 26 30 30 26 28Z" fill="#22C55E" />
           <path d="M36 34C40 32 46 34 44 40C40 44 34 40 36 34Z" fill="#22C55E" />
           <path d="M18 36C22 36 24 42 20 44Z" fill="#22C55E" />
@@ -322,7 +322,7 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
           <circle cx="30" cy="30" r="24" fill="#F0FDF4" />
           <path d="M14 40C14 24 46 24 46 40" stroke="#F43F5E" strokeWidth="3" fill="none" />
           <path d="M18 40C18 28 42 28 42 40" stroke="#FBBF24" strokeWidth="3" fill="none" />
-          <path d="M22 40C22 32 38 32 38 40" stroke="#38BDF8" strokeWidth="3" fill="none" />
+          <path d="M22 40C22 32 38 32 38 40" stroke="#4ADE80" strokeWidth="3" fill="none" />
         </svg>
       );
 
@@ -339,7 +339,7 @@ export const ItemArt: React.FC<ItemArtProps> = ({ itemId, className = "w-full h-
       return (
         <svg viewBox="0 0 60 60" className={className} fill="none">
           <circle cx="30" cy="30" r="24" fill="#EFF6FF" />
-          <path d="M30 12L42 18V30C42 38 36 46 30 48C24 48 18 38 18 30V18L30 12Z" fill="#0284C7" stroke="#0369A1" strokeWidth="2" />
+          <path d="M30 12L42 18V30C42 38 36 46 30 48C24 48 18 38 18 30V18L30 12Z" fill="#15803D" stroke="#0369A1" strokeWidth="2" />
           <path d="M26 30L29 33L35 27" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );

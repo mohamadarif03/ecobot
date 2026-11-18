@@ -79,11 +79,11 @@ export const ChallengeStepper: React.FC<ChallengeStepperProps> = ({
             badgeText = "Selesai";
             badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
           } else if (isCurrent) {
-            cardStyle = "border-sky-300 bg-sky-50/30 ring-2 ring-sky-200 shadow-xs";
+            cardStyle = "border-emerald-300 bg-emerald-50/30 ring-2 ring-sky-200 shadow-xs";
             badgeText = isTodayChecked ? "Menunggu Besok" : "Hari Ini";
             badgeClass = isTodayChecked
               ? "bg-amber-100 text-amber-800 border-amber-200"
-              : "bg-sky-500 text-white border-sky-500";
+              : "bg-emerald-600 text-white border-emerald-500";
           }
 
           return (
@@ -101,7 +101,7 @@ export const ChallengeStepper: React.FC<ChallengeStepperProps> = ({
                         isDone
                           ? "bg-emerald-500 text-white shadow-2xs"
                           : isCurrent
-                          ? "bg-sky-500 text-white shadow-2xs"
+                          ? "bg-emerald-600 text-white shadow-2xs"
                           : "bg-slate-100 text-slate-400"
                       }`}
                     >
@@ -153,7 +153,7 @@ export const ChallengeStepper: React.FC<ChallengeStepperProps> = ({
                     <span>Dicentang: {record.dateKey}</span>
                   </span>
                 ) : isCurrent ? (
-                  <span className="text-sky-700 font-extrabold flex items-center gap-1">
+                  <span className="text-emerald-700 font-extrabold flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5" />
                     <span>{isTodayChecked ? "Lanjut besok" : "Siap dikerjakan"}</span>
                   </span>

@@ -68,7 +68,7 @@ export function Navbar() {
           }}
           className="flex items-center gap-2 text-2xl sm:text-3xl tracking-tight font-black font-sans text-[#000000] whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#000000] group"
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-400 to-sky-500 flex items-center justify-center text-slate-950 shadow-2xs group-hover:scale-105 transition">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-400 to-emerald-500 flex items-center justify-center text-slate-950 shadow-2xs group-hover:scale-105 transition">
             <Bot className="w-5 h-5 text-slate-950" />
           </div>
           <span>ECOBOT</span>
@@ -96,7 +96,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={handleStartAdventure}
-            className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-full px-7 py-3 text-sm font-black bg-[#5BC0EB] hover:bg-[#38BDF8] text-slate-950 shadow-sm hover:scale-[1.03] transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#5BC0EB]"
+            className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-full px-7 py-3 text-sm font-black bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 shadow-sm hover:scale-[1.03] transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#22C55E]"
           >
             <span>Mulai Petualangan</span>
             <ArrowRight className="w-4 h-4" />
@@ -117,7 +117,7 @@ export function Navbar() {
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden absolute inset-x-4 top-20 z-30 rounded-3xl bg-white/95 backdrop-blur-xl border border-sky-100 p-6 shadow-xl">
+        <div className="md:hidden absolute inset-x-4 top-20 z-30 rounded-3xl bg-white/95 backdrop-blur-xl border border-emerald-100 p-6 shadow-xl">
           <nav aria-label="Navigasi Menu Mobile" className="flex flex-col gap-4">
             {NAV_LINKS.map((item) => (
               <button
@@ -136,7 +136,7 @@ export function Navbar() {
                 setMobileMenuOpen(false);
                 handleStartAdventure();
               }}
-              className="mt-2 w-full text-center rounded-full py-3.5 text-sm font-black bg-[#5BC0EB] text-slate-950 shadow-md cursor-pointer"
+              className="mt-2 w-full text-center rounded-full py-3.5 text-sm font-black bg-[#22C55E] text-slate-950 shadow-md cursor-pointer"
             >
               Mulai Petualangan
             </button>

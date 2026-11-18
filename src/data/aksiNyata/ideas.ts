@@ -98,7 +98,7 @@ export const CREATIVE_IDEAS: CreativeIdea[] = [
     estimatedTime: "15 Menit",
     needsAdultSupervision: false,
     icon: "Sparkles",
-    color: "from-sky-400 to-indigo-500",
+    color: "from-emerald-400 to-indigo-500",
     description: "Lipat dan bentuk lembaran koran atau majalah bekas menjadi bunga kertas dan gantungan pintu yang estetik.",
     materials: [
       "Beberapa lembar koran atau majalah bekas",

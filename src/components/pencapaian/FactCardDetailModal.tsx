@@ -26,7 +26,7 @@ export const FactCardDetailModal: React.FC<FactCardDetailModalProps> = ({
     umum: {
       label: "Fakta Umum",
       color: "bg-slate-100 text-slate-700 border-slate-200",
-      accent: "from-sky-400 to-blue-500",
+      accent: "from-emerald-400 to-blue-500",
     },
     langka: {
       label: "Fakta Langka",

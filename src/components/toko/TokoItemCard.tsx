@@ -50,7 +50,7 @@ export const TokoItemCard: React.FC<TokoItemCardProps> = ({
             : isTryingOn
             ? "bg-amber-50/40 border-amber-300 ring-2 ring-amber-200"
             : isOwned
-            ? "bg-white border-slate-200 hover:border-sky-300"
+            ? "bg-white border-slate-200 hover:border-emerald-300"
             : "bg-white/80 border-slate-100 hover:border-slate-200"
         }`}
       >
@@ -85,7 +85,7 @@ export const TokoItemCard: React.FC<TokoItemCardProps> = ({
         <div className="text-center my-1">
           <h4
             onClick={() => setIsDetailOpen(true)}
-            className="font-extrabold text-slate-800 text-xs md:text-sm truncate cursor-pointer hover:text-sky-600"
+            className="font-extrabold text-slate-800 text-xs md:text-sm truncate cursor-pointer hover:text-emerald-600"
           >
             {item.nama}
           </h4>
@@ -151,7 +151,7 @@ export const TokoItemCard: React.FC<TokoItemCardProps> = ({
               </Button>
               <Link
                 to="/misi"
-                className="inline-block text-[10px] font-bold text-sky-600 hover:underline mt-1"
+                className="inline-block text-[10px] font-bold text-emerald-600 hover:underline mt-1"
               >
                 Cari Poin di Misi &rarr;
               </Link>
@@ -202,7 +202,7 @@ export const TokoItemCard: React.FC<TokoItemCardProps> = ({
         title="Detail Aksesori"
       >
         <div className="space-y-5 text-center">
-          <div className="w-24 h-24 mx-auto rounded-3xl bg-sky-50 border-2 border-sky-100 flex items-center justify-center p-3">
+          <div className="w-24 h-24 mx-auto rounded-3xl bg-emerald-50 border-2 border-emerald-100 flex items-center justify-center p-3">
             <ItemArt itemId={item.id} className="w-full h-full" />
           </div>
 

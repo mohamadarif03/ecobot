@@ -81,7 +81,7 @@ export const FactCardsGrid: React.FC<FactCardsGridProps> = ({
               onClick={() => setRarityFilter(r.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 rarityFilter === r.id
-                  ? "bg-sky-500 text-white shadow-md shadow-sky-500/20"
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200/70"
               }`}
             >
@@ -127,7 +127,7 @@ export const FactCardsGrid: React.FC<FactCardsGridProps> = ({
                       ? "bg-gradient-to-br from-amber-50 to-orange-50/50 border-amber-300 shadow-sm hover:border-amber-400 ring-1 ring-amber-200/50"
                       : card.kelangkaan === "langka"
                       ? "bg-gradient-to-br from-indigo-50/50 to-sky-50/50 border-indigo-200 shadow-sm hover:border-indigo-400"
-                      : "bg-white border-slate-200 hover:border-sky-300"
+                      : "bg-white border-slate-200 hover:border-emerald-300"
                     : "bg-slate-50 border-slate-200/80 text-slate-400 hover:border-slate-300"
                 }`}
               >
@@ -161,7 +161,7 @@ export const FactCardsGrid: React.FC<FactCardsGridProps> = ({
                           ? "bg-amber-100 text-amber-800 border border-amber-300"
                           : card.kelangkaan === "langka"
                           ? "bg-indigo-100 text-indigo-800 border border-indigo-200"
-                          : "bg-sky-100 text-sky-800 border border-sky-200"
+                          : "bg-emerald-100 text-emerald-800 border border-emerald-200"
                         : "bg-slate-200/60 text-slate-400"
                     }`}
                   >
@@ -198,7 +198,7 @@ export const FactCardsGrid: React.FC<FactCardsGridProps> = ({
                       Klik untuk cara buka
                     </span>
                   )}
-                  <span className="text-sky-600 font-medium group-hover:underline">
+                  <span className="text-emerald-600 font-medium group-hover:underline">
                     Detail &rarr;
                   </span>
                 </div>

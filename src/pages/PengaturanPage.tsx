@@ -153,16 +153,16 @@ export const PengaturanPage: React.FC = () => {
         </div>
 
         {/* Help Center Banner Link */}
-        <div className="mt-8 p-4 rounded-2xl bg-sky-50 border border-sky-200/80 flex items-center justify-between flex-wrap gap-3">
+        <div className="mt-8 p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-2.5">
             <span className="text-xl">💬</span>
-            <span className="text-xs sm:text-sm text-sky-900 font-medium">
+            <span className="text-xs sm:text-sm text-emerald-900 font-medium">
               Ada pertanyaan seputar pengaturan atau cara bermain?
             </span>
           </div>
           <Link
             to="/bantuan?tab=faq"
-            className="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-all shadow-sm"
+            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-600 text-white text-xs font-bold transition-all shadow-sm"
           >
             Buka FAQ Pusat Bantuan ↗
           </Link>

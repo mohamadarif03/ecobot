@@ -87,7 +87,7 @@ export const TabProfil: React.FC<TabProfilProps> = ({
       {/* 1. Kartu Profilku */}
       <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-sm">
         <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
-          <div className="w-9 h-9 rounded-2xl bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 flex items-center justify-center font-bold">
+          <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-sky-950/60 dark:text-emerald-300 flex items-center justify-center font-bold">
             <User className="w-5 h-5" />
           </div>
           <div>
@@ -143,12 +143,12 @@ export const TabProfil: React.FC<TabProfilProps> = ({
                 onChange={handleNameChange}
                 maxLength={16}
                 placeholder="Contoh: Raka, Alya, Budi..."
-                className="flex-1 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 dark:focus:ring-sky-900 rounded-2xl px-4 py-2.5 text-sm font-bold text-slate-800 dark:text-white outline-none transition"
+                className="flex-1 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:border-emerald-500 focus:ring-2 focus:ring-sky-200 dark:focus:ring-sky-900 rounded-2xl px-4 py-2.5 text-sm font-bold text-slate-800 dark:text-white outline-none transition"
               />
               <Button
                 type="submit"
                 disabled={Boolean(nameError) || nicknameInput.trim() === state.nickname}
-                className="px-5 py-2.5 text-xs font-black bg-sky-500 hover:bg-sky-600 text-white rounded-2xl shadow-sm shrink-0"
+                className="px-5 py-2.5 text-xs font-black bg-emerald-600 hover:bg-emerald-600 text-white rounded-2xl shadow-sm shrink-0"
               >
                 Ubah Nama
               </Button>
@@ -183,7 +183,7 @@ export const TabProfil: React.FC<TabProfilProps> = ({
                   onClick={() => handleSelectAvatar(item.icon)}
                   className={`p-3.5 rounded-2xl border-2 flex flex-col items-center gap-1.5 transition text-center cursor-pointer ${
                     isSelected
-                      ? "border-sky-500 bg-sky-50/70 dark:bg-sky-950/40 shadow-sm scale-102"
+                      ? "border-emerald-500 bg-emerald-50/70 dark:bg-sky-950/40 shadow-sm scale-102"
                       : "border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
                   }`}
                   aria-pressed={isSelected}
@@ -216,7 +216,7 @@ export const TabProfil: React.FC<TabProfilProps> = ({
 
           <Link
             to="/pencapaian"
-            className="text-xs font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400 flex items-center gap-1"
+            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 flex items-center gap-1"
           >
             <span>Buka Pencapaian</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -224,8 +224,8 @@ export const TabProfil: React.FC<TabProfilProps> = ({
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
-          <div className="p-3.5 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-100 dark:border-sky-900/60">
-            <div className="text-xs text-sky-700 dark:text-sky-300 font-bold mb-1">
+          <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-sky-950/40 border border-emerald-100 dark:border-sky-900/60">
+            <div className="text-xs text-emerald-700 dark:text-emerald-300 font-bold mb-1">
               Level & Gelar
             </div>
             <div className="text-base font-black text-slate-800 dark:text-white truncate">
@@ -286,7 +286,7 @@ export const TabProfil: React.FC<TabProfilProps> = ({
       </Card>
 
       {/* 3. Kartu Dandan Karakter & Toko */}
-      <Card className="p-6 bg-gradient-to-r from-sky-50/60 via-purple-50/40 to-emerald-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 border border-sky-100 dark:border-slate-800 rounded-3xl shadow-sm">
+      <Card className="p-6 bg-gradient-to-r from-sky-50/60 via-purple-50/40 to-emerald-50/60 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 border border-emerald-100 dark:border-slate-800 rounded-3xl shadow-sm">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -305,13 +305,13 @@ export const TabProfil: React.FC<TabProfilProps> = ({
               to="/toko?tab=koleksi"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white text-xs font-bold border border-slate-200 dark:border-slate-700 shadow-2xs transition"
             >
-              <ShoppingBag className="w-3.5 h-3.5 text-sky-500" />
+              <ShoppingBag className="w-3.5 h-3.5 text-emerald-600" />
               <span>Koleksiku</span>
             </Link>
 
             <Link
               to="/main-game"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-black shadow-sm transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-600 text-white text-xs font-black shadow-sm transition"
             >
               <Gamepad2 className="w-3.5 h-3.5" />
               <span>Karakterku</span>

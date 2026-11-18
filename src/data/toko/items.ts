@@ -134,7 +134,7 @@ export const ALL_SHOP_ITEMS: ShopItemDefinition[] = [
     harga: 0,
     syarat: { tipe: "gratis" },
     deskripsi: "Warna biru cerah khas langit Kota Harapan yang bersih.",
-    swatchHex: "#38BDF8",
+    swatchHex: "#4ADE80",
     available: true,
   },
   {
@@ -254,7 +254,7 @@ export const ALL_SHOP_ITEMS: ShopItemDefinition[] = [
     harga: 0,
     syarat: { tipe: "gratis" },
     deskripsi: "Warna orisinal robot daur ulang Ecobot yang ceria dan ramah.",
-    swatchHex: "#38BDF8",
+    swatchHex: "#4ADE80",
     available: true,
   },
   {

@@ -152,7 +152,7 @@ export const TabDataPrivasi: React.FC<TabDataPrivasiProps> = ({
       {/* ==================== 1. KARTU PRIVASI PAPAN PERINGKAT ==================== */}
       <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-sm">
         <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
-          <div className="w-9 h-9 rounded-2xl bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 flex items-center justify-center font-bold">
+          <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-sky-950/60 dark:text-emerald-300 flex items-center justify-center font-bold">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
@@ -253,11 +253,11 @@ export const TabDataPrivasi: React.FC<TabDataPrivasiProps> = ({
 
             <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800">
               <div className="flex gap-4 text-slate-500">
-                <Link to="/privasi" className="hover:text-sky-600 flex items-center gap-1 font-semibold">
+                <Link to="/privasi" className="hover:text-emerald-600 flex items-center gap-1 font-semibold">
                   <span>Kebijakan Privasi Lengkap</span>
                   <ExternalLink className="w-3 h-3" />
                 </Link>
-                <Link to="/sumber" className="hover:text-sky-600 flex items-center gap-1 font-semibold">
+                <Link to="/sumber" className="hover:text-emerald-600 flex items-center gap-1 font-semibold">
                   <span>Sumber Referensi Materi</span>
                   <ExternalLink className="w-3 h-3" />
                 </Link>
@@ -318,7 +318,7 @@ export const TabDataPrivasi: React.FC<TabDataPrivasiProps> = ({
           </div>
 
           {/* Pulihkan dari Cadangan */}
-          <div className="p-4 rounded-2xl bg-sky-50/50 dark:bg-slate-800/50 border border-sky-100 dark:border-sky-900/60 flex flex-col justify-between">
+          <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-slate-800/50 border border-emerald-100 dark:border-sky-900/60 flex flex-col justify-between">
             <div>
               <h4 className="font-bold text-sm text-slate-800 dark:text-white mb-1">
                 Pulihkan dari Cadangan (Impor)
@@ -332,7 +332,7 @@ export const TabDataPrivasi: React.FC<TabDataPrivasiProps> = ({
               type="button"
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full border-sky-300 dark:border-sky-700 text-sky-700 dark:text-sky-300 hover:bg-sky-50 dark:hover:bg-sky-950/40 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
+              className="w-full border-emerald-300 dark:border-sky-700 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-sky-950/40 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
             >
               <Upload className="w-4 h-4" />
               <span>Pilih File Cadangan</span>
@@ -524,7 +524,7 @@ export const TabDataPrivasi: React.FC<TabDataPrivasiProps> = ({
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-sky-500 hover:bg-sky-600 text-white font-bold"
+                    className="bg-emerald-600 hover:bg-emerald-600 text-white font-bold"
                     onClick={() => setRestoreStep(2)}
                   >
                     Lanjut Konfirmasi
@@ -533,7 +533,7 @@ export const TabDataPrivasi: React.FC<TabDataPrivasiProps> = ({
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="p-4 rounded-2xl bg-sky-50 text-sky-900 border border-sky-200">
+                <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-900 border border-emerald-200">
                   <div className="font-bold text-sm mb-1">Konfirmasi Akhir</div>
                   <p>
                     Apakah kamu yakin ingin menimpa data sekarang dengan cadangan milik{" "}

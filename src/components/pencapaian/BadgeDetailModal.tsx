@@ -33,7 +33,7 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({
 
   const categoryLabels: Record<string, { label: string; color: string }> = {
     game: { label: "Game 3D", color: "bg-emerald-100 text-emerald-800" },
-    belajar: { label: "Pustaka & Kuis", color: "bg-sky-100 text-sky-800" },
+    belajar: { label: "Pustaka & Kuis", color: "bg-emerald-100 text-emerald-800" },
     kebiasaan: { label: "Aksi Nyata", color: "bg-amber-100 text-amber-800" },
     spesial: { label: "Lencana Spesial", color: "bg-purple-100 text-purple-800" },
   };
@@ -123,13 +123,13 @@ export const BadgeDetailModal: React.FC<BadgeDetailModalProps> = ({
         </div>
 
         {/* Ecobot Message */}
-        <div className="flex items-start gap-3 p-4 rounded-2xl bg-sky-50 border border-sky-100">
-          <div className="w-10 h-10 rounded-xl bg-sky-200 flex items-center justify-center text-xl flex-shrink-0">
+        <div className="flex items-start gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+          <div className="w-10 h-10 rounded-xl bg-emerald-200 flex items-center justify-center text-xl flex-shrink-0">
             🤖
           </div>
           <div className="flex-1 text-xs">
-            <div className="font-bold text-sky-900 mb-0.5">Pesan Ecobot:</div>
-            <p className="text-sky-800 leading-relaxed italic">
+            <div className="font-bold text-emerald-900 mb-0.5">Pesan Ecobot:</div>
+            <p className="text-emerald-800 leading-relaxed italic">
               "{badge.pesanEcobot}"
             </p>
           </div>

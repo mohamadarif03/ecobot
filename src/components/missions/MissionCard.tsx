@@ -31,9 +31,9 @@ export const MissionCard: React.FC<MissionCardProps> = ({
     switch (category) {
       case "game":
         return {
-          icon: <Gamepad2 className="w-5 h-5 text-sky-600" />,
-          bg: "bg-sky-50 border-sky-100",
-          badgeBg: "bg-sky-100 text-sky-800",
+          icon: <Gamepad2 className="w-5 h-5 text-emerald-600" />,
+          bg: "bg-emerald-50 border-emerald-100",
+          badgeBg: "bg-emerald-100 text-emerald-800",
           label: "Game 3D",
         };
       case "baca":
@@ -77,7 +77,7 @@ export const MissionCard: React.FC<MissionCardProps> = ({
           ? "bg-slate-50/80 border-slate-200/70 opacity-75"
           : mission.status === "siap"
           ? "bg-gradient-to-br from-white via-emerald-50/30 to-sky-50/40 border-emerald-300 shadow-[0_4px_16px_rgba(16,185,129,0.12)] ring-2 ring-emerald-400/20"
-          : "bg-white border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:border-sky-200"
+          : "bg-white border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.03)] hover:border-emerald-200"
       }`}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
@@ -142,7 +142,7 @@ export const MissionCard: React.FC<MissionCardProps> = ({
           ) : (
             <Link
               to={mission.tautan}
-              className="h-11 px-4.5 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-[12.5px] flex items-center gap-1.5 transition border border-sky-200/80 hover:border-sky-300"
+              className="h-11 px-4.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[12.5px] flex items-center gap-1.5 transition border border-emerald-200/80 hover:border-emerald-300"
             >
               <span>Kerjakan</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -169,7 +169,7 @@ export const MissionCard: React.FC<MissionCardProps> = ({
                   ? "bg-slate-400"
                   : mission.status === "siap"
                   ? "bg-gradient-to-r from-emerald-400 to-teal-500"
-                  : "bg-sky-500"
+                  : "bg-emerald-600"
               }`}
               style={{ width: `${percent}%` }}
             />
@@ -182,8 +182,8 @@ export const MissionCard: React.FC<MissionCardProps> = ({
 
         {/* Reward Chips */}
         <div className="flex items-center gap-2 shrink-0">
-          <span className="inline-flex items-center gap-1 text-[11px] font-extrabold bg-sky-50 text-sky-800 border border-sky-100 px-2.5 py-1 rounded-full">
-            <Sparkles className="w-3 h-3 text-sky-600" />
+          <span className="inline-flex items-center gap-1 text-[11px] font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-100 px-2.5 py-1 rounded-full">
+            <Sparkles className="w-3 h-3 text-emerald-600" />
             <span>+{mission.xp} XP</span>
           </span>
           <span className="inline-flex items-center gap-1 text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-100 px-2.5 py-1 rounded-full">

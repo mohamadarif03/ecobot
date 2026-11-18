@@ -59,7 +59,7 @@ export const PencapaianRightPanel: React.FC<PencapaianRightPanelProps> = ({
       {/* 1. Profile Summary Card */}
       <Card className="p-5 border-slate-100 shadow-sm bg-gradient-to-b from-white to-sky-50/30">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-sky-100 border-2 border-sky-300 flex items-center justify-center text-3xl shadow-inner overflow-hidden flex-shrink-0">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-100 border-2 border-emerald-300 flex items-center justify-center text-3xl shadow-inner overflow-hidden flex-shrink-0">
             {avatar.startsWith("http") ? (
               <img src={avatar} alt={nickname} className="w-full h-full object-cover" />
             ) : (
@@ -156,7 +156,7 @@ export const PencapaianRightPanel: React.FC<PencapaianRightPanelProps> = ({
       {/* 3. Recent Badges (Terbaru) */}
       <Card className="p-5 border-slate-100 shadow-sm">
         <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-sky-500" />
+          <Sparkles className="w-4 h-4 text-emerald-600" />
           <span>Badge Baru Saja Diraih</span>
         </h4>
 
@@ -222,7 +222,7 @@ export const PencapaianRightPanel: React.FC<PencapaianRightPanelProps> = ({
                   <span>
                     {badge.currentProgress || 0}/{badge.target || 1}
                   </span>
-                  <span className="text-sky-600 font-medium hover:underline">
+                  <span className="text-emerald-600 font-medium hover:underline">
                     Lihat Cara Dapat &rarr;
                   </span>
                 </div>

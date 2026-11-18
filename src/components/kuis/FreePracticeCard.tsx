@@ -24,15 +24,15 @@ export const FreePracticeCard: React.FC = () => {
   };
 
   return (
-    <article className="rounded-[24px] border border-sky-100 bg-gradient-to-br from-white via-sky-50/30 to-blue-50/20 p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-sky-100/70">
+    <article className="rounded-[24px] border border-emerald-100 bg-gradient-to-br from-white via-sky-50/30 to-blue-50/20 p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-emerald-100/70">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20 shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
             <Dumbbell className="w-6 h-6" />
           </div>
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 text-[10.5px] font-black uppercase tracking-wider">
-              <Sparkles className="w-3 h-3 text-sky-600" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10.5px] font-black uppercase tracking-wider">
+              <Sparkles className="w-3 h-3 text-emerald-600" />
               Mode Latihan Bebas
             </div>
             <h3 className="text-lg font-black text-slate-900 mt-0.5">
@@ -61,7 +61,7 @@ export const FreePracticeCard: React.FC = () => {
             <select
               value={selectedTopic}
               onChange={(e) => setSelectedTopic(e.target.value)}
-              className="w-full h-11 px-3.5 pr-8 rounded-xl bg-white border border-slate-200 text-slate-800 text-[13px] font-bold focus:outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition"
+              className="w-full h-11 px-3.5 pr-8 rounded-xl bg-white border border-slate-200 text-slate-800 text-[13px] font-bold focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-sky-100 transition"
             >
               <option value="campur">Campur (Semua Materi)</option>
               {QUIZ_TOPICS.map((topic) => (
@@ -86,8 +86,8 @@ export const FreePracticeCard: React.FC = () => {
                 onClick={() => setQuestionCount(count)}
                 className={`flex-1 h-11 rounded-xl font-black text-xs transition border flex items-center justify-center gap-1 ${
                   questionCount === count
-                    ? "bg-sky-500 text-white border-sky-500 shadow-xs"
-                    : "bg-white text-slate-700 border-slate-200 hover:border-sky-300"
+                    ? "bg-emerald-600 text-white border-emerald-500 shadow-xs"
+                    : "bg-white text-slate-700 border-slate-200 hover:border-emerald-300"
                 }`}
               >
                 <HelpCircle className="w-3.5 h-3.5" />
@@ -118,7 +118,7 @@ export const FreePracticeCard: React.FC = () => {
       </div>
 
       {/* CTA Button */}
-      <div className="mt-5 pt-4 border-t border-sky-100/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="mt-5 pt-4 border-t border-emerald-100/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <p className="text-[11.5px] text-slate-400 font-semibold">
           *Latihan bebas tidak memberi XP harian tambahan agar seimbang.
         </p>
@@ -129,7 +129,7 @@ export const FreePracticeCard: React.FC = () => {
           className="h-11 px-6 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-black text-[13px] flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] transition"
         >
           <span>Mulai Latihan Sekarang</span>
-          <ArrowRight className="w-4 h-4 text-sky-400" />
+          <ArrowRight className="w-4 h-4 text-emerald-400" />
         </button>
       </div>
     </article>

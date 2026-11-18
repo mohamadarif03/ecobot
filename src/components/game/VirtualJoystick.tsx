@@ -110,8 +110,8 @@ export const VirtualJoystick: React.FC<VirtualJoystickProps> = ({
         }}
         className={`rounded-full transition-transform ease-out duration-75 flex items-center justify-center shadow-lg border-2 ${
           isInteracting
-            ? "bg-gradient-to-tr from-sky-400 to-sky-500 border-white text-slate-950 scale-105"
-            : "bg-white/80 border-sky-300 text-sky-700 hover:bg-white"
+            ? "bg-gradient-to-tr from-emerald-400 to-emerald-500 border-white text-slate-950 scale-105"
+            : "bg-white/80 border-emerald-300 text-emerald-700 hover:bg-white"
         }`}
       >
         <div className="w-4 h-4 rounded-full bg-white/40 border border-white/60 pointer-events-none" />

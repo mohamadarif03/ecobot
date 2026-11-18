@@ -225,10 +225,10 @@ export default function MisiPage() {
       />
 
       {/* ==================== HERO BANNER ==================== */}
-      <section className="rounded-[26px] bg-gradient-to-r from-[#38BDF8] via-[#20B5F0] to-[#0EA5E9] px-6 sm:px-8 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between mb-6">
+      <section className="rounded-[26px] bg-gradient-to-r from-[#4ADE80] via-[#22C55E] to-[#16A34A] px-6 sm:px-8 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between mb-6">
         {/* Subtle decorative circles */}
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-xl pointer-events-none" />
-        <div className="absolute -bottom-16 left-1/3 w-56 h-56 bg-sky-300/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-16 left-1/3 w-56 h-56 bg-emerald-300/20 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 max-w-xl">
           {/* Label */}
@@ -242,7 +242,7 @@ export default function MisiPage() {
             {getHeroTitle()}
           </h2>
 
-          <p className="text-[13px] sm:text-[14px] text-sky-50 mt-1 font-medium">
+          <p className="text-[13px] sm:text-[14px] text-emerald-50 mt-1 font-medium">
             Kumpulkan poin dan XP untuk membuka perlengkapan baru dan naik level!
           </p>
 
@@ -273,7 +273,7 @@ export default function MisiPage() {
             onClick={handleClaimAll}
             className={`px-5 py-2.5 rounded-full font-black text-[13px] flex items-center gap-2 shadow-sm transition transform ${
               totalClaimableCount > 0
-                ? "bg-white hover:bg-sky-50 text-sky-800 shadow-md hover:scale-105 active:scale-95 cursor-pointer"
+                ? "bg-white hover:bg-emerald-50 text-emerald-800 shadow-md hover:scale-105 active:scale-95 cursor-pointer"
                 : "bg-white/40 text-white/70 cursor-not-allowed shadow-none"
             }`}
           >
@@ -304,7 +304,7 @@ export default function MisiPage() {
           <div
             role="tablist"
             aria-label="Pilihan Kategori Misi"
-            className="bg-white rounded-2xl p-1.5 shadow-[0_2px_10px_rgba(14,165,233,0.05)] border border-sky-100 flex items-center gap-1.5 select-none"
+            className="bg-white rounded-2xl p-1.5 shadow-[0_2px_10px_rgba(14,165,233,0.05)] border border-emerald-100 flex items-center gap-1.5 select-none"
           >
             <button
               role="tab"
@@ -316,8 +316,8 @@ export default function MisiPage() {
               onKeyDown={(e) => handleTabKeyDown(e, "harian")}
               className={`flex-1 py-2.5 px-3 rounded-xl font-black text-[13px] flex items-center justify-center gap-2 transition cursor-pointer ${
                 activeTab === "harian"
-                  ? "bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-sky-50/60"
+                  ? "bg-gradient-to-r from-emerald-400 to-emerald-500 text-slate-950 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/60"
               }`}
             >
               <span>Harian</span>
@@ -338,8 +338,8 @@ export default function MisiPage() {
               onKeyDown={(e) => handleTabKeyDown(e, "mingguan")}
               className={`flex-1 py-2.5 px-3 rounded-xl font-black text-[13px] flex items-center justify-center gap-2 transition cursor-pointer ${
                 activeTab === "mingguan"
-                  ? "bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-sky-50/60"
+                  ? "bg-gradient-to-r from-emerald-400 to-emerald-500 text-slate-950 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/60"
               }`}
             >
               <span>Mingguan</span>
@@ -360,8 +360,8 @@ export default function MisiPage() {
               onKeyDown={(e) => handleTabKeyDown(e, "utama")}
               className={`flex-1 py-2.5 px-3 rounded-xl font-black text-[13px] flex items-center justify-center gap-2 transition cursor-pointer ${
                 activeTab === "utama"
-                  ? "bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-sky-50/60"
+                  ? "bg-gradient-to-r from-emerald-400 to-emerald-500 text-slate-950 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/60"
               }`}
             >
               <span>Utama</span>
@@ -460,9 +460,9 @@ export default function MisiPage() {
               className="space-y-4 animate-in fade-in-50 duration-200"
             >
               {/* City Missions Summary Banner */}
-              <div className="rounded-[24px] p-5 bg-gradient-to-r from-sky-50 via-white to-emerald-50 border border-sky-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="rounded-[24px] p-5 bg-gradient-to-r from-sky-50 via-white to-emerald-50 border border-emerald-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-2xl bg-sky-500 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-slate-950 flex items-center justify-center shrink-0 shadow-xs">
                     <Gamepad2 className="w-6 h-6" />
                   </div>
                   <div>
@@ -485,7 +485,7 @@ export default function MisiPage() {
 
                 <Link
                   to="/main-game"
-                  className="h-11 px-5 rounded-full bg-sky-500 hover:bg-sky-600 text-slate-950 font-black text-[12.5px] flex items-center gap-2 self-start sm:self-center shadow-xs transition hover:scale-105"
+                  className="h-11 px-5 rounded-full bg-emerald-600 hover:bg-emerald-600 text-slate-950 font-black text-[12.5px] flex items-center gap-2 self-start sm:self-center shadow-xs transition hover:scale-105"
                 >
                   <MapPin className="w-4 h-4" />
                   <span>Buka Peta Misi</span>

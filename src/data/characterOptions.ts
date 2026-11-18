@@ -53,7 +53,7 @@ export const CHARACTER_SKINS: CharacterSkin[] = [
 ];
 
 export const CHARACTER_COLORS: CharacterColor[] = [
-  { id: "sky_blue", name: "Biru Langit", hex: "#38BDF8", borderHex: "#0284C7" },
+  { id: "sky_blue", name: "Biru Langit", hex: "#4ADE80", borderHex: "#15803D" },
   { id: "emerald_green", name: "Hijau Daun", hex: "#22C55E", borderHex: "#15803D" },
   { id: "bright_yellow", name: "Kuning Cerah", hex: "#FACC15", borderHex: "#CA8A04" },
   { id: "sunset_orange", name: "Oranye Ceria", hex: "#FB923C", borderHex: "#C2410C" },

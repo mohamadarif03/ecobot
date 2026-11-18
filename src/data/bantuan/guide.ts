@@ -25,7 +25,7 @@ export const CORE_PLAY_STEPS: CorePlayStep[] = [
       "Gunakan joystick atau tombol keyboard (WASD / Panah) untuk menggerakkan karaktermu berkeliling kota 3D. Perhatikan sudut jalan, bawah pohon, dan pinggir trotoar tempat sampah berserakan.",
     icon: "🚶‍♂️",
     badge: "Langkah 1",
-    badgeColor: "bg-sky-100 text-sky-700 border-sky-300",
+    badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-300",
     tips: "Tingkatkan Sepatu Cepat di halaman Game agar karaktermu bisa berlari lebih gesit!",
   },
   {
@@ -196,7 +196,7 @@ export const ECONOMY_CONCEPTS: EconomyConceptInfo[] = [
     shortDesc: "Pangkat kehormatan yang mencerminkan dedikasi belajarmu.",
     howToEarn: "Otomatis naik setiap kali XP mencapai batas ambang level berikutnya.",
     usage: "Membuka lencana eksklusif, sertifikat digital resmi, dan akses barang langka di toko.",
-    badgeColor: "bg-sky-100 text-sky-800 border-sky-300",
+    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-300",
   },
   {
     icon: "🔥",

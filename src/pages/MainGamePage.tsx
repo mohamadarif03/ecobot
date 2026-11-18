@@ -159,7 +159,7 @@ export default function MainGamePage() {
       case "market":
         return <Store className="w-5 h-5 text-amber-600" />;
       case "river":
-        return <Waves className="w-5 h-5 text-sky-600" />;
+        return <Waves className="w-5 h-5 text-emerald-600" />;
       case "warn":
         return <AlertCircle className="w-5 h-5 text-rose-600" />;
       case "facility":
@@ -185,9 +185,9 @@ export default function MainGamePage() {
       )}
 
       {/* ==================== 1. HERO BANNER ==================== */}
-      <section className="rounded-[26px] bg-gradient-to-r from-[#38BDF8] via-[#20B5F0] to-[#0EA5E9] px-6 sm:px-7 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between">
+      <section className="rounded-[26px] bg-gradient-to-r from-[#4ADE80] via-[#22C55E] to-[#16A34A] px-6 sm:px-7 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between">
         {/* Background ambient accents */}
-        <div className="w-16 h-16 rounded-full bg-sky-200/40 absolute -top-4 left-44 pointer-events-none" />
+        <div className="w-16 h-16 rounded-full bg-emerald-200/40 absolute -top-4 left-44 pointer-events-none" />
         <div className="w-[85px] h-[85px] rounded-full bg-emerald-400/35 absolute top-1 right-[160px] pointer-events-none" />
         <div className="w-[120px] h-[120px] rounded-full bg-white/10 absolute -bottom-8 right-[110px] pointer-events-none" />
 
@@ -203,7 +203,7 @@ export default function MainGamePage() {
 
           {/* Metric Chips */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="px-3 py-1 rounded-full bg-white/90 text-sky-950 text-xs font-black shadow-2xs">
+            <span className="px-3 py-1 rounded-full bg-white/90 text-emerald-950 text-xs font-black shadow-2xs">
               Meter Kota {state.cityCleanlinessMeter}%
             </span>
             <span className="px-3 py-1 rounded-full bg-white/90 text-amber-900 text-xs font-black shadow-2xs flex items-center gap-1">
@@ -222,7 +222,7 @@ export default function MainGamePage() {
               onClick={() => handleStartMission(nextPlayableMission.id)}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-950 hover:bg-slate-900 text-white font-black text-sm shadow-md hover:scale-[1.02] active:scale-95 transition cursor-pointer"
             >
-              <Gamepad2 className="w-4 h-4 text-sky-400" />
+              <Gamepad2 className="w-4 h-4 text-emerald-400" />
               <span>
                 {hasGameProgress
                   ? `Lanjutkan: ${nextPlayableMission.title}`
@@ -255,12 +255,12 @@ export default function MainGamePage() {
       {/* ==================== 2-COLUMN MAIN CONTENT ==================== */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* ==================== LEFT COLUMN: PETA MISI ==================== */}
-        <section className="lg:col-span-7 bg-white rounded-[26px] p-6 shadow-sm border border-sky-100 flex flex-col justify-between">
+        <section className="lg:col-span-7 bg-white rounded-[26px] p-6 shadow-sm border border-emerald-100 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold">
-                  <Compass className="w-5 h-5 text-sky-600" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <Compass className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
                   <h3 className="text-lg font-black text-slate-900">Misi Kota Harapan</h3>
@@ -273,7 +273,7 @@ export default function MainGamePage() {
               <button
                 type="button"
                 onClick={() => setShowStarInfoModal(true)}
-                className="p-1.5 text-slate-400 hover:text-sky-600 rounded-lg hover:bg-sky-50 transition cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition cursor-pointer"
                 title="Aturan Bintang"
               >
                 <Info className="w-4 h-4" />
@@ -297,7 +297,7 @@ export default function MainGamePage() {
                         ? "bg-emerald-50/60 border-emerald-200/90 shadow-2xs"
                         : isLocked
                         ? "bg-slate-50/70 border-slate-200 opacity-80"
-                        : "bg-white border-sky-200 hover:border-sky-400 shadow-xs hover:shadow-md"
+                        : "bg-white border-emerald-200 hover:border-emerald-400 shadow-xs hover:shadow-md"
                     }`}
                   >
                     <div>
@@ -335,7 +335,7 @@ export default function MainGamePage() {
                             <span>Terkunci</span>
                           </div>
                         ) : (
-                          <span className="text-[10px] font-black uppercase tracking-wide bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-black uppercase tracking-wide bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
                             Tersedia
                           </span>
                         )}
@@ -351,7 +351,7 @@ export default function MainGamePage() {
 
                       {/* Target Pill */}
                       <div className="mt-2.5 inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-100/80 px-2.5 py-0.5 rounded-md">
-                        <Target className="w-3 h-3 text-sky-600 shrink-0" />
+                        <Target className="w-3 h-3 text-emerald-600 shrink-0" />
                         <span className="truncate">{mission.targetDescription}</span>
                       </div>
                     </div>
@@ -376,7 +376,7 @@ export default function MainGamePage() {
                         <button
                           type="button"
                           onClick={() => handleStartMission(mission.id)}
-                          className="w-full py-2 rounded-xl bg-[#5BC0EB] hover:bg-[#38BDF8] text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] cursor-pointer"
+                          className="w-full py-2 rounded-xl bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-sm transition hover:scale-[1.02] cursor-pointer"
                         >
                           <Play className="w-3.5 h-3.5 fill-slate-950" />
                           <span>Main Sekarang</span>
@@ -393,17 +393,17 @@ export default function MainGamePage() {
         {/* ==================== RIGHT COLUMN: KARAKTERKU, PENGATURAN, UPGRADE ==================== */}
         <div className="lg:col-span-5 space-y-6">
           {/* ==================== KARTU KARAKTERKU ==================== */}
-          <section className="bg-white rounded-[26px] p-6 shadow-sm border border-sky-100">
+          <section className="bg-white rounded-[26px] p-6 shadow-sm border border-emerald-100">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <h3 className="text-base font-black text-slate-900">Karakterku</h3>
-              <span className="text-xs font-black text-sky-700 bg-sky-50 border border-sky-200 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
                 Pratinjau Langsung
               </span>
             </div>
 
             <div className="flex items-center gap-6">
               {/* Live Character Preview */}
-              <div className="p-4 rounded-3xl bg-gradient-to-b from-sky-50 to-emerald-50/50 border border-sky-100/80 flex items-center justify-center shadow-inner">
+              <div className="p-4 rounded-3xl bg-gradient-to-b from-sky-50 to-emerald-50/50 border border-emerald-100/80 flex items-center justify-center shadow-inner">
                 <CharacterPreview character={state.character} size="md" />
               </div>
 
@@ -427,10 +427,10 @@ export default function MainGamePage() {
                           onClick={() => setCharacter({ skin: skinItem.id })}
                           className={`p-2 rounded-xl text-left border text-[11px] font-bold transition flex items-center justify-between ${
                             isSelected
-                              ? "bg-sky-500 text-white border-sky-600 shadow-2xs"
+                              ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
                               : isLocked
                               ? "bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed opacity-60"
-                              : "bg-white text-slate-700 border-slate-200 hover:border-sky-300"
+                              : "bg-white text-slate-700 border-slate-200 hover:border-emerald-300"
                           }`}
                         >
                           <span className="truncate">{skinItem.name}</span>
@@ -458,7 +458,7 @@ export default function MainGamePage() {
                           style={{ backgroundColor: color.hex }}
                           className={`w-7 h-7 rounded-full border-2 transition hover:scale-110 cursor-pointer shadow-xs ${
                             isSelected
-                              ? "ring-2 ring-sky-500 ring-offset-2 border-slate-900 scale-110"
+                              ? "ring-2 ring-emerald-500 ring-offset-2 border-slate-900 scale-110"
                               : "border-black/15"
                           }`}
                         />
@@ -475,7 +475,7 @@ export default function MainGamePage() {
                     </span>
                     <Link
                       to="/toko?tab=karakter"
-                      className="text-[10px] font-bold text-sky-600 hover:underline"
+                      className="text-[10px] font-bold text-emerald-600 hover:underline"
                     >
                       Buka Toko &rarr;
                     </Link>
@@ -520,8 +520,8 @@ export default function MainGamePage() {
                           onClick={() => setCharacter({ accessory: acc.id })}
                           className={`p-1.5 rounded-xl border text-[10px] font-bold text-center transition truncate cursor-pointer ${
                             isSelected
-                              ? "bg-sky-500 text-white border-sky-600 shadow-2xs"
-                              : "bg-white text-slate-700 border-slate-200 hover:border-sky-300"
+                              ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs"
+                              : "bg-white text-slate-700 border-slate-200 hover:border-emerald-300"
                           }`}
                         >
                           {acc.name}
@@ -535,7 +535,7 @@ export default function MainGamePage() {
           </section>
 
           {/* ==================== KARTU PENGATURAN BERMAIN ==================== */}
-          <section className="bg-white rounded-[26px] p-6 shadow-sm border border-sky-100">
+          <section className="bg-white rounded-[26px] p-6 shadow-sm border border-emerald-100">
             <h3 className="text-base font-black text-slate-900 mb-1">Pengaturan Bermain</h3>
             <p className="text-xs text-slate-500 mb-4 pb-3 border-b border-slate-100">
               Sesuaikan kontrol, audio, dan performa grafis sesuai kenyamananmu
@@ -558,7 +558,7 @@ export default function MainGamePage() {
                       onClick={() => updateSettings({ graphicsQuality: q })}
                       className={`py-1.5 rounded-lg text-xs font-black uppercase transition cursor-pointer ${
                         state.settings.graphicsQuality === q
-                          ? "bg-sky-500 text-white shadow-2xs"
+                          ? "bg-emerald-600 text-white shadow-2xs"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
@@ -584,7 +584,7 @@ export default function MainGamePage() {
                       onClick={() => updateSettings({ controlMode: mode })}
                       className={`py-1.5 rounded-lg text-xs font-black transition cursor-pointer ${
                         state.settings.controlMode === mode
-                          ? "bg-sky-500 text-white shadow-2xs"
+                          ? "bg-emerald-600 text-white shadow-2xs"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
@@ -638,7 +638,7 @@ export default function MainGamePage() {
                       onClick={() => setControlCheckTab("keyboard")}
                       className={`px-2 py-0.5 rounded-md ${
                         controlCheckTab === "keyboard" || (!isTouchDevice && controlCheckTab === "auto")
-                          ? "bg-sky-100 text-sky-800"
+                          ? "bg-emerald-100 text-emerald-800"
                           : "text-slate-500 hover:text-slate-800"
                       }`}
                     >
@@ -675,7 +675,7 @@ export default function MainGamePage() {
                   <span className="text-slate-500">Butuh panduan lebih rinci?</span>
                   <Link
                     to="/bantuan?tab=kontrol"
-                    className="font-bold text-sky-600 hover:text-sky-700 underline"
+                    className="font-bold text-emerald-600 hover:text-emerald-700 underline"
                   >
                     Buka Panduan Kontrol & HUD ↗
                   </Link>
@@ -683,8 +683,8 @@ export default function MainGamePage() {
               </div>
 
               {/* Mobile Portrait Recommendation Banner */}
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-sky-50 to-emerald-50 border border-sky-100 text-slate-700 flex items-center gap-2.5">
-                <RotateCw className="w-4 h-4 text-sky-600 shrink-0" />
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-sky-50 to-emerald-50 border border-emerald-100 text-slate-700 flex items-center gap-2.5">
+                <RotateCw className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span className="text-[11px] font-medium leading-relaxed">
                   Bermain di HP? Putar ke <strong>posisi landscape</strong> (mendatar) agar area pandang kota lebih luas dan lega.
                 </span>
@@ -693,7 +693,7 @@ export default function MainGamePage() {
           </section>
 
           {/* ==================== KARTU UPGRADE ==================== */}
-          <section className="bg-white rounded-[26px] p-6 shadow-sm border border-sky-100">
+          <section className="bg-white rounded-[26px] p-6 shadow-sm border border-emerald-100">
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
               <div>
                 <h3 className="text-base font-black text-slate-900">Perlengkapan & Upgrade</h3>
@@ -725,9 +725,9 @@ export default function MainGamePage() {
                     className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">
                         {upId === "bag" ? (
-                          <ShoppingBag className="w-5 h-5 text-sky-600" />
+                          <ShoppingBag className="w-5 h-5 text-emerald-600" />
                         ) : upId === "shoes" ? (
                           <Zap className="w-5 h-5 text-amber-600" />
                         ) : (
@@ -761,7 +761,7 @@ export default function MainGamePage() {
                           onClick={() => handlePurchase(upId)}
                           className={`px-3.5 py-1.5 rounded-full text-xs font-black transition ${
                             canAfford
-                              ? "bg-sky-500 hover:bg-sky-400 text-slate-950 shadow-2xs hover:scale-105 cursor-pointer"
+                              ? "bg-emerald-600 hover:bg-emerald-400 text-slate-950 shadow-2xs hover:scale-105 cursor-pointer"
                               : "bg-slate-200 text-slate-400 cursor-not-allowed"
                           }`}
                         >
@@ -776,19 +776,19 @@ export default function MainGamePage() {
           </section>
 
           {/* ==================== KARTU TIPS DARI ECOBOT ==================== */}
-          <section className="bg-gradient-to-br from-sky-50 via-white to-emerald-50 rounded-[26px] p-5 shadow-sm border border-sky-100 flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 text-sky-600" />
+          <section className="bg-gradient-to-br from-sky-50 via-white to-emerald-50 rounded-[26px] p-5 shadow-sm border border-emerald-100 flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5 text-emerald-600" />
             </div>
             <div className="flex-1 text-left">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-sky-800">
+                <span className="text-xs font-black uppercase tracking-wider text-emerald-800">
                   Tips dari Ecobot
                 </span>
                 <button
                   type="button"
                   onClick={() => setCurrentTip(getRandomLoadingTip())}
-                  className="text-[11px] font-bold text-sky-600 hover:text-sky-800 hover:underline cursor-pointer"
+                  className="text-[11px] font-bold text-emerald-600 hover:text-emerald-800 hover:underline cursor-pointer"
                 >
                   Tips Lain
                 </button>
@@ -804,7 +804,7 @@ export default function MainGamePage() {
       {/* ==================== MODAL: ATURAN BINTANG ==================== */}
       {showStarInfoModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl text-slate-900 border border-sky-100 text-left">
+          <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl text-slate-900 border border-emerald-100 text-left">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-base font-black text-slate-900">Aturan Bintang Misi</h4>
               <button

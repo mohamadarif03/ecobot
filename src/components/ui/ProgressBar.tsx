@@ -16,7 +16,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const clamped = Math.max(0, Math.min(100, isNaN(progress) ? 0 : progress));
 
   const colorClasses = {
-    sky: "bg-sky-500",
+    sky: "bg-emerald-600",
     amber: "bg-amber-500",
     emerald: "bg-emerald-500",
     rose: "bg-rose-500",

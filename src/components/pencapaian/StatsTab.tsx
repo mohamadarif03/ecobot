@@ -109,8 +109,8 @@ export const StatsTab: React.FC<StatsTabProps> = ({
       label: "Kebersihan Kota",
       value: `${stats.cityMeter}%`,
       sub: "Meter Kota Harapan",
-      icon: <TrendingUp className="w-5 h-5 text-sky-600" />,
-      bg: "bg-sky-50",
+      icon: <TrendingUp className="w-5 h-5 text-emerald-600" />,
+      bg: "bg-emerald-50",
     },
     {
       label: "Materi Selesai",
@@ -236,7 +236,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
               <polygon
                 points={polygonPoints}
                 fill="rgba(14, 165, 233, 0.25)"
-                stroke="#0284c7"
+                stroke="#15803D"
                 strokeWidth="2.5"
                 strokeLinejoin="round"
               />
@@ -250,7 +250,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
                     cx={pt.x}
                     cy={pt.y}
                     r="4.5"
-                    fill="#0284c7"
+                    fill="#15803D"
                     stroke="#ffffff"
                     strokeWidth="2"
                   />
@@ -296,7 +296,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
           {/* Rapor Details & Ecobot Advice */}
           <div className="flex-1 space-y-5">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
                 <Target className="w-3.5 h-3.5" />
                 <span>Rapor Kepedulian Lingkungan</span>
               </div>
@@ -340,7 +340,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
       {/* 2. 14 Key Statistics Cards */}
       <div>
         <h3 className="font-extrabold text-slate-800 text-lg mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-sky-600" />
+          <TrendingUp className="w-5 h-5 text-emerald-600" />
           <span>Statistik Lengkap Aktivitas</span>
         </h3>
 
@@ -389,7 +389,7 @@ export const StatsTab: React.FC<StatsTabProps> = ({
                 className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center font-bold flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold flex-shrink-0">
                     {act.type === "game"
                       ? "🎮"
                       : act.type === "quiz"

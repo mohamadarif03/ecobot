@@ -25,7 +25,7 @@ export const MobileBottomNav: React.FC = () => {
   const levelInfo = calculateLevel(state.xp);
 
   const renderIcon = (name: string, active: boolean) => {
-    const cls = `w-5 h-5 ${active ? "text-sky-600 stroke-[2.4]" : "text-slate-500"}`;
+    const cls = `w-5 h-5 ${active ? "text-emerald-600 stroke-[2.4]" : "text-slate-500"}`;
     switch (name) {
       case "home":
         return <Home className={cls} />;
@@ -56,7 +56,7 @@ export const MobileBottomNav: React.FC = () => {
         return <Settings className="w-5 h-5 text-slate-600" />;
       case "help":
       default:
-        return <HelpCircle className="w-5 h-5 text-sky-600" />;
+        return <HelpCircle className="w-5 h-5 text-emerald-600" />;
     }
   };
 
@@ -65,7 +65,7 @@ export const MobileBottomNav: React.FC = () => {
       {/* Fixed Bottom Navigation Bar on Mobile */}
       <nav
         aria-label="Navigasi Bawah Mobile"
-        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-sky-100 shadow-[0_-4px_16px_rgba(14,165,233,0.08)] px-2 py-1.5 flex items-center justify-around"
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-emerald-100 shadow-[0_-4px_16px_rgba(14,165,233,0.08)] px-2 py-1.5 flex items-center justify-around"
       >
         {BOTTOM_NAV_ITEMS.map((item) => {
           const isActive = location.pathname === item.path;
@@ -74,12 +74,12 @@ export const MobileBottomNav: React.FC = () => {
               key={item.id}
               to={item.path}
               className={`flex flex-col items-center justify-center py-1 px-2 rounded-2xl transition ${
-                isActive ? "text-sky-600 font-extrabold" : "text-slate-500 hover:text-slate-900"
+                isActive ? "text-emerald-600 font-extrabold" : "text-slate-500 hover:text-slate-900"
               }`}
             >
               <div
                 className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
-                  isActive ? "bg-sky-100 shadow-2xs" : ""
+                  isActive ? "bg-emerald-100 shadow-2xs" : ""
                 }`}
               >
                 {renderIcon(item.icon, isActive)}
@@ -96,7 +96,7 @@ export const MobileBottomNav: React.FC = () => {
           type="button"
           onClick={() => setDrawerOpen(true)}
           className={`flex flex-col items-center justify-center py-1 px-2 rounded-2xl text-slate-500 hover:text-slate-900 cursor-pointer ${
-            drawerOpen ? "text-sky-600 font-extrabold" : ""
+            drawerOpen ? "text-emerald-600 font-extrabold" : ""
           }`}
         >
           <div className="w-9 h-9 rounded-xl flex items-center justify-center">
@@ -115,20 +115,20 @@ export const MobileBottomNav: React.FC = () => {
           onClick={() => setDrawerOpen(false)}
         >
           <div
-            className="bg-white rounded-t-[28px] p-5 shadow-2xl border-t border-sky-100 max-h-[80vh] overflow-y-auto"
+            className="bg-white rounded-t-[28px] p-5 shadow-2xl border-t border-emerald-100 max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-sky-100">
+            <div className="flex items-center justify-between pb-3 border-b border-emerald-100">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-base">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-base">
                   {state.avatar || "🤖"}
                 </div>
                 <div>
                   <h4 className="text-[14px] font-black text-slate-900 leading-tight">
                     {state.nickname || "Pahlawan Cilik"}
                   </h4>
-                  <p className="text-[11px] font-bold text-sky-700">
+                  <p className="text-[11px] font-bold text-emerald-700">
                     Level {levelInfo.level} · {levelInfo.title}
                   </p>
                 </div>
@@ -152,8 +152,8 @@ export const MobileBottomNav: React.FC = () => {
                   onClick={() => setDrawerOpen(false)}
                   className={`flex items-center gap-3 p-3 rounded-2xl border transition ${
                     location.pathname === item.path
-                      ? "bg-sky-50 border-sky-200 font-bold text-sky-950"
-                      : "bg-[#F8FAFC] hover:bg-sky-50/70 border-slate-100 text-slate-700"
+                      ? "bg-emerald-50 border-emerald-200 font-bold text-emerald-950"
+                      : "bg-[#F8FAFC] hover:bg-emerald-50/70 border-slate-100 text-slate-700"
                   }`}
                 >
                   <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-2xs shrink-0">

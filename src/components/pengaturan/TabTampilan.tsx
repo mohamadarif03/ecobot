@@ -226,7 +226,7 @@ export const TabTampilan: React.FC<TabTampilanProps> = ({
       {/* ==================== 3. KARTU BAHASA ==================== */}
       <Card className="p-6 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-sm">
         <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
-          <div className="w-9 h-9 rounded-2xl bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 flex items-center justify-center font-bold">
+          <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-sky-950/60 dark:text-emerald-300 flex items-center justify-center font-bold">
             <Globe className="w-5 h-5" />
           </div>
           <div>
@@ -249,7 +249,7 @@ export const TabTampilan: React.FC<TabTampilanProps> = ({
                 key={lang.id}
                 className={`p-4 rounded-2xl border-2 flex items-center justify-between transition ${
                   isSelected
-                    ? "border-sky-500 bg-sky-50/70 dark:bg-sky-950/40 shadow-sm"
+                    ? "border-emerald-500 bg-emerald-50/70 dark:bg-sky-950/40 shadow-sm"
                     : isAvailable
                     ? "border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 cursor-pointer"
                     : "border-slate-200/60 dark:border-slate-800/60 opacity-60 bg-slate-50 dark:bg-slate-800/40 cursor-not-allowed"
@@ -270,7 +270,7 @@ export const TabTampilan: React.FC<TabTampilanProps> = ({
                 </div>
 
                 {isSelected ? (
-                  <CheckCircle2 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 ) : null}
               </div>
             );

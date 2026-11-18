@@ -15,7 +15,7 @@ export const CALCULATOR_LEVELS: HabitLevelInfo[] = [
     minScore: 6,
     maxScore: 11,
     badge: "🌿",
-    color: "text-sky-700 bg-sky-50 border-sky-200",
+    color: "text-emerald-700 bg-emerald-50 border-emerald-200",
     description: "Keren sekali! Kamu sudah punya banyak kebiasaan hijau yang sangat bermanfaat bagi kota.",
     ecobotMessage: "Kamu sudah menjadi sahabat bumi yang hebat! Tingkatkan sedikit lagi untuk jadi Pahlawan Bumi.",
   },

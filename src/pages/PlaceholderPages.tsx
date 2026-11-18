@@ -15,7 +15,7 @@ export function PustakaPage() {
     <PlaceholderPage
       title="Pustaka Edukasi"
       subtitle="Kumpulan kartu belajar interaktif dan fakta ramah anak"
-      icon={<BookOpen className="w-10 h-10 text-sky-600" />}
+      icon={<BookOpen className="w-10 h-10 text-emerald-600" />}
       moduleName="Pustaka Edukasi Lingkungan"
       description="Pelajari jenis sampah organik, anorganik, limbah B3 berbahaya, serta teknik membuat kompos ramah lingkungan di rumah."
     />

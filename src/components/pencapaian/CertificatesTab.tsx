@@ -127,7 +127,7 @@ export const CertificatesTab: React.FC<CertificatesTabProps> = ({
 
     // Title / Title honor
     ctx.font = "bold 28px sans-serif";
-    ctx.fillStyle = "#0284c7";
+    ctx.fillStyle = "#15803D";
     ctx.fillText(`"${activeCert.namaGelar}"`, 600, 380);
 
     // Reason description
@@ -151,7 +151,7 @@ export const CertificatesTab: React.FC<CertificatesTabProps> = ({
     ctx.textAlign = "right";
     ctx.fillText("Ecobot & Tim Pengembang", 1100, 680);
     ctx.font = "bold 18px sans-serif";
-    ctx.fillStyle = "#0284c7";
+    ctx.fillStyle = "#15803D";
     ctx.fillText("✓ Terverifikasi Resmi", 1100, 710);
 
     // Export to download
@@ -267,7 +267,7 @@ export const CertificatesTab: React.FC<CertificatesTabProps> = ({
                   {cert.judul}
                 </h4>
 
-                <div className="text-center text-xs font-semibold text-sky-600 mb-3">
+                <div className="text-center text-xs font-semibold text-emerald-600 mb-3">
                   Gelar: "{cert.namaGelar}"
                 </div>
 
@@ -364,7 +364,7 @@ export const CertificatesTab: React.FC<CertificatesTabProps> = ({
                   {nickname}
                 </div>
 
-                <div className="inline-block px-4 py-1 rounded-full bg-white/80 border border-amber-300 text-sky-700 text-sm font-bold mb-4 shadow-sm">
+                <div className="inline-block px-4 py-1 rounded-full bg-white/80 border border-amber-300 text-emerald-700 text-sm font-bold mb-4 shadow-sm">
                   "{activeCert.namaGelar}"
                 </div>
 

@@ -74,7 +74,7 @@ export const TabFaq: React.FC = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all active:scale-95 ${
                   selectedCategory === cat.id
-                    ? "bg-sky-600 text-white shadow-md shadow-sky-600/20"
+                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
                     : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
                 }`}
               >
@@ -105,7 +105,7 @@ export const TabFaq: React.FC = () => {
               id={item.id}
               className={`rounded-3xl border-2 transition-all overflow-hidden ${
                 isOpen
-                  ? "bg-white border-sky-300 shadow-md shadow-sky-500/5"
+                  ? "bg-white border-emerald-300 shadow-md shadow-emerald-500/5"
                   : "bg-white border-slate-200/80 hover:border-slate-300"
               }`}
             >
@@ -142,7 +142,7 @@ export const TabFaq: React.FC = () => {
 
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-slate-500 bg-slate-100 transition-transform ${
-                    isOpen ? "rotate-180 bg-sky-100 text-sky-700" : ""
+                    isOpen ? "rotate-180 bg-emerald-100 text-emerald-700" : ""
                   }`}
                 >
                   ↓
@@ -169,7 +169,7 @@ export const TabFaq: React.FC = () => {
                     {item.actionLink ? (
                       <Link
                         to={item.actionLink.href}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-bold border border-sky-200 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold border border-emerald-200 transition-colors"
                       >
                         <span>{item.actionLink.label}</span>
                         <span>↗</span>

@@ -24,7 +24,7 @@ export const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onChange }) => {
             onClick={() => onChange(tab.id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs md:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
               isActive
-                ? "bg-sky-500 text-white shadow-md shadow-sky-500/20"
+                ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/20"
                 : "bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-100"
             }`}
           >

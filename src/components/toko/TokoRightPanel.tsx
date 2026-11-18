@@ -69,7 +69,7 @@ export const TokoRightPanel: React.FC<TokoRightPanelProps> = ({
       <Card className="p-5 border-slate-100 shadow-sm">
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
           <h3 className="font-extrabold text-slate-800 text-sm flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-sky-500" />
+            <Sparkles className="w-4 h-4 text-emerald-600" />
             <span>Pratinjau Gayaku</span>
           </h3>
 
@@ -97,7 +97,7 @@ export const TokoRightPanel: React.FC<TokoRightPanelProps> = ({
         {/* Dual Avatars Grid */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           {/* Karakter Card */}
-          <div className="p-3 rounded-2xl bg-gradient-to-b from-sky-50/50 to-white border border-sky-100 text-center flex flex-col items-center justify-between">
+          <div className="p-3 rounded-2xl bg-gradient-to-b from-sky-50/50 to-white border border-emerald-100 text-center flex flex-col items-center justify-between">
             <span className="text-[11px] font-bold text-slate-600 mb-1">
               Karakterku
             </span>
@@ -186,10 +186,10 @@ export const TokoRightPanel: React.FC<TokoRightPanelProps> = ({
             className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition border border-transparent hover:border-slate-100"
           >
             <div className="flex items-center gap-2 text-slate-700">
-              <Sparkles className="w-4 h-4 text-sky-500" />
+              <Sparkles className="w-4 h-4 text-emerald-600" />
               <span>Misi Harian</span>
             </div>
-            <span className="font-bold text-sky-600">+20–50 poin</span>
+            <span className="font-bold text-emerald-600">+20–50 poin</span>
           </Link>
 
           <Link
@@ -217,7 +217,7 @@ export const TokoRightPanel: React.FC<TokoRightPanelProps> = ({
         </p>
         <Link
           to="/main-game"
-          className="font-bold text-sky-600 hover:underline inline-flex items-center gap-1"
+          className="font-bold text-emerald-600 hover:underline inline-flex items-center gap-1"
         >
           <span>Buka Upgrade Main Game</span>
           <ArrowRight className="w-3 h-3" />
@@ -225,13 +225,13 @@ export const TokoRightPanel: React.FC<TokoRightPanelProps> = ({
       </Card>
 
       {/* 5. Tips Ecobot Card */}
-      <div className="p-4 rounded-2xl bg-sky-50 border border-sky-100 flex items-start gap-3">
-        <div className="w-8 h-8 rounded-xl bg-sky-200 flex items-center justify-center text-lg shrink-0">
+      <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-start gap-3">
+        <div className="w-8 h-8 rounded-xl bg-emerald-200 flex items-center justify-center text-lg shrink-0">
           🤖
         </div>
         <div className="text-xs">
-          <div className="font-bold text-sky-900 mb-0.5">Tips Ecobot:</div>
-          <p className="text-sky-800 leading-relaxed italic">
+          <div className="font-bold text-emerald-900 mb-0.5">Tips Ecobot:</div>
+          <p className="text-emerald-800 leading-relaxed italic">
             "Poin didapat dari belajar dan beraksi. Makin rajin kamu menjaga
             kebersihan, makin keren tokomu!"
           </p>

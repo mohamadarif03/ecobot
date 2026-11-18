@@ -37,7 +37,7 @@ export const TokoHero: React.FC<TokoHeroProps> = ({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-600 p-6 md:p-8 text-white shadow-xl shadow-sky-500/20 mb-8">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-500 via-indigo-500 to-emerald-600 p-6 md:p-8 text-white shadow-xl shadow-emerald-500/20 mb-8">
       {/* Background decorations */}
       <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       <div className="absolute -bottom-10 -left-10 w-44 h-44 bg-yellow-300/15 rounded-full blur-xl pointer-events-none" />
@@ -53,7 +53,7 @@ export const TokoHero: React.FC<TokoHeroProps> = ({
             {title}
           </h1>
 
-          <p className="text-sky-100 text-sm md:text-base leading-relaxed">
+          <p className="text-emerald-100 text-sm md:text-base leading-relaxed">
             Tukar poin yang kamu dapat dari memilah sampah, kuis, dan aksi nyata
             dengan aksesori keren. Tidak ada uang sungguhan, semua murni hasil
             belajarmu!
@@ -95,9 +95,9 @@ export const TokoHero: React.FC<TokoHeroProps> = ({
             <button
               type="button"
               onClick={onOpenKoleksi}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-sky-800 font-bold text-xs md:text-sm shadow-lg hover:bg-sky-50 active:scale-95 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-emerald-800 font-bold text-xs md:text-sm shadow-lg hover:bg-emerald-50 active:scale-95 transition-all cursor-pointer"
             >
-              <ShoppingBag className="w-4 h-4 text-sky-600" />
+              <ShoppingBag className="w-4 h-4 text-emerald-600" />
               <span>Lihat Koleksiku</span>
             </button>
 

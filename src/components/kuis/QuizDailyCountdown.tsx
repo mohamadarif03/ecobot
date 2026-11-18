@@ -16,7 +16,7 @@ export const QuizDailyCountdown: React.FC<{ className?: string }> = ({
 
   return (
     <span className={`inline-flex items-center gap-1 font-mono text-[11px] ${className}`}>
-      <Clock className="w-3 h-3 text-sky-600" />
+      <Clock className="w-3 h-3 text-emerald-600" />
       <span>{time.formatted}</span>
     </span>
   );

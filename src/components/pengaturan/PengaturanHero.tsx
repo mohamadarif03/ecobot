@@ -26,7 +26,7 @@ export const PengaturanHero: React.FC<PengaturanHeroProps> = ({ nickname, settin
       : "Otomatis";
 
   return (
-    <Card className="relative overflow-hidden bg-gradient-to-br from-sky-400 via-sky-500 to-emerald-500 text-white border-0 shadow-lg p-5 sm:p-6">
+    <Card className="relative overflow-hidden bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-500 text-white border-0 shadow-lg p-5 sm:p-6">
       {/* Decorative Blur Backgrounds */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none -mr-16 -mt-16" />
       <div className="absolute bottom-0 left-1/3 w-48 h-48 bg-emerald-400/20 rounded-full blur-xl pointer-events-none" />
@@ -43,7 +43,7 @@ export const PengaturanHero: React.FC<PengaturanHeroProps> = ({ nickname, settin
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Halo, {nickname}! 👋
             </h1>
-            <p className="mt-1 text-xs sm:text-sm text-sky-50/90 leading-relaxed">
+            <p className="mt-1 text-xs sm:text-sm text-emerald-50/90 leading-relaxed">
               Atur profil, suara, grafis, kontrol, dan kenyamanan belajarmu sesuai keinginan. Semua perubahan tersimpan otomatis!
             </p>
           </div>

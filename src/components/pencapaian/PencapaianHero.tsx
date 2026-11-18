@@ -55,7 +55,7 @@ export const PencapaianHero: React.FC<PencapaianHeroProps> = ({
             </div>
 
             <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/15 backdrop-blur-sm border border-white/20 text-xs md:text-sm font-semibold">
-              <BookOpen className="w-4 h-4 text-sky-300" />
+              <BookOpen className="w-4 h-4 text-emerald-300" />
               <span>
                 {cardCount.unlocked}/{cardCount.total} Kartu Fakta
               </span>

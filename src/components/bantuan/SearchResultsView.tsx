@@ -92,7 +92,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
               key={sug}
               type="button"
               onClick={() => onSuggestionClick(sug)}
-              className="px-3.5 py-1.5 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-semibold border border-sky-200 active:scale-95 transition-all"
+              className="px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold border border-emerald-200 active:scale-95 transition-all"
             >
               🔍 {sug}
             </button>
@@ -124,7 +124,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
               onClick={() => setSelectedFilter(opt.label)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 selectedFilter === opt.label
-                  ? "bg-sky-600 text-white shadow-md shadow-sky-600/20"
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/20"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
@@ -147,7 +147,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
         {filteredResults.map((item) => (
           <div
             key={item.id}
-            className="group relative bg-white rounded-2xl p-5 border border-slate-200/80 hover:border-sky-300 hover:shadow-md transition-all flex flex-col justify-between"
+            className="group relative bg-white rounded-2xl p-5 border border-slate-200/80 hover:border-emerald-300 hover:shadow-md transition-all flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between gap-2 mb-2">
@@ -159,7 +159,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
                       ? "bg-emerald-100 text-emerald-700"
                       : item.sourceCategory === "Kontrol"
                       ? "bg-amber-100 text-amber-800"
-                      : "bg-sky-100 text-sky-700"
+                      : "bg-emerald-100 text-emerald-700"
                   }`}
                 >
                   {item.sourceCategory}
@@ -169,7 +169,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
                 </span>
               </div>
 
-              <h4 className="text-base font-bold text-slate-800 group-hover:text-sky-600 transition-colors leading-snug">
+              <h4 className="text-base font-bold text-slate-800 group-hover:text-emerald-600 transition-colors leading-snug">
                 {highlightMatch(item.title, query)}
               </h4>
 
@@ -182,7 +182,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
               <button
                 type="button"
                 onClick={() => onSelectResult(item.tab, item.targetId)}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 hover:text-sky-700 hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline"
               >
                 <span>Buka di tab {item.tab}</span>
                 <span>→</span>
@@ -191,7 +191,7 @@ export const SearchResultsView: React.FC<SearchResultsViewProps> = ({
               {item.actionUrl && (
                 <Link
                   to={item.actionUrl}
-                  className="px-3 py-1 rounded-xl bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-sky-700 text-xs font-semibold transition-colors"
+                  className="px-3 py-1 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 text-xs font-semibold transition-colors"
                 >
                   Kunjungi Halaman ↗
                 </Link>

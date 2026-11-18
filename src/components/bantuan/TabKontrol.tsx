@@ -12,7 +12,7 @@ export const TabKontrol: React.FC = () => {
       {/* 1. PC & Laptop Controls */}
       <section id="section-kontrol-pc" className="space-y-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
             <span>💻</span> Komputer & Laptop
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-slate-800">
@@ -26,12 +26,12 @@ export const TabKontrol: React.FC = () => {
 
         {/* Visual Keyboard SVG Diagram */}
         <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
             {/* SVG Visual Keys */}
             <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-4 bg-slate-800/80 rounded-2xl border border-slate-700">
-              <span className="text-xs font-bold text-sky-400 uppercase tracking-widest mb-4">
+              <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-4">
                 Tampilan Tombol Utama
               </span>
 
@@ -64,9 +64,9 @@ export const TabKontrol: React.FC = () => {
                   <span className="text-[10px] text-emerald-100 font-normal">Ambil / Buang</span>
                 </div>
 
-                <div className="px-8 py-3 rounded-xl bg-sky-600 border-b-4 border-sky-950 flex flex-col items-center justify-center shadow-lg text-white font-black text-sm">
+                <div className="px-8 py-3 rounded-xl bg-emerald-600 border-b-4 border-sky-950 flex flex-col items-center justify-center shadow-lg text-white font-black text-sm">
                   <span>SPASI</span>
-                  <span className="text-[10px] text-sky-100 font-normal">Aksi Interaksi</span>
+                  <span className="text-[10px] text-emerald-100 font-normal">Aksi Interaksi</span>
                 </div>
 
                 <div className="px-4 py-3 rounded-xl bg-slate-700 border-b-4 border-slate-950 flex flex-col items-center justify-center shadow-lg text-slate-300 font-bold text-xs">
@@ -112,7 +112,7 @@ export const TabKontrol: React.FC = () => {
         </div>
 
         {/* Visual Mobile Screen Mockup */}
-        <div className="bg-gradient-to-br from-sky-600 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-emerald-600 to-indigo-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             {/* SVG Touchscreen Simulator */}
             <div className="w-full md:w-1/2 bg-slate-900/90 rounded-2xl p-6 border-4 border-slate-700 aspect-[16/9] flex flex-col justify-between relative shadow-inner">
@@ -162,12 +162,12 @@ export const TabKontrol: React.FC = () => {
                 >
                   <div className="flex items-center justify-between text-amber-300 text-xs font-bold">
                     <span>{ctrl.element}</span>
-                    <span className="text-sky-200 text-[11px] font-normal">{ctrl.position}</span>
+                    <span className="text-emerald-200 text-[11px] font-normal">{ctrl.position}</span>
                   </div>
                   <p className="text-xs sm:text-sm text-white mt-1 leading-relaxed">
                     {ctrl.description}
                   </p>
-                  <div className="mt-2 text-[11px] text-sky-200 flex items-center gap-1.5">
+                  <div className="mt-2 text-[11px] text-emerald-200 flex items-center gap-1.5">
                     <span>💡</span>
                     <span>{ctrl.tips}</span>
                   </div>
@@ -245,11 +245,11 @@ export const TabKontrol: React.FC = () => {
             <div className="flex items-start justify-between">
               {/* HUD 1 & 2 */}
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 border-2 border-sky-400">
-                  <span className="w-5 h-5 rounded-full bg-sky-500 text-white text-xs font-black flex items-center justify-center">
+                <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 border-2 border-emerald-400">
+                  <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-xs font-black flex items-center justify-center">
                     1
                   </span>
-                  <span className="text-xs font-bold text-sky-200">Level & XP</span>
+                  <span className="text-xs font-bold text-emerald-200">Level & XP</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 border-2 border-amber-400">
                   <span className="w-5 h-5 rounded-full bg-amber-500 text-white text-xs font-black flex items-center justify-center">
@@ -319,7 +319,7 @@ export const TabKontrol: React.FC = () => {
               key={item.number}
               className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-start gap-3"
             >
-              <div className="w-8 h-8 rounded-xl bg-sky-500 text-white font-black text-sm flex items-center justify-center flex-shrink-0 shadow-md shadow-sky-500/20">
+              <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-500/20">
                 {item.number}
               </div>
               <div>
@@ -327,7 +327,7 @@ export const TabKontrol: React.FC = () => {
                   <span className="text-base">{item.icon}</span>
                   <h3 className="text-sm font-bold text-slate-800">{item.name}</h3>
                 </div>
-                <div className="text-[11px] font-semibold text-sky-600 mt-0.5">
+                <div className="text-[11px] font-semibold text-emerald-600 mt-0.5">
                   Posisi: {item.position}
                 </div>
                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">{item.description}</p>

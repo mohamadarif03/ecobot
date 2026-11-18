@@ -190,7 +190,7 @@ export default function AksiNyataPage() {
       )}
 
       {/* ==================== HERO BANNER ==================== */}
-      <section className="rounded-[26px] bg-gradient-to-r from-[#10B981] via-[#0EA5E9] to-[#0284C7] px-6 sm:px-8 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(16,185,129,0.18)] min-h-[178px] flex flex-col justify-between mb-6">
+      <section className="rounded-[26px] bg-gradient-to-r from-[#10B981] via-[#16A34A] to-[#15803D] px-6 sm:px-8 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(16,185,129,0.18)] min-h-[178px] flex flex-col justify-between mb-6">
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-xl pointer-events-none" />
         <div className="absolute -bottom-16 left-1/3 w-56 h-56 bg-emerald-300/20 rounded-full blur-2xl pointer-events-none" />
 

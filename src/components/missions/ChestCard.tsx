@@ -78,8 +78,8 @@ export const ChestCard: React.FC<ChestCardProps> = ({
         {/* Right: Reward Chip & Claim Button */}
         <div className="flex flex-col sm:items-end gap-2.5 shrink-0 pt-2 sm:pt-0">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 text-[11px] font-black bg-sky-100 text-sky-800 px-2.5 py-1 rounded-full">
-              <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+            <span className="inline-flex items-center gap-1 text-[11px] font-black bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
               <span>+{config.xp} XP</span>
             </span>
             <span className="inline-flex items-center gap-1 text-[11px] font-black bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full">

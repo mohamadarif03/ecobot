@@ -21,7 +21,7 @@ export const PlayerAvatarPreview: React.FC<PlayerAvatarPreviewProps> = ({
 }) => {
   const skin = character.skin || "adventurer";
   const outfitColor =
-    equippedOverrides?.warnaBaju || character.outfitColor || "#38BDF8";
+    equippedOverrides?.warnaBaju || character.outfitColor || "#4ADE80";
 
   // Active accessories (overrides take precedence if previewing)
   const activeTopi = equippedOverrides?.topi !== undefined ? equippedOverrides.topi : character.accessory === "leaf_hat" ? "topi-daun" : undefined;
@@ -51,7 +51,7 @@ export const PlayerAvatarPreview: React.FC<PlayerAvatarPreviewProps> = ({
     pantsColor = "#166534";
   } else if (skin === "clean_astronaut") {
     headColor = "#F1F5F9";
-    hairColor = "#0284C7";
+    hairColor = "#15803D";
     pantsColor = "#E2E8F0";
   }
 
@@ -206,8 +206,8 @@ export const PlayerAvatarPreview: React.FC<PlayerAvatarPreviewProps> = ({
         {/* ==================== LAYER: KACAMATA ==================== */}
         {activeKacamata === "kacamata-bulat" && (
           <g>
-            <circle cx="41" cy="28" r="7" fill="#E0F2FE" fillOpacity="0.7" stroke="#0F172A" strokeWidth="2" />
-            <circle cx="59" cy="28" r="7" fill="#E0F2FE" fillOpacity="0.7" stroke="#0F172A" strokeWidth="2" />
+            <circle cx="41" cy="28" r="7" fill="#DCFCE7" fillOpacity="0.7" stroke="#0F172A" strokeWidth="2" />
+            <circle cx="59" cy="28" r="7" fill="#DCFCE7" fillOpacity="0.7" stroke="#0F172A" strokeWidth="2" />
             <line x1="48" y1="28" x2="52" y2="28" stroke="#0F172A" strokeWidth="2" />
             <line x1="29" y1="28" x2="34" y2="28" stroke="#0F172A" strokeWidth="1.5" />
             <line x1="66" y1="28" x2="71" y2="28" stroke="#0F172A" strokeWidth="1.5" />
@@ -224,10 +224,10 @@ export const PlayerAvatarPreview: React.FC<PlayerAvatarPreviewProps> = ({
 
         {activeKacamata === "kacamata-pelindung" && (
           <g>
-            <rect x="29" y="24" width="42" height="4" fill="#0284C7" />
-            <rect x="34" y="20" width="13" height="13" rx="3" fill="#38BDF8" stroke="#0369A1" strokeWidth="2" opacity="0.9" />
+            <rect x="29" y="24" width="42" height="4" fill="#15803D" />
+            <rect x="34" y="20" width="13" height="13" rx="3" fill="#4ADE80" stroke="#0369A1" strokeWidth="2" opacity="0.9" />
             <line x1="36" y1="22" x2="42" y2="28" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-            <rect x="53" y="20" width="13" height="13" rx="3" fill="#38BDF8" stroke="#0369A1" strokeWidth="2" opacity="0.9" />
+            <rect x="53" y="20" width="13" height="13" rx="3" fill="#4ADE80" stroke="#0369A1" strokeWidth="2" opacity="0.9" />
             <line x1="55" y1="22" x2="61" y2="28" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
           </g>
         )}
@@ -245,14 +245,14 @@ export const PlayerAvatarPreview: React.FC<PlayerAvatarPreviewProps> = ({
           <g>
             <ellipse cx="50" cy="12" rx="26" ry="6" fill="#FDE047" stroke="#CA8A04" strokeWidth="2" />
             <path d="M35 11C35 -1 41 -6 50 -6C59 -6 65 -1 65 11Z" fill="#FEF08A" stroke="#CA8A04" strokeWidth="2" />
-            <rect x="36" y="7" width="28" height="4" fill="#0284C7" />
+            <rect x="36" y="7" width="28" height="4" fill="#15803D" />
           </g>
         )}
 
         {activeTopi === "topi-pelindung" && (
           <g>
-            <path d="M30 13C30 0 38 -5 50 -5C62 -5 70 0 70 13H30Z" fill="#0284C7" stroke="#0369A1" strokeWidth="2" />
-            <rect x="25" y="11" width="50" height="5" rx="2" fill="#38BDF8" stroke="#0369A1" strokeWidth="1.5" />
+            <path d="M30 13C30 0 38 -5 50 -5C62 -5 70 0 70 13H30Z" fill="#15803D" stroke="#0369A1" strokeWidth="2" />
+            <rect x="25" y="11" width="50" height="5" rx="2" fill="#4ADE80" stroke="#0369A1" strokeWidth="1.5" />
             <circle cx="50" cy="3" r="4" fill="#22C55E" />
           </g>
         )}
@@ -287,8 +287,8 @@ export const PlayerAvatarPreview: React.FC<PlayerAvatarPreviewProps> = ({
         {activeAksesori === "tas-daur-ulang" && (
           <g>
             {/* Backpack straps */}
-            <rect x="33" y="46" width="4" height="26" rx="2" fill="#0284C7" stroke="#0369A1" strokeWidth="1" />
-            <rect x="63" y="46" width="4" height="26" rx="2" fill="#0284C7" stroke="#0369A1" strokeWidth="1" />
+            <rect x="33" y="46" width="4" height="26" rx="2" fill="#15803D" stroke="#0369A1" strokeWidth="1" />
+            <rect x="63" y="46" width="4" height="26" rx="2" fill="#15803D" stroke="#0369A1" strokeWidth="1" />
           </g>
         )}
       </svg>

@@ -53,12 +53,12 @@ export const TodayTaskCard: React.FC<TodayTaskCardProps> = ({
   // State 1: Not started yet
   if (!isStarted) {
     return (
-      <article className="rounded-[28px] border-2 border-dashed border-sky-200 bg-gradient-to-br from-white via-sky-50/40 to-blue-50/30 p-6 sm:p-8 shadow-sm text-center space-y-4">
-        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-sky-400 to-sky-500 text-white mx-auto flex items-center justify-center shadow-md shadow-sky-500/20">
+      <article className="rounded-[28px] border-2 border-dashed border-emerald-200 bg-gradient-to-br from-white via-sky-50/40 to-blue-50/30 p-6 sm:p-8 shadow-sm text-center space-y-4">
+        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-emerald-400 to-emerald-500 text-white mx-auto flex items-center justify-center shadow-md shadow-emerald-500/20">
           <Sparkles className="w-8 h-8" />
         </div>
         <div className="max-w-md mx-auto space-y-1.5">
-          <span className="text-[10.5px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-sky-800">
+          <span className="text-[10.5px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
             Mulai Dari Rumah
           </span>
           <h3 className="text-xl font-black text-slate-900">
@@ -72,7 +72,7 @@ export const TodayTaskCard: React.FC<TodayTaskCardProps> = ({
         <button
           type="button"
           onClick={onStartChallenge}
-          className="h-12 px-8 rounded-full bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-slate-950 font-black text-[13.5px] inline-flex items-center gap-2 shadow-md hover:scale-105 active:scale-95 transition"
+          className="h-12 px-8 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-slate-950 font-black text-[13.5px] inline-flex items-center gap-2 shadow-md hover:scale-105 active:scale-95 transition"
         >
           <span>Mulai Tantangan Sekarang</span>
           <ArrowRight className="w-4 h-4" />
@@ -160,8 +160,8 @@ export const TodayTaskCard: React.FC<TodayTaskCardProps> = ({
         {/* Why & Tips Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <div className="p-3.5 rounded-2xl bg-white border border-slate-100 shadow-2xs space-y-1">
-            <div className="flex items-center gap-1.5 text-xs font-black text-sky-800">
-              <HelpCircle className="w-3.5 h-3.5 text-sky-600" />
+            <div className="flex items-center gap-1.5 text-xs font-black text-emerald-800">
+              <HelpCircle className="w-3.5 h-3.5 text-emerald-600" />
               <span>Kenapa Penting?</span>
             </div>
             <p className="text-xs text-slate-600 font-semibold leading-relaxed">
@@ -197,7 +197,7 @@ export const TodayTaskCard: React.FC<TodayTaskCardProps> = ({
             {task.pustakaSlug && (
               <Link
                 to={`/pustaka/${task.pustakaSlug}`}
-                className="text-xs font-bold text-sky-600 hover:text-sky-700 hover:underline inline-flex items-center gap-1"
+                className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline inline-flex items-center gap-1"
               >
                 <BookOpen className="w-3.5 h-3.5" />
                 <span>Baca Materi</span>

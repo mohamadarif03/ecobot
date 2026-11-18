@@ -24,17 +24,17 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#E0F2FE] via-[#EBF5FD] to-white flex items-center justify-center p-4">
-      <div className="w-full max-w-[480px] bg-white rounded-[32px] p-6 sm:p-8 shadow-[0_8px_30px_rgba(14,165,233,0.12)] border border-sky-100 text-center relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#DCFCE7] via-[#F0FDF4] to-white flex items-center justify-center p-4">
+      <div className="w-full max-w-[480px] bg-white rounded-[32px] p-6 sm:p-8 shadow-[0_8px_30px_rgba(14,165,233,0.12)] border border-emerald-100 text-center relative overflow-hidden">
         {/* Decorative Top Accent */}
-        <div className="absolute top-0 inset-x-0 h-2.5 bg-gradient-to-r from-sky-400 via-emerald-400 to-sky-500"></div>
+        <div className="absolute top-0 inset-x-0 h-2.5 bg-gradient-to-r from-emerald-400 via-emerald-400 to-emerald-500"></div>
 
         {/* Mascot */}
         <div className="w-24 h-24 mx-auto mb-3">
           <EcobotMascot size="hero" className="w-full h-full" />
         </div>
 
-        <span className="inline-block text-xs font-black uppercase tracking-wider text-sky-700 bg-sky-100/80 px-3 py-1 rounded-full mb-2">
+        <span className="inline-block text-xs font-black uppercase tracking-wider text-emerald-700 bg-emerald-100/80 px-3 py-1 rounded-full mb-2">
           Selamat Datang di ECOBOT
         </span>
 
@@ -60,7 +60,7 @@ export default function OnboardingPage() {
               }}
               placeholder="Contoh: Raka, Alya, Budi..."
               maxLength={16}
-              className="w-full bg-[#F3F9FF] border border-sky-100 focus:border-sky-400 focus:ring-4 focus:ring-sky-100/60 rounded-2xl px-4 py-3 text-[15px] font-bold text-slate-900 outline-none transition"
+              className="w-full bg-[#F3F9FF] border border-emerald-100 focus:border-emerald-400 focus:ring-4 focus:ring-sky-100/60 rounded-2xl px-4 py-3 text-[15px] font-bold text-slate-900 outline-none transition"
               autoFocus
             />
             {errorMsg && (
@@ -81,8 +81,8 @@ export default function OnboardingPage() {
                   onClick={() => setSelectedAvatar(item.icon)}
                   className={`p-3 rounded-2xl border-2 flex flex-col items-center justify-center transition cursor-pointer ${
                     selectedAvatar === item.icon
-                      ? "border-sky-500 bg-sky-50 shadow-xs scale-105"
-                      : "border-slate-100 bg-[#F8FAFC] hover:border-sky-200"
+                      ? "border-emerald-500 bg-emerald-50 shadow-xs scale-105"
+                      : "border-slate-100 bg-[#F8FAFC] hover:border-emerald-200"
                   }`}
                 >
                   <span className="text-2xl mb-1">{item.icon}</span>
@@ -97,7 +97,7 @@ export default function OnboardingPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full mt-4 bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-slate-950 font-black text-[15px] py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer"
+            className="w-full mt-4 bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-slate-950 font-black text-[15px] py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer"
           >
             <Sparkles className="w-4 h-4" />
             <span>Masuk ke Dashboard</span>

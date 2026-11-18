@@ -47,7 +47,7 @@ export const CheckTaskDialog: React.FC<CheckTaskDialogProps> = ({
       aria-labelledby="dialog-task-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200"
     >
-      <div className="w-full max-w-md bg-white rounded-[32px] p-6 sm:p-7 shadow-2xl border border-sky-100 relative overflow-hidden space-y-5">
+      <div className="w-full max-w-md bg-white rounded-[32px] p-6 sm:p-7 shadow-2xl border border-emerald-100 relative overflow-hidden space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
@@ -83,7 +83,7 @@ export const CheckTaskDialog: React.FC<CheckTaskDialogProps> = ({
               {[
                 { id: "gampang", label: "Gampang", icon: Smile, color: "text-emerald-600 bg-emerald-50 border-emerald-300" },
                 { id: "lumayan", label: "Lumayan", icon: Meh, color: "text-amber-600 bg-amber-50 border-amber-300" },
-                { id: "susah", label: "Susah", icon: Frown, color: "text-sky-600 bg-sky-50 border-sky-300" },
+                { id: "susah", label: "Susah", icon: Frown, color: "text-emerald-600 bg-emerald-50 border-emerald-300" },
               ].map((item) => {
                 const Icon = item.icon;
                 const isSelected = feeling === item.id;
@@ -112,11 +112,11 @@ export const CheckTaskDialog: React.FC<CheckTaskDialogProps> = ({
               type="checkbox"
               checked={parentConfirmed}
               onChange={(e) => setParentConfirmed(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-sky-500 focus:ring-sky-400 border-slate-300 cursor-pointer"
+              className="mt-0.5 w-4 h-4 rounded text-emerald-600 focus:ring-emerald-400 border-slate-300 cursor-pointer"
             />
             <div className="text-xs font-semibold text-slate-700 leading-snug">
               <span className="font-bold flex items-center gap-1.5 text-slate-900">
-                <Users className="w-3.5 h-3.5 text-sky-600" />
+                <Users className="w-3.5 h-3.5 text-emerald-600" />
                 Sudah dilihat atau ditemani orang tua / guru
               </span>
               <span className="text-[11px] text-slate-500 font-normal mt-0.5 block">

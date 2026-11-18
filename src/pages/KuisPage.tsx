@@ -72,9 +72,9 @@ export default function KuisPage() {
       subtitle="Uji pengetahuanmu, Ecobot siap menemani"
     >
       {/* ==================== HERO BANNER ==================== */}
-      <section className="rounded-[26px] bg-gradient-to-r from-[#38BDF8] via-[#20B5F0] to-[#0EA5E9] px-6 sm:px-8 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between mb-6">
+      <section className="rounded-[26px] bg-gradient-to-r from-[#4ADE80] via-[#22C55E] to-[#16A34A] px-6 sm:px-8 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between mb-6">
         <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-xl pointer-events-none" />
-        <div className="absolute -bottom-16 left-1/3 w-56 h-56 bg-sky-300/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-16 left-1/3 w-56 h-56 bg-emerald-300/20 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 max-w-xl">
           {/* Label */}
@@ -109,7 +109,7 @@ export default function KuisPage() {
             </span>
 
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-xs text-white text-xs font-bold border border-white/20">
-              <Award className="w-3.5 h-3.5 text-sky-100" />
+              <Award className="w-3.5 h-3.5 text-emerald-100" />
               <span>
                 <strong className="font-black">{summary.totalQuizzes}</strong> Kuis Selesai
               </span>
@@ -119,11 +119,11 @@ export default function KuisPage() {
           {/* CTA */}
           <Link
             to="/kuis/main?mode=harian"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-sky-900 font-black text-[13px] hover:bg-sky-50 shadow-md hover:scale-105 active:scale-95 transition"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white text-emerald-900 font-black text-[13px] hover:bg-emerald-50 shadow-md hover:scale-105 active:scale-95 transition"
           >
             <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
             <span>{dailyStatus.completed ? "Main Latihan Lagi" : "Mulai Kuis Harian"}</span>
-            <ArrowRight className="w-4 h-4 text-sky-700" />
+            <ArrowRight className="w-4 h-4 text-emerald-700" />
           </Link>
         </div>
 
@@ -141,7 +141,7 @@ export default function KuisPage() {
       <div
         role="tablist"
         aria-label="Pilihan Menu Kuis"
-        className="bg-white rounded-2xl p-1.5 shadow-[0_2px_10px_rgba(14,165,233,0.05)] border border-sky-100 flex items-center gap-1.5 select-none mb-6 max-w-md"
+        className="bg-white rounded-2xl p-1.5 shadow-[0_2px_10px_rgba(14,165,233,0.05)] border border-emerald-100 flex items-center gap-1.5 select-none mb-6 max-w-md"
       >
         <button
           role="tab"
@@ -151,8 +151,8 @@ export default function KuisPage() {
           onClick={() => handleSelectTab("kuis")}
           className={`flex-1 py-2.5 px-3 rounded-xl font-black text-[13px] flex items-center justify-center gap-2 transition cursor-pointer ${
             activeTab === "kuis"
-              ? "bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 shadow-xs"
-              : "text-slate-600 hover:text-slate-900 hover:bg-sky-50/60"
+              ? "bg-gradient-to-r from-emerald-400 to-emerald-500 text-slate-950 shadow-xs"
+              : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/60"
           }`}
         >
           <span>Kuis</span>
@@ -166,8 +166,8 @@ export default function KuisPage() {
           onClick={() => handleSelectTab("riwayat")}
           className={`flex-1 py-2.5 px-3 rounded-xl font-black text-[13px] flex items-center justify-center gap-2 transition cursor-pointer ${
             activeTab === "riwayat"
-              ? "bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 shadow-xs"
-              : "text-slate-600 hover:text-slate-900 hover:bg-sky-50/60"
+              ? "bg-gradient-to-r from-emerald-400 to-emerald-500 text-slate-950 shadow-xs"
+              : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/60"
           }`}
         >
           <History className="w-4 h-4" />
@@ -182,8 +182,8 @@ export default function KuisPage() {
           onClick={() => handleSelectTab("duel")}
           className={`flex-1 py-2.5 px-3 rounded-xl font-black text-[13px] flex items-center justify-center gap-2 transition cursor-pointer ${
             activeTab === "duel"
-              ? "bg-gradient-to-r from-sky-400 to-sky-500 text-slate-950 shadow-xs"
-              : "text-slate-600 hover:text-slate-900 hover:bg-sky-50/60"
+              ? "bg-gradient-to-r from-emerald-400 to-emerald-500 text-slate-950 shadow-xs"
+              : "text-slate-600 hover:text-slate-900 hover:bg-emerald-50/60"
           }`}
         >
           <Timer className="w-4 h-4" />
@@ -196,7 +196,7 @@ export default function KuisPage() {
         <div id="panel-kuis" role="tabpanel" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             {/* Kuis Harian Card */}
-            <article className="rounded-[24px] border border-sky-100 bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
+            <article className="rounded-[24px] border border-emerald-100 bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0">
@@ -246,7 +246,7 @@ export default function KuisPage() {
 
                 <Link
                   to="/kuis/main?mode=harian"
-                  className="h-11 px-6 rounded-full bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-slate-950 font-black text-[13px] flex items-center justify-center gap-2 shadow-2xs hover:scale-105 transition"
+                  className="h-11 px-6 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-slate-950 font-black text-[13px] flex items-center justify-center gap-2 shadow-2xs hover:scale-105 transition"
                 >
                   <span>
                     {dailyStatus.completed ? "Latihan Ulang Kuis Harian" : "Mulai Kuis Harian"}
@@ -297,8 +297,8 @@ export default function KuisPage() {
                 onClick={() => setHistoryFilter(filter)}
                 className={`px-4 py-2 rounded-full text-xs font-black capitalize transition ${
                   historyFilter === filter
-                    ? "bg-sky-500 text-white shadow-xs"
-                    : "bg-white text-slate-600 border border-slate-200 hover:border-sky-300"
+                    ? "bg-emerald-600 text-white shadow-xs"
+                    : "bg-white text-slate-600 border border-slate-200 hover:border-emerald-300"
                 }`}
               >
                 {filter === "semua" ? "Semua Kuis" : `Mode ${filter}`}
@@ -369,7 +369,7 @@ export default function KuisPage() {
                           ? "/kuis/main?mode=harian"
                           : "/kuis/main?mode=latihan&jumlah=5"
                       }
-                      className="h-9 px-4 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-800 font-black text-xs border border-sky-200 flex items-center gap-1.5 transition"
+                      className="h-9 px-4 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-black text-xs border border-emerald-200 flex items-center gap-1.5 transition"
                     >
                       <span>Coba Lagi</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -380,7 +380,7 @@ export default function KuisPage() {
             </div>
           ) : (
             <div className="rounded-[24px] border border-dashed border-slate-200 bg-white p-12 text-center space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-sky-50 text-sky-500 mx-auto flex items-center justify-center">
+              <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center">
                 <History className="w-8 h-8" />
               </div>
               <div className="max-w-md mx-auto">
@@ -393,7 +393,7 @@ export default function KuisPage() {
               </div>
               <Link
                 to="/kuis/main?mode=harian"
-                className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-sky-500 hover:bg-sky-600 text-white font-black text-xs shadow-xs transition"
+                className="inline-flex items-center gap-2 h-10 px-5 rounded-full bg-emerald-600 hover:bg-emerald-600 text-white font-black text-xs shadow-xs transition"
               >
                 <span>Mulai Kuis Harian Sekarang</span>
                 <ArrowRight className="w-3.5 h-3.5" />

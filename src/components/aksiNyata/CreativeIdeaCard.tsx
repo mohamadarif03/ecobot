@@ -49,12 +49,12 @@ export const CreativeIdeaCard: React.FC<CreativeIdeaCardProps> = ({
         onMarkTried={onMarkTried}
       />
 
-      <article className="rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col justify-between hover:border-sky-200 transition-all duration-200">
+      <article className="rounded-[24px] border border-slate-100 bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.03)] flex flex-col justify-between hover:border-emerald-200 transition-all duration-200">
         <div className="space-y-3.5">
           {/* Top header */}
           <div className="flex items-start justify-between gap-3">
             <div
-              className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${idea.color} text-white flex items-center justify-center shadow-md shadow-sky-500/10 shrink-0`}
+              className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${idea.color} text-white flex items-center justify-center shadow-md shadow-emerald-500/10 shrink-0`}
             >
               {getIdeaIcon(idea.icon)}
             </div>
@@ -107,7 +107,7 @@ export const CreativeIdeaCard: React.FC<CreativeIdeaCardProps> = ({
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="h-9 px-4 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-800 font-black text-xs border border-sky-200 flex items-center gap-1.5 transition cursor-pointer"
+            className="h-9 px-4 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-black text-xs border border-emerald-200 flex items-center gap-1.5 transition cursor-pointer"
           >
             <span>Lihat Caranya</span>
             <ArrowRight className="w-3.5 h-3.5" />

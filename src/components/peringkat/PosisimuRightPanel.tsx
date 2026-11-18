@@ -70,7 +70,7 @@ export const PosisimuRightPanel: React.FC<PosisimuRightPanelProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-transparent border border-emerald-100 dark:border-slate-800">
+        <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-500/10 to-transparent border border-emerald-100 dark:border-slate-800">
           <div className="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex flex-col items-center justify-center font-black shadow-md">
             <span className="text-xs uppercase tracking-wider text-emerald-100">Pos</span>
             <span className="text-xl leading-none">#{currentRank}</span>
@@ -100,8 +100,8 @@ export const PosisimuRightPanel: React.FC<PosisimuRightPanelProps> = ({
               </div>
             </div>
           ) : nextHigherEntry ? (
-            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sky-800 dark:text-sky-300 text-xs font-medium">
-              <ArrowUpCircle className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-emerald-50 dark:bg-sky-950/30 border border-emerald-200 dark:border-sky-800 text-emerald-800 dark:text-emerald-300 text-xs font-medium">
+              <ArrowUpCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
               <div>
                 Butuh <strong>+{gapToNext} XP</strong> lagi untuk menyalip{" "}
                 <span className="font-bold underline">{nextHigherEntry.nickname}</span> (#{currentRank - 1})!
@@ -129,7 +129,7 @@ export const PosisimuRightPanel: React.FC<PosisimuRightPanelProps> = ({
           </h4>
           <button
             onClick={onOpenLigaTab}
-            className="text-xs font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400 flex items-center gap-0.5"
+            className="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 flex items-center gap-0.5"
           >
             Detail <ChevronRight className="w-3.5 h-3.5" />
           </button>
@@ -167,7 +167,7 @@ export const PosisimuRightPanel: React.FC<PosisimuRightPanelProps> = ({
         <div className="space-y-2.5">
           <Link
             to="/kuis"
-            className="group flex items-center justify-between p-2.5 rounded-2xl hover:bg-sky-50 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 transition-all"
+            className="group flex items-center justify-between p-2.5 rounded-2xl hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 transition-all"
           >
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950/50 dark:text-purple-400 flex items-center justify-center">
@@ -207,14 +207,14 @@ export const PosisimuRightPanel: React.FC<PosisimuRightPanelProps> = ({
 
           <Link
             to="/pustaka"
-            className="group flex items-center justify-between p-2.5 rounded-2xl hover:bg-sky-50 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 transition-all"
+            className="group flex items-center justify-between p-2.5 rounded-2xl hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 transition-all"
           >
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-600 dark:bg-sky-950/50 dark:text-sky-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 dark:bg-sky-950/50 dark:text-emerald-400 flex items-center justify-center">
                 <BookOpen className="w-4 h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-slate-800 dark:text-white group-hover:text-sky-600 transition-colors">
+                <div className="text-xs font-bold text-slate-800 dark:text-white group-hover:text-emerald-600 transition-colors">
                   Baca Pustaka
                 </div>
                 <div className="text-[11px] text-slate-400">Geser kartu edukasi</div>
@@ -280,7 +280,7 @@ export const PosisimuRightPanel: React.FC<PosisimuRightPanelProps> = ({
         </p>
 
         <div className="mt-3 pt-3 border-t border-slate-200/70 dark:border-slate-800 flex items-center gap-2 text-[11px] text-slate-400">
-          <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-sky-500" />
+          <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-emerald-600" />
           <span>Ecobot tidak pernah meminta nama lengkap atau alamat sekolah anak.</span>
         </div>
       </Card>

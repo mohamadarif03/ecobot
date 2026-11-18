@@ -17,7 +17,7 @@ export const QUIZ_TOPICS: QuizTopicMeta[] = [
     deskripsi: "Langkah membersihkan, mengeringkan, dan memipihkan sampah daur ulang.",
     icon: "box",
     color: "sky",
-    badgeBg: "bg-sky-100 text-sky-800",
+    badgeBg: "bg-emerald-100 text-emerald-800",
   },
   {
     id: "quiz-daur-ulang",

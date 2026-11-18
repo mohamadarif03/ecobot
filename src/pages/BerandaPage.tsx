@@ -88,9 +88,9 @@ export default function BerandaPage() {
       subtitle="Pantau progres petualanganmu dan lanjutkan misi hari ini"
     >
       {/* ==================== HERO BANNER ==================== */}
-      <section className="rounded-[26px] bg-gradient-to-r from-[#38BDF8] via-[#20B5F0] to-[#0EA5E9] px-6 sm:px-7 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between">
+      <section className="rounded-[26px] bg-gradient-to-r from-[#4ADE80] via-[#22C55E] to-[#16A34A] px-6 sm:px-7 py-6 relative overflow-hidden shadow-[0_4px_20px_rgba(14,165,233,0.18)] min-h-[178px] flex flex-col justify-between">
         {/* Background ambient accents */}
-        <div className="w-16 h-16 rounded-full bg-sky-200/40 absolute -top-4 left-44 pointer-events-none"></div>
+        <div className="w-16 h-16 rounded-full bg-emerald-200/40 absolute -top-4 left-44 pointer-events-none"></div>
         <div className="w-[85px] h-[85px] rounded-full bg-emerald-400/35 absolute top-1 right-[160px] pointer-events-none"></div>
         <div className="w-[120px] h-[120px] rounded-full bg-white/10 absolute -bottom-8 right-[110px] pointer-events-none"></div>
 
@@ -115,8 +115,8 @@ export default function BerandaPage() {
             </div>
 
             {/* Level Chip */}
-            <div className="bg-[#BAE6FD]/95 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-2xs border border-sky-300/60">
-              <ShieldCheck className="w-4 h-4 text-sky-800" />
+            <div className="bg-[#BAE6FD]/95 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-2xs border border-emerald-300/60">
+              <ShieldCheck className="w-4 h-4 text-emerald-800" />
               <span className="text-[12px] font-black text-slate-900">
                 Level {levelInfo.level} · {levelInfo.title}
               </span>
@@ -135,7 +135,7 @@ export default function BerandaPage() {
               to="/main-game"
               className="bg-slate-950 hover:bg-slate-900 text-white font-black text-[12px] px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm transition hover:scale-105"
             >
-              <Gamepad2 className="w-3.5 h-3.5 text-sky-300" />
+              <Gamepad2 className="w-3.5 h-3.5 text-emerald-300" />
               <span>Lanjutkan Petualangan</span>
             </Link>
           </div>
@@ -162,8 +162,8 @@ export default function BerandaPage() {
             onClick={() => setActiveTab("ringkasan")}
             className={`font-bold text-[13px] px-4 py-2.5 rounded-full flex items-center gap-2 shadow-2xs transition cursor-pointer ${
               activeTab === "ringkasan"
-                ? "bg-[#38BDF8] text-slate-950"
-                : "bg-white hover:bg-sky-50 text-slate-700 border border-sky-100"
+                ? "bg-[#4ADE80] text-slate-950"
+                : "bg-white hover:bg-emerald-50 text-slate-700 border border-emerald-100"
             }`}
           >
             <LayoutDashboard className="w-4 h-4" />
@@ -173,10 +173,10 @@ export default function BerandaPage() {
           <button
             type="button"
             onClick={() => setActiveTab("aktivitas")}
-            className={`font-bold text-[13px] px-4 py-2.5 rounded-full flex items-center gap-2 border border-sky-100 shadow-2xs transition cursor-pointer ${
+            className={`font-bold text-[13px] px-4 py-2.5 rounded-full flex items-center gap-2 border border-emerald-100 shadow-2xs transition cursor-pointer ${
               activeTab === "aktivitas"
-                ? "bg-[#38BDF8] text-slate-950"
-                : "bg-white hover:bg-sky-50 text-slate-700"
+                ? "bg-[#4ADE80] text-slate-950"
+                : "bg-white hover:bg-emerald-50 text-slate-700"
             }`}
           >
             <History className="w-4 h-4 text-slate-600" />
@@ -189,15 +189,15 @@ export default function BerandaPage() {
           <button
             type="button"
             onClick={() => setShowFactModal(true)}
-            className="bg-white hover:bg-sky-50 text-sky-800 font-bold text-[12.5px] px-3.5 py-2 rounded-full transition flex items-center gap-1.5 border border-sky-200/80 shadow-2xs cursor-pointer"
+            className="bg-white hover:bg-emerald-50 text-emerald-800 font-bold text-[12.5px] px-3.5 py-2 rounded-full transition flex items-center gap-1.5 border border-emerald-200/80 shadow-2xs cursor-pointer"
           >
-            <Info className="w-3.5 h-3.5 text-sky-600" />
+            <Info className="w-3.5 h-3.5 text-emerald-600" />
             <span>Fakta Hari Ini</span>
           </button>
 
           <Link
             to="/misi"
-            className="bg-white hover:bg-sky-50 text-slate-700 font-bold text-[12.5px] px-4 py-2 rounded-full flex items-center gap-1.5 border border-sky-100 shadow-2xs transition"
+            className="bg-white hover:bg-emerald-50 text-slate-700 font-bold text-[12.5px] px-4 py-2 rounded-full flex items-center gap-1.5 border border-emerald-100 shadow-2xs transition"
           >
             <Target className="w-3.5 h-3.5 text-emerald-600" />
             <span>Lihat Misi</span>
@@ -212,7 +212,7 @@ export default function BerandaPage() {
           {activeTab === "ringkasan" ? (
             <>
               {/* CARD 1: Meter Kebersihan Kota */}
-              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80">
+              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-emerald-100/80">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2.5">
                     <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
@@ -235,7 +235,7 @@ export default function BerandaPage() {
                 {/* Progress Bar with smooth animation */}
                 <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50 mt-3">
                   <div
-                    className="h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-sky-400 rounded-full transition-all duration-700 ease-out"
+                    className="h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400 rounded-full transition-all duration-700 ease-out"
                     style={{ width: `${Math.max(5, state.cityCleanlinessMeter)}%` }}
                   ></div>
                 </div>
@@ -254,11 +254,11 @@ export default function BerandaPage() {
               </div>
 
               {/* CARD 2: Lanjutkan Petualangan */}
-              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80">
+              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-emerald-100/80">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center">
-                      <Gamepad2 className="w-5 h-5 text-sky-600" />
+                    <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                      <Gamepad2 className="w-5 h-5 text-emerald-600" />
                     </div>
                     <div>
                       <h3 className="text-[16px] font-black text-slate-900 leading-tight">
@@ -272,7 +272,7 @@ export default function BerandaPage() {
 
                   <Link
                     to="/main-game"
-                    className="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1"
+                    className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
                   >
                     <span>Semua Zona</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -281,8 +281,8 @@ export default function BerandaPage() {
 
                 {!hasPlayedBefore ? (
                   /* Empty state for fresh players */
-                  <div className="p-6 rounded-[20px] bg-[#F3F9FF] border border-sky-100/70 text-center flex flex-col items-center">
-                    <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center text-2xl mb-2.5">
+                  <div className="p-6 rounded-[20px] bg-[#F3F9FF] border border-emerald-100/70 text-center flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mb-2.5">
                       🎮
                     </div>
                     <h4 className="text-[15px] font-black text-slate-900">
@@ -293,7 +293,7 @@ export default function BerandaPage() {
                     </p>
                     <Link
                       to="/main-game"
-                      className="bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-slate-950 font-black text-[13px] px-6 py-2.5 rounded-full flex items-center gap-2 shadow-xs transition hover:scale-105"
+                      className="bg-gradient-to-r from-emerald-400 to-emerald-500 hover:from-emerald-500 hover:to-emerald-600 text-slate-950 font-black text-[13px] px-6 py-2.5 rounded-full flex items-center gap-2 shadow-xs transition hover:scale-105"
                     >
                       <Sparkles className="w-4 h-4" />
                       <span>Mulai Misi Pertama (Taman Kota)</span>
@@ -303,7 +303,7 @@ export default function BerandaPage() {
                   /* Active mission card */
                   <div className="p-4 sm:p-5 rounded-[20px] bg-gradient-to-br from-[#F8FAFC] to-[#F1F5F9] border border-slate-200/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <span className="text-[10.5px] font-black tracking-wider uppercase bg-sky-100 text-sky-800 px-2.5 py-0.5 rounded-full">
+                      <span className="text-[10.5px] font-black tracking-wider uppercase bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">
                         Misi {nextMission.missionId} · {nextMission.location}
                       </span>
                       <h4 className="text-[16px] font-black text-slate-900">
@@ -333,7 +333,7 @@ export default function BerandaPage() {
 
                     <Link
                       to="/main-game"
-                      className="bg-[#0284C7] hover:bg-[#0369A1] text-white font-black text-[13px] px-6 py-2.5 rounded-full flex items-center gap-2 shadow-xs transition shrink-0 hover:scale-105"
+                      className="bg-[#15803D] hover:bg-[#0369A1] text-white font-black text-[13px] px-6 py-2.5 rounded-full flex items-center gap-2 shadow-xs transition shrink-0 hover:scale-105"
                     >
                       <Gamepad2 className="w-4 h-4" />
                       <span>Main Sekarang</span>
@@ -343,7 +343,7 @@ export default function BerandaPage() {
               </div>
 
               {/* CARD 3: Fakta Harian dari Ecobot */}
-              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80">
+              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-emerald-100/80">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2.5">
                     <div className="w-9 h-9 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
@@ -359,20 +359,20 @@ export default function BerandaPage() {
                     </div>
                   </div>
 
-                  <span className="text-[11px] font-bold text-sky-800 bg-sky-50 px-2.5 py-1 rounded-full border border-sky-100">
+                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
                     Rotasi Harian
                   </span>
                 </div>
 
-                <div className="p-4 rounded-[20px] bg-gradient-to-r from-sky-50/70 via-blue-50/50 to-emerald-50/60 border border-sky-100/80">
-                  <h4 className="text-[14.5px] font-black text-sky-950 mb-1">
+                <div className="p-4 rounded-[20px] bg-gradient-to-r from-sky-50/70 via-blue-50/50 to-emerald-50/60 border border-emerald-100/80">
+                  <h4 className="text-[14.5px] font-black text-emerald-950 mb-1">
                     "{todayFact.title}"
                   </h4>
                   <p className="text-[13px] text-slate-700 leading-relaxed">
                     {todayFact.fact}
                   </p>
 
-                  <div className="mt-3 pt-2.5 border-t border-sky-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                  <div className="mt-3 pt-2.5 border-t border-emerald-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                     <p className="text-emerald-800 font-bold flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
                       <span>{todayFact.actionTip}</span>
@@ -385,7 +385,7 @@ export default function BerandaPage() {
               </div>
 
               {/* CARD 4: Statistik Singkat (4 Angka) */}
-              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80">
+              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-emerald-100/80">
                 <h3 className="text-[16px] font-black text-slate-900 leading-tight mb-4">
                   Statistik Singkat Pemain
                 </h3>
@@ -399,8 +399,8 @@ export default function BerandaPage() {
                     </p>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-[#F0F9FF] border border-sky-100 text-center">
-                    <p className="text-[22px] font-black text-sky-600">
+                  <div className="p-3.5 rounded-2xl bg-[#F0F9FF] border border-emerald-100 text-center">
+                    <p className="text-[22px] font-black text-emerald-600">
                       {state.stats.sortingAccuracy}%
                     </p>
                     <p className="text-[11.5px] font-bold text-slate-600 mt-0.5">
@@ -429,7 +429,7 @@ export default function BerandaPage() {
               </div>
 
               {/* CARD 5: Badge Terbaru */}
-              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80">
+              <div className="bg-white rounded-[24px] p-5 sm:p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-emerald-100/80">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2.5">
                     <div className="w-9 h-9 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
@@ -447,7 +447,7 @@ export default function BerandaPage() {
 
                   <Link
                     to="/pencapaian"
-                    className="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1"
+                    className="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
                   >
                     <span>Semua Badge ({state.badges.length})</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -468,7 +468,7 @@ export default function BerandaPage() {
                     {state.badges.slice(0, 3).map((badge) => (
                       <div
                         key={badge.id}
-                        className="p-3.5 rounded-2xl bg-gradient-to-b from-[#F8FAFC] to-[#F1F5F9] border border-sky-100 flex items-center gap-3"
+                        className="p-3.5 rounded-2xl bg-gradient-to-b from-[#F8FAFC] to-[#F1F5F9] border border-emerald-100 flex items-center gap-3"
                       >
                         <div className="w-11 h-11 rounded-2xl bg-white shadow-2xs border border-amber-200/70 flex items-center justify-center text-2xl shrink-0">
                           {badge.icon}
@@ -491,7 +491,7 @@ export default function BerandaPage() {
               </div>
 
               {/* CARD 6: Peringkat & Liga Mingguan */}
-              <div className="bg-gradient-to-r from-sky-500/10 via-emerald-500/10 to-teal-500/10 rounded-[24px] p-5 sm:p-6 border border-sky-200/80 shadow-[0_2px_10px_rgba(14,165,233,0.04)] flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/10 to-teal-500/10 rounded-[24px] p-5 sm:p-6 border border-emerald-200/80 shadow-[0_2px_10px_rgba(14,165,233,0.04)] flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-500 text-white flex items-center justify-center text-2xl shadow-md shrink-0">
                     {ligaStatus.currentTier ? (ligaStatus.currentTier === "emas" ? "🥇" : ligaStatus.currentTier === "perak" ? "🥈" : "🥉") : "🏆"}
@@ -513,7 +513,7 @@ export default function BerandaPage() {
 
                 <Link
                   to="/papan-peringkat"
-                  className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-extrabold text-xs shadow-sm transition-all"
+                  className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-600 text-white font-extrabold text-xs shadow-sm transition-all"
                 >
                   <span>Lihat Papan Peringkat</span>
                   <ChevronRight className="w-4 h-4" />
@@ -522,10 +522,10 @@ export default function BerandaPage() {
             </>
           ) : (
             /* TAB 2: AKTIVITAS TERAKHIR */
-            <div className="bg-white rounded-[26px] p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80">
+            <div className="bg-white rounded-[26px] p-6 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-emerald-100/80">
               <div className="flex items-center gap-2.5 mb-5">
-                <div className="w-9 h-9 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center">
-                  <History className="w-5 h-5 text-sky-600" />
+                <div className="w-9 h-9 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                  <History className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
                   <h3 className="text-[17px] font-black text-slate-900 leading-tight">
@@ -539,7 +539,7 @@ export default function BerandaPage() {
 
               {state.activityLog.length === 0 ? (
                 <div className="py-14 text-center">
-                  <div className="w-14 h-14 rounded-full bg-sky-50 text-sky-500 mx-auto flex items-center justify-center text-2xl mb-3">
+                  <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center text-2xl mb-3">
                     🌱
                   </div>
                   <h4 className="text-[15px] font-bold text-slate-800">
@@ -550,19 +550,19 @@ export default function BerandaPage() {
                   </p>
                   <Link
                     to="/main-game"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-sky-500 hover:bg-sky-600 px-5 py-2.5 rounded-full transition"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-600 px-5 py-2.5 rounded-full transition"
                   >
                     <span>Mulai Aktivitas Pertama</span>
                   </Link>
                 </div>
               ) : (
-                <div className="relative pl-6 space-y-5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-sky-100">
+                <div className="relative pl-6 space-y-5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-emerald-100">
                   {state.activityLog.map((act) => (
                     <div key={act.id} className="relative group">
                       {/* Timeline Dot */}
-                      <span className="w-4 h-4 rounded-full bg-sky-400 border-2 border-white absolute -left-[22px] top-1 shadow-2xs group-hover:scale-125 transition"></span>
+                      <span className="w-4 h-4 rounded-full bg-emerald-400 border-2 border-white absolute -left-[22px] top-1 shadow-2xs group-hover:scale-125 transition"></span>
 
-                      <div className="p-3.5 rounded-2xl bg-[#F8FAFC] hover:bg-sky-50/70 border border-slate-100 transition">
+                      <div className="p-3.5 rounded-2xl bg-[#F8FAFC] hover:bg-emerald-50/70 border border-slate-100 transition">
                         <div className="flex items-center justify-between gap-2">
                           <h4 className="text-[13.5px] font-black text-slate-900">
                             {act.title}
@@ -576,7 +576,7 @@ export default function BerandaPage() {
                         </p>
                         <div className="mt-2 flex items-center gap-2">
                           {act.xpEarned > 0 && (
-                            <span className="text-[10.5px] font-black text-sky-800 bg-sky-100 px-2 py-0.5 rounded-full">
+                            <span className="text-[10.5px] font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
                               +{act.xpEarned} XP
                             </span>
                           )}
@@ -597,16 +597,16 @@ export default function BerandaPage() {
 
         {/* ==================== RIGHT COLUMN: PROFIL PEMAIN ==================== */}
         <div className="col-span-12 lg:col-span-4">
-          <div className="bg-white rounded-[26px] p-5 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-sky-100/80 flex flex-col gap-4">
+          <div className="bg-white rounded-[26px] p-5 shadow-[0_2px_10px_rgba(14,165,233,0.04)] border border-emerald-100/80 flex flex-col gap-4">
             {/* Header: Profil Pemain */}
             <div className="flex items-center gap-3.5 pb-2 border-b border-slate-100">
               <div className="relative shrink-0">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-400 to-sky-500 text-slate-950 flex items-center justify-center text-2xl shadow-2xs">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-400 to-emerald-500 text-slate-950 flex items-center justify-center text-2xl shadow-2xs">
                   {state.avatar || "🤖"}
                 </div>
                 {state.inventory?.equipped?.stiker && (
                   <div
-                    className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white shadow-xs p-0.5 border border-sky-100 flex items-center justify-center"
+                    className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-white shadow-xs p-0.5 border border-emerald-100 flex items-center justify-center"
                     title={`Stiker: ${state.inventory.equipped.stiker}`}
                   >
                     <ItemArt
@@ -622,23 +622,23 @@ export default function BerandaPage() {
                     {state.nickname || "Pahlawan Cilik"}
                   </h3>
                 </div>
-                <p className="text-[12px] font-bold text-sky-700 leading-tight mt-0.5">
+                <p className="text-[12px] font-bold text-emerald-700 leading-tight mt-0.5">
                   Level {levelInfo.level} · {levelInfo.title}
                 </p>
               </div>
             </div>
 
             {/* Level & XP Progress Bar */}
-            <div className="p-3.5 rounded-2xl bg-[#F0F8FF] border border-sky-100/80">
+            <div className="p-3.5 rounded-2xl bg-[#F0FDF4] border border-emerald-100/80">
               <div className="flex items-center justify-between text-xs font-bold text-slate-700 mb-1.5">
                 <span>XP Level {levelInfo.level}</span>
-                <span className="text-sky-800 font-black">
+                <span className="text-emerald-800 font-black">
                   {state.xp} / {levelInfo.nextXp} XP
                 </span>
               </div>
-              <div className="w-full h-3 bg-white rounded-full overflow-hidden p-0.5 border border-sky-100">
+              <div className="w-full h-3 bg-white rounded-full overflow-hidden p-0.5 border border-emerald-100">
                 <div
-                  className="h-full bg-gradient-to-r from-sky-400 to-sky-600 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full transition-all duration-500"
                   style={{ width: `${levelProgressPercent}%` }}
                 ></div>
               </div>
@@ -711,7 +711,7 @@ export default function BerandaPage() {
                 </h4>
                 <Link
                   to="/misi"
-                  className="text-[11px] font-bold text-sky-600 hover:text-sky-700"
+                  className="text-[11px] font-bold text-emerald-600 hover:text-emerald-700"
                 >
                   Detail
                 </Link>
@@ -774,7 +774,7 @@ export default function BerandaPage() {
                         ></div>
                       </div>
 
-                      <span className="text-[10px] font-black text-sky-800 bg-sky-100 px-2 py-0.2 rounded-full shrink-0">
+                      <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 px-2 py-0.2 rounded-full shrink-0">
                         +{mission.rewardXp} XP · +{mission.rewardPoints} Poin
                       </span>
                     </div>
@@ -786,7 +786,7 @@ export default function BerandaPage() {
             {/* Bottom Primary Button */}
             <Link
               to="/main-game"
-              className="mt-2 w-full bg-gradient-to-r from-sky-400 via-sky-500 to-sky-600 hover:brightness-105 text-slate-950 font-black text-[14.5px] py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-md transition hover:scale-[1.02] cursor-pointer text-center"
+              className="mt-2 w-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 hover:brightness-105 text-slate-950 font-black text-[14.5px] py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-md transition hover:scale-[1.02] cursor-pointer text-center"
             >
               <Gamepad2 className="w-4 h-4" />
               <span>Lanjutkan Petualangan</span>
@@ -805,10 +805,10 @@ export default function BerandaPage() {
           onClick={() => setShowFactModal(false)}
         >
           <div
-            className="w-full max-w-lg bg-white rounded-[28px] p-6 shadow-2xl border border-sky-100 text-left relative overflow-hidden"
+            className="w-full max-w-lg bg-white rounded-[28px] p-6 shadow-2xl border border-emerald-100 text-left relative overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-3 border-b border-sky-100">
+            <div className="flex items-center justify-between pb-3 border-b border-emerald-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl">
                   💡
@@ -817,7 +817,7 @@ export default function BerandaPage() {
                   <h3 className="text-[17px] font-black text-slate-900 leading-tight">
                     Fakta Lingkungan Hari Ini
                   </h3>
-                  <p className="text-[11.5px] font-bold text-sky-700">
+                  <p className="text-[11.5px] font-bold text-emerald-700">
                     Edisi Spesial Ecobot
                   </p>
                 </div>
@@ -833,7 +833,7 @@ export default function BerandaPage() {
             </div>
 
             <div className="mt-4 space-y-3">
-              <h4 className="text-[16px] font-black text-sky-950">
+              <h4 className="text-[16px] font-black text-emerald-950">
                 "{todayFact.title}"
               </h4>
               <p className="text-[14px] text-slate-700 leading-relaxed bg-[#F8FAFC] p-4 rounded-2xl border border-slate-100">
@@ -861,7 +861,7 @@ export default function BerandaPage() {
               <button
                 type="button"
                 onClick={() => setShowFactModal(false)}
-                className="bg-sky-500 hover:bg-sky-600 text-white font-bold text-[13px] px-6 py-2.5 rounded-full transition cursor-pointer"
+                className="bg-emerald-600 hover:bg-emerald-600 text-white font-bold text-[13px] px-6 py-2.5 rounded-full transition cursor-pointer"
               >
                 Mengerti, Terima Kasih Ecobot!
               </button>
