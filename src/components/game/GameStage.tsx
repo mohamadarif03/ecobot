@@ -441,7 +441,7 @@ export const GameStage: React.FC<GameStageProps> = ({
     );
   }
 
-  // ==================== 2. RESULT SCREEN ====================
+  // ==================== 2. RESULT SCREEN (LIGHT MODE) ====================
   if (phase === "result") {
     const finalResult = resultData || {
       stars: 3,
@@ -457,20 +457,20 @@ export const GameStage: React.FC<GameStageProps> = ({
       nextMissionIndex < GAME_MISSIONS.length ? GAME_MISSIONS[nextMissionIndex] : null;
 
     return (
-      <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl text-white overflow-y-auto p-4 sm:p-6 flex items-start justify-center select-none">
-        <div className="relative w-full max-w-lg my-auto bg-gradient-to-b from-slate-900 to-slate-950 border border-emerald-500/30 rounded-[32px] p-6 sm:p-8 shadow-2xl text-center">
+      <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md text-slate-800 overflow-y-auto p-4 sm:p-6 flex items-start justify-center select-none">
+        <div className="relative w-full max-w-lg my-auto bg-white border-2 border-emerald-200/90 rounded-[32px] p-6 sm:p-8 shadow-2xl text-center">
           {/* Confetti Accent / Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 w-44 h-44 rounded-full bg-emerald-600/20 blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -mt-10 w-44 h-44 rounded-full bg-emerald-400/20 blur-3xl pointer-events-none" />
 
           {/* Trophy Header */}
-          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-slate-950 flex items-center justify-center mx-auto mb-4 shadow-xl">
-            <Trophy className="w-8 h-8" />
+          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-amber-400 to-yellow-300 text-slate-950 flex items-center justify-center mx-auto mb-4 shadow-lg border border-amber-200">
+            <Trophy className="w-8 h-8 text-amber-950" />
           </div>
 
-          <span className="text-xs font-black uppercase tracking-widest text-emerald-400 bg-sky-950/80 px-3 py-1 rounded-full border border-sky-800">
+          <span className="text-xs font-black uppercase tracking-widest text-emerald-800 bg-emerald-100 px-3.5 py-1 rounded-full border border-emerald-300">
             Misi Selesai!
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black mt-2 text-white">
+          <h2 className="text-2xl sm:text-3xl font-black mt-2 text-slate-900">
             {missionConfig.title}
           </h2>
 
@@ -484,13 +484,13 @@ export const GameStage: React.FC<GameStageProps> = ({
                   style={{ animationDelay: `${starNum * 180}ms` }}
                   className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all duration-300 animate-fade-rise ${
                     isEarned
-                      ? "bg-amber-400/20 border-amber-400 text-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.35)] scale-110"
-                      : "bg-slate-800/40 border-slate-700 text-slate-600"
+                      ? "bg-amber-50 border-amber-400 text-amber-500 shadow-[0_0_20px_rgba(251,191,36,0.35)] scale-110"
+                      : "bg-slate-50 border-slate-200 text-slate-300"
                   }`}
                 >
                   <Star
                     className={`w-8 h-8 ${
-                      isEarned ? "fill-amber-400 stroke-amber-400" : "fill-none stroke-slate-600"
+                      isEarned ? "fill-amber-400 stroke-amber-500" : "fill-none stroke-slate-300"
                     }`}
                   />
                 </div>
@@ -500,25 +500,25 @@ export const GameStage: React.FC<GameStageProps> = ({
 
           {/* Statistics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-6 text-left">
-            <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
-              <span className="text-[11px] font-bold text-slate-400 block">Skor</span>
-              <span className="text-lg font-black text-white">{finalResult.score}</span>
+            <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-100">
+              <span className="text-[11px] font-bold text-slate-500 block">Skor</span>
+              <span className="text-lg font-black text-slate-800">{finalResult.score}</span>
             </div>
-            <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
-              <span className="text-[11px] font-bold text-slate-400 block">Akurasi</span>
-              <span className="text-lg font-black text-emerald-400">
+            <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-100">
+              <span className="text-[11px] font-bold text-slate-500 block">Akurasi</span>
+              <span className="text-lg font-black text-emerald-600">
                 {finalResult.accuracy}%
               </span>
             </div>
-            <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
-              <span className="text-[11px] font-bold text-slate-400 block">Waktu</span>
-              <span className="text-lg font-black text-emerald-400">
+            <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-100">
+              <span className="text-[11px] font-bold text-slate-500 block">Waktu</span>
+              <span className="text-lg font-black text-emerald-600">
                 {finalResult.timeSeconds}s
               </span>
             </div>
-            <div className="p-3 rounded-2xl bg-slate-850 border border-slate-800">
-              <span className="text-[11px] font-bold text-slate-400 block">Hadiah</span>
-              <span className="text-xs font-black text-yellow-300 leading-tight block mt-1">
+            <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-100">
+              <span className="text-[11px] font-bold text-slate-500 block">Hadiah</span>
+              <span className="text-xs font-black text-amber-600 leading-tight block mt-1">
                 +{finalResult.xpEarned} XP · +{finalResult.pointsEarned} Poin
               </span>
             </div>
@@ -526,15 +526,15 @@ export const GameStage: React.FC<GameStageProps> = ({
 
           {/* New Badge Celebration (If any) */}
           {finalResult.newBadges.length > 0 && (
-            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border border-amber-500/40 text-amber-200 text-xs font-bold flex items-center justify-center gap-2 mb-4">
-              <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-bold flex items-center justify-center gap-2 mb-4">
+              <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
               <span>Selamat! Kamu membuka {finalResult.newBadges.length} Badge Baru!</span>
             </div>
           )}
 
           {/* Ecobot Final Fact */}
-          <div className="p-3.5 rounded-2xl bg-sky-950/60 border border-sky-800 text-left text-xs text-emerald-200 mb-4">
-            <strong className="text-emerald-300 block mb-0.5">Catatan Fakta dari Ecobot:</strong>
+          <div className="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-left text-xs text-sky-900 mb-4">
+            <strong className="text-sky-800 block mb-0.5">Catatan Fakta dari Ecobot:</strong>
             {factHighlight || "Setiap sampah yang kamu buang ke tong yang tepat membuat Kota Harapan semakin bersih dan asri!"}
           </div>
 
@@ -545,14 +545,14 @@ export const GameStage: React.FC<GameStageProps> = ({
             );
             if (!activeGameDaily) return null;
             return (
-              <div className="p-3 rounded-2xl bg-emerald-950/60 border border-emerald-800 text-left text-xs text-emerald-200 mb-6 flex items-center justify-between gap-2">
+              <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-left text-xs text-emerald-900 mb-6 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  <Target className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <Target className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span className="truncate">
                     Misi harian maju: <strong>{activeGameDaily.title}</strong>
                   </span>
                 </div>
-                <span className="font-mono font-bold text-emerald-300 shrink-0">
+                <span className="font-mono font-bold text-emerald-700 shrink-0">
                   {activeGameDaily.current}/{activeGameDaily.target}
                 </span>
               </div>
@@ -569,7 +569,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                     onMissionSelect(nextMissionItem.id);
                   }
                 }}
-                className="w-full py-3.5 rounded-full bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition"
+                className="w-full py-3.5 rounded-full bg-[#22C55E] hover:bg-[#16A34A] text-white font-black text-sm flex items-center justify-center gap-2 shadow-md hover:scale-105 transition"
               >
                 <span>Misi Berikutnya: {nextMissionItem.title}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -579,7 +579,7 @@ export const GameStage: React.FC<GameStageProps> = ({
             <button
               type="button"
               onClick={handleRestartMission}
-              className="w-full py-3.5 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-sm flex items-center justify-center gap-2 transition"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Main Ulang</span>
@@ -588,7 +588,7 @@ export const GameStage: React.FC<GameStageProps> = ({
             <button
               type="button"
               onClick={onExit}
-              className="w-full py-3.5 rounded-full bg-transparent hover:bg-white/10 text-slate-300 font-bold text-sm"
+              className="w-full py-3.5 rounded-full bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-300 font-bold text-sm transition"
             >
               Kembali ke Dashboard
             </button>
@@ -683,34 +683,45 @@ export const GameStage: React.FC<GameStageProps> = ({
       )}
 
       {/* ==================== TOP HUD OVERLAY ==================== */}
-      <header className="relative z-20 flex items-center justify-between p-4 sm:p-6 pointer-events-auto">
-        {/* Top Left: Level & Points */}
+      <header className="relative z-20 flex items-center justify-between p-3.5 sm:p-5 pointer-events-auto">
+        {/* Top Left: Direct Exit Button & Level/Points */}
         <div className="flex items-center gap-2">
-          <div className="bg-slate-900/85 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full shadow-lg flex items-center gap-2">
-            <span className="text-xs font-black text-emerald-400">
+          {/* Tombol Langsung Keluar Game ke Pilihan Misi / Dashboard */}
+          <button
+            type="button"
+            onClick={onExit}
+            className="px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-white text-slate-800 hover:text-rose-600 font-black text-xs flex items-center gap-1.5 shadow-lg active:scale-95 transition cursor-pointer border border-slate-200"
+            title="Keluar dari game dan kembali ke daftar misi"
+          >
+            <LogOut className="w-3.5 h-3.5 text-rose-500" />
+            <span>Keluar</span>
+          </button>
+
+          <div className="bg-white/95 backdrop-blur-md border border-slate-200 px-3.5 py-1.5 rounded-full shadow-lg flex items-center gap-2">
+            <span className="text-xs font-black text-emerald-600">
               Level {levelInfo.level}
             </span>
-            <span className="text-xs font-black text-yellow-300">
+            <span className="text-xs font-black text-amber-600">
               | {score} Poin
             </span>
           </div>
         </div>
 
         {/* Top Center: Active Mission Progress */}
-        <div className="bg-slate-900/85 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full shadow-lg flex items-center gap-3 max-w-[280px] sm:max-w-md">
-          <span className="text-xs font-black text-white truncate">
+        <div className="bg-white/95 backdrop-blur-md border border-slate-200 px-4 py-1.5 rounded-full shadow-lg flex items-center gap-3 max-w-[280px] sm:max-w-md">
+          <span className="text-xs font-black text-slate-800 truncate">
             {missionConfig.title}:
           </span>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-extrabold text-emerald-400">
+            <span className="text-xs font-extrabold text-emerald-600">
               {itemsSorted}/{targetCount}
             </span>
-            <div className="w-16 h-2 rounded-full bg-slate-800 overflow-hidden">
+            <div className="w-16 h-2 rounded-full bg-slate-200 overflow-hidden">
               <div
                 style={{
                   width: `${Math.min(100, Math.round((itemsSorted / targetCount) * 100))}%`,
                 }}
-                className="h-full bg-emerald-400 rounded-full transition-all"
+                className="h-full bg-emerald-500 rounded-full transition-all"
               />
             </div>
           </div>
@@ -718,7 +729,7 @@ export const GameStage: React.FC<GameStageProps> = ({
 
         {/* Top Right: City Cleanliness, Ecobot Hint & Pause Button */}
         <div className="flex items-center gap-2">
-          <div className="hidden sm:flex bg-slate-900/85 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full shadow-lg items-center gap-1.5 text-xs font-black text-emerald-400">
+          <div className="hidden sm:flex bg-white/95 backdrop-blur-md border border-slate-200 px-3 py-1.5 rounded-full shadow-lg items-center gap-1.5 text-xs font-black text-emerald-600">
             <span>Taman:</span>
             <span>{cityMeter}%</span>
           </div>
@@ -732,11 +743,11 @@ export const GameStage: React.FC<GameStageProps> = ({
                 setEcobotBubble("Ayo cari sampah yang berkilau di sekitar bangku dan jalur!");
               }
             }}
-            className="w-10 h-10 rounded-full bg-emerald-500/80 hover:bg-emerald-400 text-slate-950 backdrop-blur-md border border-emerald-300 flex items-center justify-center shadow-lg active:scale-95 transition cursor-pointer"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white backdrop-blur-md border border-emerald-300 flex items-center justify-center shadow-lg active:scale-95 transition cursor-pointer"
             title="Minta Bantuan / Petunjuk Ecobot"
             aria-label="Petunjuk Arah"
           >
-            <HelpCircle className="w-5 h-5 text-slate-950" />
+            <HelpCircle className="w-5 h-5 text-white" />
           </button>
 
           <button
@@ -745,7 +756,7 @@ export const GameStage: React.FC<GameStageProps> = ({
               setPhase("paused");
               engineRef.current?.pause();
             }}
-            className="w-10 h-10 rounded-full bg-slate-900/85 hover:bg-slate-800 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-lg active:scale-95 transition cursor-pointer"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 hover:bg-white backdrop-blur-md border border-slate-200 flex items-center justify-center text-slate-700 shadow-lg active:scale-95 transition cursor-pointer"
             aria-label="Jeda Permainan"
           >
             <Settings className="w-5 h-5" />
@@ -909,14 +920,14 @@ export const GameStage: React.FC<GameStageProps> = ({
         );
       })()}
 
-      {/* ==================== PAUSE MODAL ==================== */}
+      {/* ==================== PAUSE MODAL (LIGHT MODE) ==================== */}
       {phase === "paused" && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-slate-900 border border-emerald-500/30 rounded-[32px] p-6 sm:p-8 shadow-2xl text-white text-center">
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white border-2 border-emerald-200/90 rounded-[32px] p-6 sm:p-8 shadow-2xl text-slate-800 text-center">
             {pauseView === "menu" && (
               <>
-                <h3 className="text-2xl font-black text-white mb-2">Permainan Dijeda</h3>
-                <p className="text-xs text-slate-400 mb-6">
+                <h3 className="text-2xl font-black text-slate-900 mb-1">Permainan Dijeda</h3>
+                <p className="text-xs text-slate-500 mb-6">
                   {missionConfig.title} · {missionConfig.location}
                 </p>
 
@@ -924,7 +935,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                   <button
                     type="button"
                     onClick={handleResume}
-                    className="w-full py-3.5 rounded-full bg-[#22C55E] hover:bg-[#4ADE80] text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-md transition"
+                    className="w-full py-3.5 rounded-full bg-[#22C55E] hover:bg-[#16A34A] text-white font-black text-sm flex items-center justify-center gap-2 shadow-md transition"
                   >
                     <Play className="w-4 h-4" />
                     <span>Lanjutkan Bermain</span>
@@ -933,7 +944,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                   <button
                     type="button"
                     onClick={() => setPauseView("mission")}
-                    className="w-full py-3 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm"
+                    className="w-full py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-sm transition"
                   >
                     Lihat Target Misi
                   </button>
@@ -941,9 +952,9 @@ export const GameStage: React.FC<GameStageProps> = ({
                   <button
                     type="button"
                     onClick={() => setPauseView("settings")}
-                    className="w-full py-3 rounded-full bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-sm flex items-center justify-center gap-2 transition"
                   >
-                    <Settings className="w-4 h-4" />
+                    <Settings className="w-4 h-4 text-slate-600" />
                     <span>Pengaturan Suara & Grafis</span>
                   </button>
 
@@ -951,17 +962,17 @@ export const GameStage: React.FC<GameStageProps> = ({
                     href="/bantuan?tab=kontrol"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full py-2.5 rounded-full bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 font-bold text-xs flex items-center justify-center gap-2 transition"
+                    className="w-full py-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs flex items-center justify-center gap-2 transition"
                     title="Buka panduan kontrol dan tata letak layar di tab baru"
                   >
-                    <HelpCircle className="w-4 h-4" />
+                    <HelpCircle className="w-4 h-4 text-emerald-600" />
                     <span>Panduan Kontrol & Bantuan ↗</span>
                   </a>
 
                   <button
                     type="button"
                     onClick={onExit}
-                    className="w-full py-3 rounded-full bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/40 font-bold text-sm flex items-center justify-center gap-2 transition"
+                    className="w-full py-3 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-800 border border-rose-200 font-bold text-sm flex items-center justify-center gap-2 transition"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Keluar ke Dashboard</span>
@@ -972,23 +983,23 @@ export const GameStage: React.FC<GameStageProps> = ({
 
             {pauseView === "mission" && (
               <>
-                <h3 className="text-xl font-black text-white mb-2">Target Misi</h3>
-                <p className="text-sm text-emerald-400 font-bold mb-4">{missionConfig.title}</p>
-                <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-left text-xs text-slate-300 space-y-2 mb-6">
+                <h3 className="text-xl font-black text-slate-900 mb-2">Target Misi</h3>
+                <p className="text-sm text-emerald-600 font-bold mb-4">{missionConfig.title}</p>
+                <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-100 text-left text-xs text-slate-700 space-y-2 mb-6">
                   <p>
-                    <strong className="text-white">Deskripsi:</strong> {missionConfig.description}
+                    <strong className="text-slate-900">Deskripsi:</strong> {missionConfig.description}
                   </p>
                   <p>
-                    <strong className="text-white">Target:</strong> {missionConfig.targetDescription}
+                    <strong className="text-slate-900">Target:</strong> {missionConfig.targetDescription}
                   </p>
                   <p>
-                    <strong className="text-white">Progres Sekarang:</strong> {itemsSorted} / {targetCount}
+                    <strong className="text-slate-900">Progres Sekarang:</strong> {itemsSorted} / {targetCount}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setPauseView("menu")}
-                  className="w-full py-3 rounded-full bg-slate-800 text-white font-bold text-sm"
+                  className="w-full py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-sm"
                 >
                   Kembali
                 </button>
@@ -997,11 +1008,11 @@ export const GameStage: React.FC<GameStageProps> = ({
 
             {pauseView === "settings" && (
               <>
-                <h3 className="text-xl font-black text-white mb-4">Pengaturan Cepat</h3>
+                <h3 className="text-xl font-black text-slate-900 mb-4">Pengaturan Cepat</h3>
                 <div className="space-y-4 text-left text-xs mb-6">
                   {/* Volume Slider */}
                   <div>
-                    <div className="flex justify-between font-bold mb-1">
+                    <div className="flex justify-between font-bold mb-1 text-slate-700">
                       <span>Volume Efek</span>
                       <span>{state.settings.sfxVolume}%</span>
                     </div>
@@ -1011,13 +1022,13 @@ export const GameStage: React.FC<GameStageProps> = ({
                       max="100"
                       value={state.settings.sfxVolume}
                       onChange={(e) => updateSettings({ sfxVolume: Number(e.target.value) })}
-                      className="w-full accent-sky-400 cursor-pointer"
+                      className="w-full accent-emerald-500 cursor-pointer"
                     />
                   </div>
 
                   {/* Graphics Quality */}
                   <div>
-                    <span className="font-bold block mb-1.5">Kualitas Grafis</span>
+                    <span className="font-bold block mb-1.5 text-slate-700">Kualitas Grafis</span>
                     <div className="grid grid-cols-3 gap-2">
                       {(["low", "medium", "high"] as const).map((q) => (
                         <button
@@ -1029,8 +1040,8 @@ export const GameStage: React.FC<GameStageProps> = ({
                           }}
                           className={`py-2 rounded-xl text-xs font-black uppercase transition ${
                             state.settings.graphicsQuality === q
-                              ? "bg-emerald-600 text-slate-950"
-                              : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                              ? "bg-emerald-500 text-white shadow-sm"
+                              : "bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200"
                           }`}
                         >
                           {q === "low" ? "Rendah" : q === "medium" ? "Sedang" : "Tinggi"}
@@ -1042,7 +1053,7 @@ export const GameStage: React.FC<GameStageProps> = ({
                 <button
                   type="button"
                   onClick={() => setPauseView("menu")}
-                  className="w-full py-3 rounded-full bg-slate-800 text-white font-bold text-sm"
+                  className="w-full py-3 rounded-full bg-[#22C55E] hover:bg-[#16A34A] text-white font-bold text-sm"
                 >
                   Simpan & Kembali
                 </button>
