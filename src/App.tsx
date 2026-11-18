@@ -16,6 +16,7 @@ import PapanPeringkatPage from "./pages/PapanPeringkatPage";
 import PengaturanPage from "./pages/PengaturanPage";
 import BantuanPage from "./pages/BantuanPage";
 import { SettingsApplier } from "./components/settings/SettingsApplier";
+import { ScrollToTop } from "./components/common/ScrollToTop";
 import {
   PustakaPage,
 } from "./pages/PlaceholderPages";
@@ -23,6 +24,7 @@ import {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <SettingsApplier />
       <Routes>
         {/* Landing Page */}

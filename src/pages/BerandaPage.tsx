@@ -55,7 +55,8 @@ export default function BerandaPage() {
   useEffect(() => {
     updateStreak();
     recordEvent("fakta_dibaca");
-  }, [updateStreak]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const levelInfo = calculateLevel(state.xp);
   const todayFact = getTodayFact();

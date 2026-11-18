@@ -92,7 +92,8 @@ export default function MainGamePage() {
   // 2. Daily streak tracking on mount
   useEffect(() => {
     updateStreak();
-  }, [updateStreak]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const levelInfo = calculateLevel(state.xp);
 

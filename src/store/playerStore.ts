@@ -3236,6 +3236,13 @@ export function usePlayerStore() {
   const updateRankSnapshot = (weeklyRank: number, allTimeRank: number) => {
     setPlayerState((prev) => {
       const lb = prev.leaderboard || DEFAULT_LEADERBOARD;
+      if (
+        lb.rankSnapshot &&
+        lb.rankSnapshot.weeklyRank === weeklyRank &&
+        lb.rankSnapshot.allTimeRank === allTimeRank
+      ) {
+        return prev;
+      }
       return {
         ...prev,
         leaderboard: {
